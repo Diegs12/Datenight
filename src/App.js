@@ -1120,10 +1120,10 @@ function Dashboard({ name, quiz, onRetake }) {
 
           {sched.length > 0 && <div style={{ marginBottom: 22 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 12px", fontWeight: 700 }}>Next Up</h3>
-            {sched.slice(0, 3).map(s => <div key={s.id} style={{ ...crd({ padding: 14, marginBottom: 8 }), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            {sched.slice(0, 3).map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} onClick={() => fullDate && setDetail(fullDate)} style={{ ...crd({ padding: 14, marginBottom: 8 }), display: "flex", justifyContent: "space-between", alignItems: "center", cursor: fullDate ? "pointer" : "default" }}>
               <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${s.budget}</p></div>
-              <button onClick={() => complete(s)} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓ Done</button>
-            </div>)}
+              <button onClick={(e) => { e.stopPropagation(); complete(s); }} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓ Done</button>
+            </div>; })}
           </div>}
 
           {hist.length > 0 && <div style={{ marginBottom: 22 }}><h3 style={{ color: T.text, fontSize: 16, margin: "0 0 12px", fontWeight: 700 }}>💭 Remember This?</h3>
@@ -1145,13 +1145,13 @@ function Dashboard({ name, quiz, onRetake }) {
             <button onClick={genMonth} style={btn(T.primary, "#fff", { padding: "8px 14px", fontSize: 12 })}>+ Generate</button>
           </div>
           {sched.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>Nothing scheduled yet. Hit "Generate" or browse the library!</p></div>
-            : sched.map(s => <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            : sched.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} onClick={() => fullDate && setDetail(fullDate)} style={{ ...crd({ padding: 16, marginBottom: 10 }), display: "flex", justifyContent: "space-between", alignItems: "center", cursor: fullDate ? "pointer" : "default" }}>
               <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => complete(s)} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓</button>
-                <button onClick={() => setSched(p => p.filter(x => x.id !== s.id))} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
+                <button onClick={(e) => { e.stopPropagation(); complete(s); }} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓</button>
+                <button onClick={(e) => { e.stopPropagation(); setSched(p => p.filter(x => x.id !== s.id)); }} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
               </div>
-            </div>)}
+            </div>; })}
         </>}
 
         {tab === "library" && <>
