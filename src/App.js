@@ -123,21 +123,22 @@ const RED_HERRINGS=[
 
 const HYPE_TEMPLATES={
   night_before:[
-    "Hey, might be a good time to let them know you're looking forward to tomorrow",
-    "Quick text tonight could build some anticipation for tomorrow's date",
-    "A simple 'excited for tomorrow' text goes a long way",
+    "Hey, might be a good time to let {name} know you're looking forward to tomorrow",
+    "Quick text to {name} tonight could build some anticipation for tomorrow's date",
+    "A simple 'excited for tomorrow' text to {name} goes a long way",
   ],
   morning_of:[
-    "Morning — today's the day. A quick text to build some hype would be solid",
-    "They're probably wondering what you have planned. A short message would be 🔥",
-    "Good time to drop a hint or just let them know you're thinking about tonight",
+    "Morning — today's the day. A quick text to {name} to build some hype would be solid",
+    "{name} is probably wondering what you have planned. A short message would be 🔥",
+    "Good time to drop {name} a hint or just let her know you're thinking about tonight",
   ],
   hour_before:[
-    "Almost time — last chance to build the anticipation before you see her",
-    "One hour out. A 'get ready' text would hit right about now",
-    "Final countdown — let them know it's almost go time",
+    "Almost time — last chance to build the anticipation before you see {name}",
+    "One hour out. A 'get ready' text to {name} would hit right about now",
+    "Final countdown — let {name} know it's almost go time",
   ]
 };
+const hypeMsg = (t, n) => n ? t.replace(/\{name\}/g, n) : t.replace(/ \{name\}/g, " them").replace(/\{name\} is/g, "They're").replace(/\{name\}/g, "them");
 const SUGGESTED_TEXTS={
   night_before:[
     "Can't stop thinking about tomorrow night 😏",
@@ -256,6 +257,7 @@ const DATES=[
 ];
 
 const QUIZ=[
+  {id:"partnerName",sec:"About Them",q:"What's your partner's first name?",type:"text",ph:"e.g. Giuliana, Sarah, Emily..."},
   {id:"q1",sec:"About Them",q:"What's their energy level?",type:"single",opts:["Homebody — loves staying in","Balanced — mix of in and out","Active — always wants to go somewhere","Adventurous — the wilder the better"]},
   {id:"q2",sec:"About Them",q:"What's their ideal Friday night?",type:"single",opts:["Couch + movie + takeout","Dinner at a nice restaurant","Out with friends — bar, club, event","Something spontaneous and unplanned"]},
   {id:"q3",sec:"About Them",q:"What vibes do they gravitate toward?",type:"multi",opts:["Romantic / intimate","Playful / competitive","Creative / artsy","Athletic / outdoorsy","Intellectual / curious","Chill / low-key","Bougie / sophisticated","Spontaneous / adventurous"]},
@@ -322,11 +324,14 @@ function getVibeProfile(quiz) {
 
   const p = descriptors[primary];
   const s = secondary ? descriptors[secondary] : null;
+  const pn = quiz.partnerName ? quiz.partnerName.trim() : "";
 
   // Build the personality line
-  let personality = `She's ${p.short} who ${p.desc}.`;
+  let personality = pn ? `${pn}'s ${p.short} who ${p.desc}.` : `She's ${p.short} who ${p.desc}.`;
   if (s && sorted[1][1] >= sorted[0][1] * 0.5) {
-    personality = `She's ${p.short} who ${p.desc} — with a ${s.adj} side that comes out at the right moment.`;
+    personality = pn
+      ? `${pn}'s ${p.short} who ${p.desc} — with a ${s.adj} side that comes out at the right moment.`
+      : `She's ${p.short} who ${p.desc} — with a ${s.adj} side that comes out at the right moment.`;
   }
 
   // Build the recommendation hint
@@ -339,9 +344,9 @@ function getVibeProfile(quiz) {
 
   // Build short tagline for dashboard
   const vibeWords = (quiz.q3 || []).slice(0, 2).map(v => v.split(" / ")[0].toLowerCase());
-  const tagline = vibeWords.length > 0
-    ? `Picked for someone ${vibeWords.join(" & ")}`
-    : `Tailored to her ${p.adj} side`;
+  const tagline = pn
+    ? (vibeWords.length > 0 ? `Picked for ${pn} — ${vibeWords.join(" & ")}` : `Tailored to ${pn}'s ${p.adj} side`)
+    : (vibeWords.length > 0 ? `Picked for someone ${vibeWords.join(" & ")}` : `Tailored to her ${p.adj} side`);
 
   const moodEmojis = { Energizing: "⚡", Intimate: "💫", Social: "🎉", Relaxing: "🌊" };
   const moodColors = { Energizing: "#e040fb", Intimate: "#ff4081", Social: "#7c4dff", Relaxing: "#42a5f5" };
@@ -373,7 +378,7 @@ END:VCALENDAR`;
 }
 
 // ——— MYSTERY BOX INVITE MODAL ———
-function MysteryInvite({ date, scheduledFor, onClose, onSend }) {
+function MysteryInvite({ date, scheduledFor, partnerName, onClose, onSend }) {
   const [email, setEmail] = useState("");
   const [time, setTime] = useState("19:00");
   const [editing, setEditing] = useState(false);
@@ -405,9 +410,9 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend }) {
           <span style={{ fontSize: 28 }}>📦</span>
           <h3 style={{ color: T.text, fontSize: 20, margin: 0, fontWeight: 700 }}>Mystery Box Invite</h3>
         </div>
-        <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 22px" }}>Send a calendar invite with just enough info to prepare — but not enough to know what's happening.</p>
+        <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 22px" }}>{partnerName ? `Send ${partnerName} a calendar invite` : "Send a calendar invite"} with just enough info to prepare — but not enough to know what's happening.</p>
 
-        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Partner's email</p>
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `${partnerName}'s email` : "Partner's email"}</p>
         <input type="email" placeholder="partner@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ ...inp(), marginBottom: 16 }} />
 
         <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Date & Time</p>
@@ -495,7 +500,7 @@ function MiniCalendar({ selected, onSelect }) {
   );
 }
 
-function ScheduleModal({ date, onClose, onSchedule }) {
+function ScheduleModal({ date, partnerName, onClose, onSchedule }) {
   const [dateStr, setDateStr] = useState(() => {
     const d = new Date(Date.now() + (Math.floor(Math.random() * 14) + 1) * 86400000);
     return d.toISOString().split("T")[0];
@@ -506,7 +511,7 @@ function ScheduleModal({ date, onClose, onSchedule }) {
   if (!date) return null;
   const tier = getTier(date.budget);
 
-  if (showMystery) return <MysteryInvite date={date} scheduledFor={dateStr} onClose={() => setShowMystery(false)} onSend={(email) => { setSent(true); setShowMystery(false); }} />;
+  if (showMystery) return <MysteryInvite date={date} scheduledFor={dateStr} partnerName={partnerName} onClose={() => setShowMystery(false)} onSend={(email) => { setSent(true); setShowMystery(false); }} />;
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20, overflowY: "auto" }}>
@@ -585,7 +590,10 @@ function QuizFlow({ onComplete, existing }) {
   const q = QUIZ[step]; const secs = [...new Set(QUIZ.map(q => q.sec))]; const prog = (step / QUIZ.length) * 100;
   const set = (v) => { if (q.type === "multi") { const c = ans[q.id] || []; setAns({ ...ans, [q.id]: c.includes(v) ? c.filter(x => x !== v) : [...c, v] }); } else setAns({ ...ans, [q.id]: v }); };
   const next = () => { if (step < QUIZ.length - 1) setStep(step + 1); else onComplete(ans); };
-  const ok = q.type === "text" ? true : ans[q.id] && (q.type === "multi" ? ans[q.id].length > 0 : true);
+  const pName = ans.partnerName ? ans.partnerName.trim() : "";
+  const ok = q.id === "partnerName" ? pName.length > 0 : (q.type === "text" ? true : ans[q.id] && (q.type === "multi" ? ans[q.id].length > 0 : true));
+  // Personalize question text with partner name where it makes sense
+  const personalizeQ = (text) => pName ? text.replace(/their /g, `${pName}'s `).replace(/they /g, `${pName} `).replace(/them /g, `${pName} `) : text;
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
       <div style={{ maxWidth: 560, width: "100%", padding: "0 10px" }}>
@@ -598,20 +606,24 @@ function QuizFlow({ onComplete, existing }) {
         <div style={crd()}>
           {step === 0 && <div style={{ background: `${T.primary}12`, border: `1px solid ${T.primary}30`, borderRadius: 12, padding: "14px 16px", marginBottom: 20 }}>
             <p style={{ color: T.primary, fontSize: 13, fontWeight: 600, margin: "0 0 4px" }}>Why this quiz?</p>
-            <p style={{ color: T.textDim, fontSize: 13, margin: 0, lineHeight: 1.5 }}>Answer 7 quick questions about your partner so we can recommend date ideas tailored to their personality, energy, and your budget. Takes under a minute.</p>
+            <p style={{ color: T.textDim, fontSize: 13, margin: 0, lineHeight: 1.5 }}>A few quick questions about your partner so we can recommend dates tailored to their personality, energy, and your budget. Takes under a minute.</p>
+          </div>}
+          {step === 1 && pName && <div style={{ background: `${T.green}12`, border: `1px solid ${T.green}30`, borderRadius: 12, padding: "12px 16px", marginBottom: 20 }}>
+            <p style={{ color: T.green, fontSize: 13, fontWeight: 600, margin: 0 }}>Now tell us about {pName} ✨</p>
           </div>}
           <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>{step + 1} of {QUIZ.length}</p>
-          <h2 style={{ color: T.text, fontSize: 21, margin: "0 0 22px", fontWeight: 700 }}>{q.q}</h2>
+          <h2 style={{ color: T.text, fontSize: 21, margin: "0 0 22px", fontWeight: 700 }}>{q.id === "partnerName" ? q.q : personalizeQ(q.q)}</h2>
           {q.type === "single" && <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
             {q.opts.map(o => <button key={o} onClick={() => set(o)} style={{ ...btn(ans[q.id] === o ? T.primary + "22" : T.bg, ans[q.id] === o ? T.primary : T.textDim), textAlign: "left", border: `1.5px solid ${ans[q.id] === o ? T.primary : T.border}`, padding: "13px 16px" }}>{o}</button>)}
           </div>}
           {q.type === "multi" && <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
             {q.opts.map(o => { const s = (ans[q.id] || []).includes(o); return <button key={o} onClick={() => set(o)} style={{ ...btn(s ? T.primary + "22" : T.bg, s ? T.primary : T.textDim), border: `1.5px solid ${s ? T.primary : T.border}`, padding: "9px 14px", fontSize: 13 }}>{s ? "✓ " : ""}{o}</button>; })}
           </div>}
-          {q.type === "text" && <textarea placeholder={q.ph} value={ans[q.id] || ""} onChange={e => setAns({ ...ans, [q.id]: e.target.value })} style={{ ...inp(), height: 90, resize: "vertical", fontFamily: T.font }} />}
+          {q.type === "text" && q.id === "partnerName" && <input placeholder={q.ph} value={ans[q.id] || ""} onChange={e => setAns({ ...ans, [q.id]: e.target.value })} onKeyDown={e => e.key === "Enter" && ok && next()} style={inp({ fontSize: 18, padding: "14px 18px", textAlign: "center" })} />}
+          {q.type === "text" && q.id !== "partnerName" && <textarea placeholder={q.ph} value={ans[q.id] || ""} onChange={e => setAns({ ...ans, [q.id]: e.target.value })} style={{ ...inp(), height: 90, resize: "vertical", fontFamily: T.font }} />}
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 26, gap: 10 }}>
             <button onClick={() => step > 0 && setStep(step - 1)} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, opacity: step === 0 ? 0.3 : 1 })} disabled={step === 0}>Back</button>
-            <button onClick={() => { const updated = { ...ans }; delete updated[q.id]; setAns(updated); if (step < QUIZ.length - 1) setStep(step + 1); else onComplete(updated); }} style={btn("transparent", T.textFaint, { border: `1px solid ${T.border}`, fontSize: 13 })}>Skip</button>
+            {q.id !== "partnerName" && <button onClick={() => { const updated = { ...ans }; delete updated[q.id]; setAns(updated); if (step < QUIZ.length - 1) setStep(step + 1); else onComplete(updated); }} style={btn("transparent", T.textFaint, { border: `1px solid ${T.border}`, fontSize: 13 })}>Skip</button>}
             <button onClick={next} style={btn(ok ? T.primary : T.border, ok ? "#fff" : T.textFaint)} disabled={!ok}>{step === QUIZ.length - 1 ? "Finish →" : "Next →"}</button>
           </div>
         </div>
@@ -763,6 +775,7 @@ function Dashboard({ name, quiz, onRetake }) {
   const [notifs, setNotifs] = useState([]);
 
   const [showHype, setShowHype] = useState(false);
+  const [hypeEnabled, setHypeEnabled] = useState(true);
   const [swipeMode, setSwipeMode] = useState(false);
   const [swipeDeck, setSwipeDeck] = useState([]);
   const [swipeIdx, setSwipeIdx] = useState(0);
@@ -772,6 +785,7 @@ function Dashboard({ name, quiz, onRetake }) {
   const dragStart = useRef(null);
   const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2500); };
 
+  const pName = quiz && quiz.partnerName ? quiz.partnerName.trim() : "";
   const cats = [...new Set(DATES.map(d => d.category))];
   const filtered = DATES.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; });
 
@@ -834,6 +848,7 @@ function Dashboard({ name, quiz, onRetake }) {
   const [dismissedNotifKeys, setDismissedNotifKeys] = useState([]);
   useEffect(() => {
     const checkNotifs = () => {
+      if (!hypeEnabled) { setNotifs([]); return; }
       const now = new Date();
       const live = [];
       sched.forEach(s => {
@@ -845,21 +860,21 @@ function Dashboard({ name, quiz, onRetake }) {
         if (hoursUntil <= 36 && hoursUntil > 12) {
           const key = s.id + "_nb";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "Night Before", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_TEMPLATES.night_before[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.night_before.length], suggestedText: SUGGESTED_TEXTS.night_before[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.night_before.length] });
+            live.push({ id: key, timing: "Night Before", dateTitle: s.title, scheduledDate: fmtDate, message: hypeMsg(HYPE_TEMPLATES.night_before[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.night_before.length], pName), suggestedText: SUGGESTED_TEXTS.night_before[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.night_before.length] });
           }
         }
         // Morning of: between 12 hours and 2 hours before
         if (hoursUntil <= 12 && hoursUntil > 2) {
           const key = s.id + "_mo";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "Morning Of", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_TEMPLATES.morning_of[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.morning_of.length], suggestedText: SUGGESTED_TEXTS.morning_of[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.morning_of.length] });
+            live.push({ id: key, timing: "Morning Of", dateTitle: s.title, scheduledDate: fmtDate, message: hypeMsg(HYPE_TEMPLATES.morning_of[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.morning_of.length], pName), suggestedText: SUGGESTED_TEXTS.morning_of[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.morning_of.length] });
           }
         }
         // 1 hour before: 2 hours to 0 hours before
         if (hoursUntil <= 2 && hoursUntil > -1) {
           const key = s.id + "_hb";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "1 Hour Before", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_TEMPLATES.hour_before[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.hour_before.length], suggestedText: SUGGESTED_TEXTS.hour_before[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.hour_before.length] });
+            live.push({ id: key, timing: "1 Hour Before", dateTitle: s.title, scheduledDate: fmtDate, message: hypeMsg(HYPE_TEMPLATES.hour_before[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.hour_before.length], pName), suggestedText: SUGGESTED_TEXTS.hour_before[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.hour_before.length] });
           }
         }
       });
@@ -868,7 +883,7 @@ function Dashboard({ name, quiz, onRetake }) {
     checkNotifs();
     const interval = setInterval(checkNotifs, 60000);
     return () => clearInterval(interval);
-  }, [sched, dismissedNotifKeys]);
+  }, [sched, dismissedNotifKeys, hypeEnabled, pName]);
 
   const schedule = (d, dateStr) => {
     const entry = { id: Date.now().toString(), date_id: d.id, title: d.title, budget: d.budget, category: d.category, scheduled_for: dateStr };
@@ -1048,7 +1063,7 @@ function Dashboard({ name, quiz, onRetake }) {
       </div>}
 
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} />}
-      {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
+      {schedModal && <ScheduleModal date={schedModal} partnerName={pName} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
       {!schedModal && <Detail date={detail} onClose={() => setDetail(null)} onSchedule={(d) => { setSchedModal(d); }} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
       {toast && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.surface, color: T.text, padding: "12px 24px", borderRadius: 12, border: `1px solid ${T.border}`, zIndex: 1000, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>{toast}</div>}
@@ -1112,7 +1127,7 @@ function Dashboard({ name, quiz, onRetake }) {
           </div>}
 
           <div style={{ marginTop: 4 }}>
-            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700 }}>For You ✨</h3>
+            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700 }}>{pName ? `For You & ${pName} ✨` : "For You ✨"}</h3>
             {quiz && getVibeProfile(quiz) && <p style={{ color: getVibeProfile(quiz).color, fontSize: 12, margin: "0 0 14px", fontWeight: 500, fontStyle: "italic" }}>{getVibeProfile(quiz).tagline}</p>}
             <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
@@ -1149,7 +1164,7 @@ function Dashboard({ name, quiz, onRetake }) {
 
           {/* Recommended For You */}
           {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).length > 0 && <div style={{ marginBottom: 28 }}>
-            <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 4px", fontWeight: 700 }}>Recommended For You ✨</h3>
+            <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 4px", fontWeight: 700 }}>{pName ? `Recommended for You & ${pName} ✨` : "Recommended For You ✨"}</h3>
             <p style={{ color: quiz && getVibeProfile(quiz) ? getVibeProfile(quiz).color : T.textDim, fontSize: 12, margin: "0 0 14px", fontStyle: "italic" }}>{quiz && getVibeProfile(quiz) ? getVibeProfile(quiz).tagline : "Based on your partner's preferences"}</p>
             <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
@@ -1192,33 +1207,103 @@ function Dashboard({ name, quiz, onRetake }) {
             ))}
         </>}
 
-        {tab === "profile" && <>
+        {tab === "profile" && (() => {
+          const vp = quiz ? getVibeProfile(quiz) : null;
+          const moodColors = { Energizing: "#e040fb", Intimate: "#ff4081", Social: "#7c4dff", Relaxing: "#42a5f5" };
+          const moodEmojis = { Energizing: "⚡", Intimate: "💫", Social: "🎉", Relaxing: "🌊" };
+          return <>
+          {/* Your profile card */}
           <div style={{ ...crd({ padding: 28, marginBottom: 20 }), textAlign: "center" }}>
             <div style={{ width: 80, height: 80, borderRadius: "50%", margin: "0 auto 14px", background: `linear-gradient(135deg,${T.primary},${T.accent})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, fontWeight: 800, color: "#fff" }}>{(name || "U").charAt(0).toUpperCase()}</div>
             <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 4px", fontWeight: 800 }}>{name}</h2>
             <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>Dately Member</p>
           </div>
+
+          {/* Stats row */}
           <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
             {[{ l: "Dates Done", v: hist.length, i: "✓", c: T.green }, { l: "Upcoming", v: sched.length, i: "📅", c: T.primary }, { l: "In Library", v: DATES.length, i: "📚", c: T.yellow }].map(s =>
               <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ fontSize: 20, margin: "0 0 4px" }}>{s.i}</p><p style={{ color: s.c, fontSize: 22, margin: "0 0 2px", fontWeight: 800 }}>{s.v}</p><p style={{ color: T.textFaint, fontSize: 10, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p></div>
             )}
           </div>
+
+          {/* Partner info card */}
+          {pName && <div style={{ ...crd({ padding: 0, marginBottom: 20 }), overflow: "hidden" }}>
+            <div style={{ background: vp ? `linear-gradient(135deg, ${vp.color}22, ${vp.secondaryColor || vp.color}11)` : T.surfaceAlt, padding: "20px 22px 16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 52, height: 52, borderRadius: "50%", background: vp ? `${vp.color}22` : T.primary + "22", border: `2px solid ${vp ? vp.color + "44" : T.primary + "44"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>{vp ? vp.emoji : "💕"}</div>
+                <div>
+                  <h3 style={{ color: T.text, fontSize: 20, margin: "0 0 2px", fontWeight: 800 }}>{pName}</h3>
+                  <p style={{ color: vp ? vp.color : T.textDim, fontSize: 13, margin: 0, fontWeight: 600 }}>{vp ? `${vp.primary}${vp.secondary ? ` + ${vp.secondary}` : ""}` : "Your partner"}</p>
+                </div>
+              </div>
+            </div>
+            {vp && <div style={{ padding: "16px 22px 20px" }}>
+              <p style={{ color: T.text, fontSize: 14, margin: "0 0 14px", lineHeight: 1.6, fontStyle: "italic" }}>"{vp.personality}"</p>
+              <div style={{ display: "flex", gap: 3, height: 6, borderRadius: 3, overflow: "hidden", marginBottom: 8 }}>
+                {vp.moods.filter(([,v]) => v > 0).map(([mName, val]) => (
+                  <div key={mName} style={{ flex: val, background: moodColors[mName], borderRadius: 2 }} />
+                ))}
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
+                {vp.moods.filter(([,v]) => v > 0).map(([mName]) => (
+                  <span key={mName} style={{ color: moodColors[mName], fontSize: 10, fontWeight: 600 }}>{moodEmojis[mName]} {mName}</span>
+                ))}
+              </div>
+            </div>}
+          </div>}
+
+          {/* Retake quiz button */}
           <button onClick={onRetake} style={{ width: "100%", ...crd({ padding: 16, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: `1px solid ${T.border}` }}>
             <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: T.accent + "18", fontSize: 20 }}>🔄</span>
-            <div style={{ textAlign: "left" }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>Retake Partner Quiz</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>Update partner preferences and vibes</p></div>
+            <div style={{ textAlign: "left" }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>{pName ? `Retake ${pName}'s Quiz` : "Retake Partner Quiz"}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{pName ? `Update ${pName}'s preferences and vibes` : "Update partner preferences and vibes"}</p></div>
           </button>
+
+          {/* Budget & frequency */}
           {[{ i: "💰", bg: T.primary, l: "Budget", v: (quiz || {}).q12 || "Not set" }, { i: "📅", bg: T.green, l: "Frequency", v: (quiz || {}).q13 || "Not set" }].map(x =>
             <div key={x.l} style={{ ...crd({ padding: 16, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14 }}>
               <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: x.bg + "18", fontSize: 20 }}>{x.i}</span>
               <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>{x.l}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{x.v}</p></div>
             </div>
           )}
+
+          {/* Partner preferences */}
           {quiz && Object.keys(quiz).length > 0 && <>
-            <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700 }}>Partner Preferences</h3>
-            {QUIZ.filter(q => !["q12", "q13"].includes(q.id)).map(q => { const a = quiz[q.id]; if (!a || (Array.isArray(a) && !a.length)) return null; return <div key={q.id} style={{ ...crd({ padding: 14, marginBottom: 8 }) }}><p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: 0.5 }}>{q.q}</p><p style={{ color: T.text, fontSize: 14, margin: 0 }}>{Array.isArray(a) ? a.join(", ") : a}</p></div>; })}
+            <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700 }}>{pName ? `${pName}'s Preferences` : "Partner Preferences"}</h3>
+            {QUIZ.filter(q => !["q12", "q13", "partnerName"].includes(q.id)).map(q => { const a = quiz[q.id]; if (!a || (Array.isArray(a) && !a.length)) return null; return <div key={q.id} style={{ ...crd({ padding: 14, marginBottom: 8 }) }}><p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: 0.5 }}>{q.q}</p><p style={{ color: T.text, fontSize: 14, margin: 0 }}>{Array.isArray(a) ? a.join(", ") : a}</p></div>; })}
           </>}
+
+          {/* Notification settings */}
+          <h3 style={{ color: T.text, fontSize: 15, margin: "24px 0 12px", fontWeight: 700 }}>Notifications</h3>
+          <div style={{ ...crd({ padding: 0, marginBottom: 20 }), overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${T.border}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 18 }}>💡</span>
+                <div>
+                  <p style={{ color: T.text, fontSize: 14, margin: "0 0 2px", fontWeight: 600 }}>Hype Reminders</p>
+                  <p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>Get nudges to build anticipation before dates</p>
+                </div>
+              </div>
+              <div onClick={() => setHypeEnabled(!hypeEnabled)} style={{ width: 48, height: 28, borderRadius: 14, background: hypeEnabled ? T.green : T.border, cursor: "pointer", position: "relative", transition: "background 0.2s ease" }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#fff", position: "absolute", top: 3, left: hypeEnabled ? 23 : 3, transition: "left 0.2s ease", boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} />
+              </div>
+            </div>
+            <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 18 }}>📅</span>
+                <div>
+                  <p style={{ color: T.text, fontSize: 14, margin: "0 0 2px", fontWeight: 600 }}>Date Reminders</p>
+                  <p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>Reminders for upcoming scheduled dates</p>
+                </div>
+              </div>
+              <div style={{ width: 48, height: 28, borderRadius: 14, background: T.green, cursor: "default", position: "relative" }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#fff", position: "absolute", top: 3, left: 23, boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }} />
+              </div>
+            </div>
+          </div>
+
           <div style={{ textAlign: "center", padding: "30px 0 40px" }}><p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 4px" }}>🔥 Dately v1.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Never run out of date ideas again</p></div>
-        </>}
+        </>;
+        })()}
       </div>
     </div>
   );
@@ -1350,6 +1435,7 @@ function Splash({ onDone }) {
 function VibeReveal({ quiz, onContinue }) {
   const [phase, setPhase] = useState(0);
   const profile = getVibeProfile(quiz);
+  const pName = quiz && quiz.partnerName ? quiz.partnerName.trim() : "";
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 400);
@@ -1373,7 +1459,7 @@ function VibeReveal({ quiz, onContinue }) {
           color: T.textFaint, fontSize: 12, textTransform: "uppercase", letterSpacing: 2, fontWeight: 600,
           margin: "0 0 32px",
           opacity: phase >= 0 ? 1 : 0, transition: "opacity 0.5s ease"
-        }}>Her vibe profile</p>
+        }}>{pName ? `${pName}'s vibe profile` : "Her vibe profile"}</p>
 
         {/* Mood badges */}
         <div style={{
@@ -1448,7 +1534,7 @@ function VibeReveal({ quiz, onContinue }) {
             ...btn(T.primary, "#fff"),
             padding: "16px 40px", fontSize: 16, fontWeight: 700, borderRadius: 14,
             boxShadow: `0 4px 20px ${T.primary}44`
-          }}>Find Her Dates →</button>
+          }}>{pName ? `Find ${pName}'s Dates →` : "Find Her Dates →"}</button>
         </div>
       </div>
     </div>
