@@ -260,16 +260,105 @@ const QUIZ=[
   {id:"q2",sec:"About Them",q:"What's their ideal Friday night?",type:"single",opts:["Couch + movie + takeout","Dinner at a nice restaurant","Out with friends — bar, club, event","Something spontaneous and unplanned"]},
   {id:"q3",sec:"About Them",q:"What vibes do they gravitate toward?",type:"multi",opts:["Romantic / intimate","Playful / competitive","Creative / artsy","Athletic / outdoorsy","Intellectual / curious","Chill / low-key","Bougie / sophisticated","Spontaneous / adventurous"]},
   {id:"q4",sec:"About Them",q:"Comfort with physical activities?",type:"single",opts:["Light walks max","Moderate — hiking, biking, skating","They'll try anything athletic","They're more active than me"]},
-  {id:"q5",sec:"Food & Drink",q:"Any food allergies?",type:"multi",opts:["Dairy","Gluten / Wheat","Peanuts","Tree nuts","Shellfish / Fish","Eggs","Soy","Sesame","None"]},
-  {id:"q6",sec:"Food & Drink",q:"Food preferences?",type:"multi",opts:["Vegetarian","Vegan","Pescatarian","Keto / Low-carb","No pork","No red meat","Halal","Kosher","No restrictions"]},
-  {id:"q7",sec:"Food & Drink",q:"How do they feel about alcohol?",type:"single",opts:["Doesn't drink at all","Occasional — wine or a cocktail","Loves trying new drinks","Can out-drink me"]},
-  {id:"q8",sec:"Food & Drink",q:"Cuisine favorites?",type:"multi",opts:["Italian","Mexican","Japanese / Sushi","Thai / Vietnamese","Indian","Mediterranean","American / BBQ","Korean","French","Chinese"]},
-  {id:"q9",sec:"Food & Drink",q:"Any food dislikes?",type:"text",ph:"e.g. hates mushrooms, won't eat raw fish..."},
-  {id:"q10",sec:"Your History",q:"Best date together so far?",type:"text",ph:"What you did, where you went..."},
-  {id:"q11",sec:"Your History",q:"Anything they've mentioned wanting to try?",type:"text",ph:"e.g. pottery class, wine tasting..."},
+  {id:"q7",sec:"Preferences",q:"How do they feel about alcohol?",type:"single",opts:["Doesn't drink at all","Occasional — wine or a cocktail","Loves trying new drinks","Can out-drink me"]},
   {id:"q12",sec:"Budget",q:"Typical date budget?",type:"single",opts:["Under $20","Under $50","Under $100","Over $100","Mix it up"]},
   {id:"q13",sec:"Budget",q:"How often do you want date nights?",type:"single",opts:["1x per month","2x per month","3x per month","Every week"]},
 ];
+
+// ——— VIBE PROFILE GENERATOR ———
+function getVibeProfile(quiz) {
+  if (!quiz) return null;
+
+  // Map quiz answers to mood affinities
+  const moods = { Energizing: 0, Intimate: 0, Social: 0, Relaxing: 0 };
+  const moodMap = {
+    outdoor: "Energizing", adventure: "Energizing",
+    romantic: "Intimate", meaningful: "Intimate",
+    nightlife: "Social", food: "Social",
+    chill: "Relaxing", creative: "Relaxing"
+  };
+
+  // Energy level (q1)
+  const energyBoost = {
+    "Homebody — loves staying in": { Relaxing: 3, Intimate: 2 },
+    "Balanced — mix of in and out": { Relaxing: 1, Social: 1, Energizing: 1 },
+    "Active — always wants to go somewhere": { Energizing: 3, Social: 2 },
+    "Adventurous — the wilder the better": { Energizing: 4, Social: 1 }
+  };
+  if (quiz.q1 && energyBoost[quiz.q1]) Object.entries(energyBoost[quiz.q1]).forEach(([k, v]) => moods[k] += v);
+
+  // Friday night (q2)
+  const fridayBoost = {
+    "Couch + movie + takeout": { Relaxing: 3, Intimate: 1 },
+    "Dinner at a nice restaurant": { Social: 2, Intimate: 1 },
+    "Out with friends — bar, club, event": { Social: 3, Energizing: 1 },
+    "Something spontaneous and unplanned": { Energizing: 2, Social: 1 }
+  };
+  if (quiz.q2 && fridayBoost[quiz.q2]) Object.entries(fridayBoost[quiz.q2]).forEach(([k, v]) => moods[k] += v);
+
+  // Vibes (q3) — biggest signal
+  const vibeToMood = {
+    "Romantic / intimate": "Intimate", "Playful / competitive": "Energizing",
+    "Creative / artsy": "Relaxing", "Athletic / outdoorsy": "Energizing",
+    "Intellectual / curious": "Relaxing", "Chill / low-key": "Relaxing",
+    "Bougie / sophisticated": "Social", "Spontaneous / adventurous": "Energizing"
+  };
+  (quiz.q3 || []).forEach(v => { if (vibeToMood[v]) moods[vibeToMood[v]] += 3; });
+
+  // Activity comfort (q4)
+  if (quiz.q4 === "Light walks max") { moods.Relaxing += 2; moods.Intimate += 1; }
+  if (quiz.q4 === "They'll try anything athletic" || quiz.q4 === "They're more active than me") moods.Energizing += 2;
+
+  // Alcohol (q7)
+  if (quiz.q7 === "Loves trying new drinks" || quiz.q7 === "Can out-drink me") moods.Social += 2;
+  if (quiz.q7 === "Doesn't drink at all") { moods.Intimate += 1; moods.Relaxing += 1; }
+
+  // Sort moods by score
+  const sorted = Object.entries(moods).sort((a, b) => b[1] - a[1]);
+  const primary = sorted[0][0];
+  const secondary = sorted[1][1] > 0 ? sorted[1][0] : null;
+
+  // Generate description
+  const descriptors = {
+    Energizing: { adj: "adventurous", desc: "thrives on energy, surprise, and bold experiences", short: "an adventurer" },
+    Intimate: { adj: "intimate", desc: "loves depth, connection, and meaningful moments together", short: "a deep connector" },
+    Social: { adj: "social", desc: "lights up around great food, good drinks, and vibrant scenes", short: "a social spark" },
+    Relaxing: { adj: "laid-back", desc: "prefers cozy vibes, creative moments, and low-pressure quality time", short: "a calm soul" }
+  };
+
+  const p = descriptors[primary];
+  const s = secondary ? descriptors[secondary] : null;
+
+  // Build the personality line
+  let personality = `She's ${p.short} who ${p.desc}.`;
+  if (s && sorted[1][1] >= sorted[0][1] * 0.5) {
+    personality = `She's ${p.short} who ${p.desc} — with a ${s.adj} side that comes out at the right moment.`;
+  }
+
+  // Build the recommendation hint
+  const drinkLine = quiz.q7 === "Doesn't drink at all" ? " Skip the cocktails." :
+    (quiz.q7 === "Loves trying new drinks" || quiz.q7 === "Can out-drink me") ? " Bonus points for a good drink." : "";
+  const activityLine = quiz.q4 === "Light walks max" ? " Keep it low-key physically." :
+    (quiz.q4 === "They'll try anything athletic" || quiz.q4 === "They're more active than me") ? " Don't be afraid to get active." : "";
+
+  const advice = `Lean into ${p.adj} dates.${drinkLine}${activityLine}`;
+
+  // Build short tagline for dashboard
+  const vibeWords = (quiz.q3 || []).slice(0, 2).map(v => v.split(" / ")[0].toLowerCase());
+  const tagline = vibeWords.length > 0
+    ? `Picked for someone ${vibeWords.join(" & ")}`
+    : `Tailored to her ${p.adj} side`;
+
+  const moodEmojis = { Energizing: "⚡", Intimate: "💫", Social: "🎉", Relaxing: "🌊" };
+  const moodColors = { Energizing: "#e040fb", Intimate: "#ff4081", Social: "#7c4dff", Relaxing: "#42a5f5" };
+
+  return {
+    primary, secondary, moods: sorted, personality, advice, tagline,
+    emoji: moodEmojis[primary], color: moodColors[primary],
+    secondaryEmoji: secondary ? moodEmojis[secondary] : null,
+    secondaryColor: secondary ? moodColors[secondary] : null
+  };
+}
 
 // ——— ICS CALENDAR GENERATION ———
 function generateICS(title, description, dateStr, timeStr) {
@@ -513,6 +602,10 @@ function QuizFlow({ onComplete, existing }) {
           <div style={{ height: 4, background: T.surface, borderRadius: 2 }}><div style={{ height: "100%", width: `${prog}%`, background: T.primary, borderRadius: 2, transition: "width 0.3s" }} /></div>
         </div>
         <div style={crd()}>
+          {step === 0 && <div style={{ background: `${T.primary}12`, border: `1px solid ${T.primary}30`, borderRadius: 12, padding: "14px 16px", marginBottom: 20 }}>
+            <p style={{ color: T.primary, fontSize: 13, fontWeight: 600, margin: "0 0 4px" }}>Why this quiz?</p>
+            <p style={{ color: T.textDim, fontSize: 13, margin: 0, lineHeight: 1.5 }}>Answer 7 quick questions about your partner so we can recommend date ideas tailored to their personality, energy, and your budget. Takes under a minute.</p>
+          </div>}
           <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>{step + 1} of {QUIZ.length}</p>
           <h2 style={{ color: T.text, fontSize: 21, margin: "0 0 22px", fontWeight: 700 }}>{q.q}</h2>
           {q.type === "single" && <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
@@ -1025,7 +1118,8 @@ function Dashboard({ name, quiz, onRetake }) {
           </div>}
 
           <div style={{ marginTop: 4 }}>
-            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 14px", fontWeight: 700 }}>For You ✨</h3>
+            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700 }}>For You ✨</h3>
+            {quiz && getVibeProfile(quiz) && <p style={{ color: getVibeProfile(quiz).color, fontSize: 12, margin: "0 0 14px", fontWeight: 500, fontStyle: "italic" }}>{getVibeProfile(quiz).tagline}</p>}
             <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
@@ -1062,7 +1156,7 @@ function Dashboard({ name, quiz, onRetake }) {
           {/* Recommended For You */}
           {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).length > 0 && <div style={{ marginBottom: 28 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 4px", fontWeight: 700 }}>Recommended For You ✨</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 14px" }}>Based on your partner's preferences</p>
+            <p style={{ color: quiz && getVibeProfile(quiz) ? getVibeProfile(quiz).color : T.textDim, fontSize: 12, margin: "0 0 14px", fontStyle: "italic" }}>{quiz && getVibeProfile(quiz) ? getVibeProfile(quiz).tagline : "Based on your partner's preferences"}</p>
             <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
@@ -1258,6 +1352,115 @@ function Splash({ onDone }) {
   );
 }
 
+// ——— VIBE REVEAL SCREEN ———
+function VibeReveal({ quiz, onContinue }) {
+  const [phase, setPhase] = useState(0);
+  const profile = getVibeProfile(quiz);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 400);
+    const t2 = setTimeout(() => setPhase(2), 1000);
+    const t3 = setTimeout(() => setPhase(3), 1600);
+    const t4 = setTimeout(() => setPhase(4), 2200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, []);
+
+  if (!profile) return null;
+
+  const moodColors = { Energizing: "#e040fb", Intimate: "#ff4081", Social: "#7c4dff", Relaxing: "#42a5f5" };
+  const moodEmojis = { Energizing: "⚡", Intimate: "💫", Social: "🎉", Relaxing: "🌊" };
+
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
+      <div style={{ maxWidth: 480, width: "100%", textAlign: "center" }}>
+
+        {/* Analyzing text */}
+        <p style={{
+          color: T.textFaint, fontSize: 12, textTransform: "uppercase", letterSpacing: 2, fontWeight: 600,
+          margin: "0 0 32px",
+          opacity: phase >= 0 ? 1 : 0, transition: "opacity 0.5s ease"
+        }}>Her vibe profile</p>
+
+        {/* Mood badges */}
+        <div style={{
+          display: "flex", justifyContent: "center", gap: 12, marginBottom: 32,
+          opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0)" : "translateY(15px)",
+          transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        }}>
+          <div style={{
+            background: `${profile.color}18`, border: `2px solid ${profile.color}44`,
+            borderRadius: 16, padding: "12px 22px", display: "flex", alignItems: "center", gap: 8
+          }}>
+            <span style={{ fontSize: 22 }}>{profile.emoji}</span>
+            <span style={{ color: profile.color, fontSize: 16, fontWeight: 700 }}>{profile.primary}</span>
+          </div>
+          {profile.secondary && profile.moods[1][1] >= profile.moods[0][1] * 0.4 && <div style={{
+            background: `${profile.secondaryColor}12`, border: `1px solid ${profile.secondaryColor}33`,
+            borderRadius: 16, padding: "12px 22px", display: "flex", alignItems: "center", gap: 8
+          }}>
+            <span style={{ fontSize: 18 }}>{profile.secondaryEmoji}</span>
+            <span style={{ color: profile.secondaryColor, fontSize: 14, fontWeight: 600 }}>{profile.secondary}</span>
+          </div>}
+        </div>
+
+        {/* Personality description */}
+        <div style={{
+          opacity: phase >= 2 ? 1 : 0, transform: phase >= 2 ? "translateY(0)" : "translateY(15px)",
+          transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        }}>
+          <div style={{
+            ...crd(), padding: "28px 24px", textAlign: "left", marginBottom: 20,
+            borderLeft: `3px solid ${profile.color}66`
+          }}>
+            <p style={{
+              color: T.text, fontSize: 18, fontWeight: 500, lineHeight: 1.6, margin: "0 0 16px",
+              fontStyle: "italic"
+            }}>"{profile.personality}"</p>
+            <p style={{
+              color: T.textDim, fontSize: 14, lineHeight: 1.5, margin: 0
+            }}>{profile.advice}</p>
+          </div>
+        </div>
+
+        {/* Mood breakdown bar */}
+        <div style={{
+          opacity: phase >= 3 ? 1 : 0, transform: phase >= 3 ? "translateY(0)" : "translateY(15px)",
+          transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          marginBottom: 36
+        }}>
+          <div style={{ display: "flex", gap: 3, height: 8, borderRadius: 4, overflow: "hidden", marginBottom: 10 }}>
+            {profile.moods.filter(([,v]) => v > 0).map(([name, val]) => (
+              <div key={name} style={{
+                flex: val, background: moodColors[name], borderRadius: 2,
+                transition: "flex 0.8s ease"
+              }} />
+            ))}
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
+            {profile.moods.filter(([,v]) => v > 0).map(([name, val]) => (
+              <span key={name} style={{ color: moodColors[name], fontSize: 11, fontWeight: 600 }}>
+                {moodEmojis[name]} {name}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Continue button */}
+        <div style={{
+          opacity: phase >= 4 ? 1 : 0, transform: phase >= 4 ? "translateY(0)" : "translateY(10px)",
+          transition: "all 0.5s ease"
+        }}>
+          <button onClick={onContinue} style={{
+            ...btn(T.primary, "#fff"),
+            padding: "16px 40px", fontSize: 16, fontWeight: 700, borderRadius: 14,
+            boxShadow: `0 4px 20px ${T.primary}44`
+          }}>Find Her Dates →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ——— APP ROOT ———
 export default function App() {
   const [screen, setScreen] = useState("splash");
@@ -1266,6 +1469,7 @@ export default function App() {
 
   if (screen === "splash") return <Splash onDone={() => setScreen("welcome")} />;
   if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("quiz"); }} />;
-  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("dashboard"); }} existing={quiz} />;
+  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("reveal"); }} existing={quiz} />;
+  if (screen === "reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} />;
   return <Dashboard name={name} quiz={quiz} onRetake={() => setScreen("quiz")} />;
 }
