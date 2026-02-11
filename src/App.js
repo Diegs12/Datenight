@@ -764,8 +764,8 @@ function Card({ date, onClick, grid }) {
 // ——— DASHBOARD ———
 function Dashboard({ name, quiz, onRetake }) {
   const [tab, setTab] = useState("home");
-  const [sched, setSched] = useState([]);
-  const [hist, setHist] = useState([]);
+  const [sched, setSched] = useState(() => { try { const s = localStorage.getItem("dately_sched"); return s ? JSON.parse(s) : []; } catch(e) { return []; } });
+  const [hist, setHist] = useState(() => { try { const h = localStorage.getItem("dately_hist"); return h ? JSON.parse(h) : []; } catch(e) { return []; } });
   const [detail, setDetail] = useState(null);
   const [schedModal, setSchedModal] = useState(null);
   const [debrief, setDebrief] = useState(null);
@@ -784,6 +784,10 @@ function Dashboard({ name, quiz, onRetake }) {
   const [swipeAnim, setSwipeAnim] = useState(null);
   const dragStart = useRef(null);
   const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2500); };
+
+  // Persist schedule & history to localStorage
+  useEffect(() => { try { localStorage.setItem("dately_sched", JSON.stringify(sched)); } catch(e) {} }, [sched]);
+  useEffect(() => { try { localStorage.setItem("dately_hist", JSON.stringify(hist)); } catch(e) {} }, [hist]);
 
   const pName = quiz && quiz.partnerName ? quiz.partnerName.trim() : "";
   const cats = [...new Set(DATES.map(d => d.category))];
@@ -1543,13 +1547,19 @@ function VibeReveal({ quiz, onContinue }) {
 
 // ——— APP ROOT ———
 export default function App() {
-  const [screen, setScreen] = useState("splash");
-  const [name, setName] = useState("");
-  const [quiz, setQuiz] = useState(null);
+  const [screen, setScreen] = useState(() => {
+    try { if (localStorage.getItem("dately_name") && localStorage.getItem("dately_quiz")) return "dashboard"; } catch(e) {}
+    return "splash";
+  });
+  const [name, setName] = useState(() => { try { return localStorage.getItem("dately_name") || ""; } catch(e) { return ""; } });
+  const [quiz, setQuiz] = useState(() => { try { const q = localStorage.getItem("dately_quiz"); return q ? JSON.parse(q) : null; } catch(e) { return null; } });
+
+  const saveName = (n) => { setName(n); try { localStorage.setItem("dately_name", n); } catch(e) {} };
+  const saveQuiz = (a) => { setQuiz(a); try { localStorage.setItem("dately_quiz", JSON.stringify(a)); } catch(e) {} };
 
   if (screen === "splash") return <Splash onDone={() => setScreen("welcome")} />;
-  if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("quiz"); }} />;
-  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("reveal"); }} existing={quiz} />;
+  if (screen === "welcome") return <Welcome onStart={(n) => { saveName(n); setScreen("quiz"); }} />;
+  if (screen === "quiz") return <QuizFlow onComplete={(a) => { saveQuiz(a); setScreen("reveal"); }} existing={quiz} />;
   if (screen === "reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} />;
   return <Dashboard name={name} quiz={quiz} onRetake={() => setScreen("quiz")} />;
 }
