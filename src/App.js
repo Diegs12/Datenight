@@ -271,12 +271,6 @@ function getVibeProfile(quiz) {
 
   // Map quiz answers to mood affinities
   const moods = { Energizing: 0, Intimate: 0, Social: 0, Relaxing: 0 };
-  const moodMap = {
-    outdoor: "Energizing", adventure: "Energizing",
-    romantic: "Intimate", meaningful: "Intimate",
-    nightlife: "Social", food: "Social",
-    chill: "Relaxing", creative: "Relaxing"
-  };
 
   // Energy level (q1)
   const energyBoost = {
