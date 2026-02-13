@@ -1214,10 +1214,10 @@ function Welcome({ onStart }) {
 function Splash({ onDone }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 300);
-    const t2 = setTimeout(() => setPhase(2), 1200);
-    const t3 = setTimeout(() => setPhase(3), 2400);
-    const t4 = setTimeout(() => onDone(), 3800);
+    const t1 = setTimeout(() => setPhase(1), 200);
+    const t2 = setTimeout(() => setPhase(2), 1400);
+    const t3 = setTimeout(() => setPhase(3), 2600);
+    const t4 = setTimeout(() => onDone(), 3000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1233,7 +1233,7 @@ function Splash({ onDone }) {
     <div style={{
       position: "fixed", inset: 0, background: T.bg, display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center", fontFamily: T.font, zIndex: 9999,
-      opacity: phase >= 3 ? 0 : 1, transition: "opacity 0.8s ease-out",
+      opacity: phase >= 3 ? 0 : 1, transition: "opacity 0.35s ease-out",
     }}>
       <style>{`
         @keyframes amberGlow {
@@ -1336,7 +1336,7 @@ function Splash({ onDone }) {
         <div style={{
           height: "100%", borderRadius: 2,
           background: `linear-gradient(90deg, #B8845A, #D4A574, #E8C49A)`,
-          animation: phase >= 1 ? "barGrow 3s ease-out forwards" : "none",
+          animation: phase >= 1 ? "barGrow 6s ease-out forwards" : "none",
         }} />
       </div>
     </div>
@@ -1345,9 +1345,7 @@ function Splash({ onDone }) {
 
 // ——— APP ROOT ———
 export default function App() {
-  const [screen, setScreen] = useState(() => {
-    try { const n = localStorage.getItem("vela_name"); const q = localStorage.getItem("vela_quiz"); if (n && q) return "dashboard"; } catch {} return "splash";
-  });
+  const [screen, setScreen] = useState("splash");
   const [name, setName] = useState(() => { try { return localStorage.getItem("vela_name") || ""; } catch { return ""; } });
   const [quiz, setQuiz] = useState(() => { try { const q = localStorage.getItem("vela_quiz"); return q ? JSON.parse(q) : null; } catch { return null; } });
 
