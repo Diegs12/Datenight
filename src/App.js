@@ -695,7 +695,17 @@ function Dashboard({ name, quiz, onRetake }) {
   useEffect(() => { try { localStorage.setItem("vela_hist", JSON.stringify(hist)); } catch {} }, [hist]);
 
   const cats = [...new Set(DATES.map(d => d.category))];
-  const filtered = DATES.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; });
+  const [searchQ, setSearchQ] = useState("");
+  const filtered = DATES.filter(d => {
+    if (bf !== null && d.budget > bf) return false;
+    if (cf && d.category !== cf) return false;
+    if (searchQ.trim()) {
+      const q = searchQ.toLowerCase();
+      const haystack = (d.title + " " + d.description + " " + d.vibe.join(" ") + " " + d.category).toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
 
   const rows = [
     { label: "Trending 🔥", dates: DATES.filter(d => d.is_trending && isInSeason(d.id)) },
@@ -846,16 +856,19 @@ function Dashboard({ name, quiz, onRetake }) {
   };
 
   const surprise = () => {
-    const recent = hist.slice(0, 10).map(h => h.date_id);
-    let pool = DATES.filter(d => !recent.includes(d.id) && isInSeason(d.id));
-    const bp = (quiz || {}).q12;
-    if (bp?.includes("Under $20")) pool = pool.filter(d => d.budget <= 20);
-    else if (bp?.includes("Under $50")) pool = pool.filter(d => d.budget <= 50);
-    else if (bp?.includes("Under $100")) pool = pool.filter(d => d.budget <= 100);
+    const recent = hist.slice(0, 15).map(h => h.date_id);
+    const scheduled = sched.map(s => s.date_id);
+    const exclude = new Set([...recent, ...scheduled]);
+    let pool = DATES.filter(d => !exclude.has(d.id) && isInSeason(d.id));
     if (!pool.length) pool = DATES.filter(d => isInSeason(d.id));
-    if (!pool.length) pool = DATES; // ultimate fallback
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    setSwipeDeck(shuffled);
+    if (!pool.length) pool = DATES;
+    // Weighted shuffle: score each date, higher scores more likely to appear first
+    const weighted = pool.map(d => {
+      const { score } = scoreDate(d);
+      return { ...d, _w: Math.max(score, 1) + Math.random() * 4 };
+    });
+    weighted.sort((a, b) => b._w - a._w);
+    setSwipeDeck(weighted);
     setSwipeIdx(0);
     setDragX(0);
     setSwipeMode(true);
@@ -895,10 +908,15 @@ function Dashboard({ name, quiz, onRetake }) {
 
   const genMonth = () => {
     const fm = { "1x per month": 1, "2x per month": 2, "3x per month": 3, "Every week": 4 };
-    const ct = fm[(quiz || {}).q13] || 2; const recent = hist.slice(0, 10).map(h => h.date_id);
+    const ct = fm[(quiz || {}).q13] || 2; const recent = hist.slice(0, 15).map(h => h.date_id);
     const scheduled = sched.map(s => s.date_id);
-    let pool = DATES.filter(d => !recent.includes(d.id) && !scheduled.includes(d.id) && isInSeason(d.id)); if (!pool.length) pool = DATES.filter(d => isInSeason(d.id)); if (!pool.length) pool = DATES;
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    const exclude = new Set([...recent, ...scheduled]);
+    let pool = DATES.filter(d => !exclude.has(d.id) && isInSeason(d.id)); if (!pool.length) pool = DATES.filter(d => isInSeason(d.id)); if (!pool.length) pool = DATES;
+    // Weighted shuffle: quiz-matched dates more likely to be picked
+    const shuffled = pool.map(d => {
+      const { score } = scoreDate(d);
+      return { ...d, _w: Math.max(score, 1) + Math.random() * 4 };
+    }).sort((a, b) => b._w - a._w);
     const now = new Date();
     for (let i = 0; i < ct && i < shuffled.length; i++) {
       const pick = shuffled[i];
@@ -1115,8 +1133,13 @@ function Dashboard({ name, quiz, onRetake }) {
         </>}
 
         {tab === "library" && <>
-          {/* Filters at top */}
           <h2 style={{ color: T.text, fontSize: 20, margin: "0 0 14px", fontWeight: 700, fontFamily: T.display }}>Date Library</h2>
+          {/* Search */}
+          <div style={{ position: "relative", marginBottom: 16 }}>
+            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, color: T.textFaint, pointerEvents: "none" }}>🔍</span>
+            <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder="Search dates, vibes, categories..." style={inp({ paddingLeft: 40, fontSize: 14, background: T.surface, border: `1px solid ${T.border}` })} />
+            {searchQ && <button onClick={() => setSearchQ("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: T.textDim, fontSize: 16, cursor: "pointer", padding: 4 }}>✕</button>}
+          </div>
           <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Budget</p>
           <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
             {[{ label: "All", max: null }, ...BTIERS].map(t => <button key={t.label} onClick={() => setBf(t.max)} style={{ fontFamily: T.font, fontSize: 13, fontWeight: 600, borderRadius: 10, cursor: "pointer", padding: "10px 18px", border: `2px solid ${bf === t.max ? (t.color || T.primary) : T.border}`, background: bf === t.max ? (t.color || T.primary) + "22" : "transparent", color: bf === t.max ? (t.color || T.primary) : T.textDim }}>{t.label}</button>)}
