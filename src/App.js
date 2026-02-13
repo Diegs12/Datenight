@@ -1275,32 +1275,47 @@ function Splash({ onDone }) {
 
       {/* Vela logo word with candle "l" */}
       <div style={{
-        display: "flex", alignItems: "baseline", gap: 0, marginBottom: 16,
+        display: "flex", alignItems: "flex-end", gap: 0, marginBottom: 16,
         opacity: phase >= 1 ? 1 : 0,
         animation: phase >= 1 ? "logoReveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards" : "none",
       }}>
-        <span style={{ fontFamily: T.display, fontSize: 56, fontWeight: 600, color: T.text, letterSpacing: "-1px" }}>ve</span>
+        <span style={{ fontFamily: T.display, fontSize: 64, fontWeight: 500, color: T.text, lineHeight: 1 }}>v</span>
+        <span style={{ fontFamily: T.display, fontSize: 64, fontWeight: 500, color: T.text, lineHeight: 1, marginRight: 1 }}>e</span>
         {/* Candle "l" */}
-        <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", position: "relative", width: 22, marginBottom: -2 }}>
-          {/* Flame */}
-          <span style={{
-            display: "block", width: 12, height: 16, borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
-            background: "linear-gradient(to top, #D4A574, #E8C49A, #fff8e8)",
-            animation: phase >= 1 ? "flickerCandle 1.5s ease-in-out infinite" : "none",
-            marginBottom: -2, filter: "drop-shadow(0 0 6px #D4A57488)",
-          }} />
-          {/* Wick + body */}
-          <span style={{ display: "block", width: 3, height: 38, background: "linear-gradient(to bottom, #E8C49A, #D4A574, #B8845A)", borderRadius: 2 }} />
+        <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", position: "relative", width: 18, marginBottom: 4 }}>
+          {/* Flame - SVG for clean shape */}
+          <svg width="18" height="24" viewBox="0 0 18 24" style={{ animation: phase >= 1 ? "flickerCandle 2s ease-in-out infinite" : "none", filter: "drop-shadow(0 0 8px #D4A57466) drop-shadow(0 0 16px #D4A57433)" }}>
+            <defs>
+              <linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor="#D4A574" />
+                <stop offset="40%" stopColor="#E8C49A" />
+                <stop offset="70%" stopColor="#FFF5E0" />
+                <stop offset="100%" stopColor="#FFFBF0" />
+              </linearGradient>
+              <linearGradient id="innerFlame" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor="#E8C49A" />
+                <stop offset="100%" stopColor="#FFFFFF" />
+              </linearGradient>
+            </defs>
+            {/* Outer flame */}
+            <path d="M9 1 C9 1, 15 10, 15 15 C15 19, 12 23, 9 23 C6 23, 3 19, 3 15 C3 10, 9 1, 9 1Z" fill="url(#flameGrad)" opacity="0.9" />
+            {/* Inner flame */}
+            <path d="M9 8 C9 8, 12 13, 12 16 C12 18.5, 10.5 21, 9 21 C7.5 21, 6 18.5, 6 16 C6 13, 9 8, 9 8Z" fill="url(#innerFlame)" opacity="0.7" />
+          </svg>
+          {/* Wick */}
+          <span style={{ display: "block", width: 1.5, height: 3, background: "#7D786F", marginTop: -2 }} />
+          {/* Candle body */}
+          <span style={{ display: "block", width: 6, height: 36, background: "linear-gradient(to bottom, #F0DCC0, #E8C49A, #D4A574)", borderRadius: "2px 2px 3px 3px", boxShadow: "1px 0 3px rgba(0,0,0,0.15), -1px 0 3px rgba(0,0,0,0.1)" }} />
         </span>
-        <span style={{ fontFamily: T.display, fontSize: 56, fontWeight: 600, color: T.text, letterSpacing: "-1px" }}>a</span>
+        <span style={{ fontFamily: T.display, fontSize: 64, fontWeight: 500, color: T.text, lineHeight: 1, marginLeft: 1 }}>a</span>
       </div>
 
       {/* Tagline */}
       <p style={{
-        color: T.textDim, fontSize: 12, fontWeight: 600, margin: "0 0 20px",
+        color: T.textDim, fontSize: 11, fontWeight: 500, margin: "8px 0 24px",
         opacity: phase >= 1 ? 1 : 0,
-        letterSpacing: 3, textTransform: "uppercase", fontFamily: T.font,
-        transition: "opacity 0.5s ease 0.3s",
+        letterSpacing: 4, textTransform: "uppercase", fontFamily: T.font,
+        transition: "opacity 0.5s ease 0.4s",
       }}>DATE NIGHT. FIGURED OUT.</p>
 
       {/* Rotating hype line */}
