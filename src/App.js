@@ -1143,13 +1143,15 @@ function Dashboard({ name, quiz, onRetake }) {
       </div>
 
       {/* Tutorial Overlay */}
-      {tutStep >= 0 && tutStep < 5 && (() => {
+      {tutStep >= 0 && tutStep < 7 && (() => {
         const steps = [
           { title: "Welcome to Vela", desc: "This is your home base. Scroll through curated date ideas picked just for you.", icon: "🏠" },
-          { title: "Surprise Me", desc: "Tap this to get a random date idea. Perfect when you can't decide.", icon: "🎲" },
+          { title: "Surprise Me", desc: "Tap this to get random dates served up one at a time, Tinder-style.", icon: "🎲" },
+          { title: "Swipe to Decide", desc: "Swipe right or tap the heart to schedule it. Swipe left or tap X to skip. Tap the middle button to see the full details.", icon: "👆" },
           { title: "Date Library", desc: "Browse the full collection. Filter by category and budget.", icon: "📚" },
           { title: "Calendar", desc: "Schedule dates and track upcoming plans here.", icon: "📅" },
           { title: "Your Profile", desc: "See your stats, vibe profile, and update preferences.", icon: "👤" },
+          { title: "You're All Set", desc: "That's it. Now go plan something she'll actually remember.", icon: "🕯️" },
         ];
         const s = steps[tutStep];
         return (
@@ -1168,13 +1170,13 @@ function Dashboard({ name, quiz, onRetake }) {
               {/* Buttons */}
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                 <button onClick={dismissTut} style={btn("transparent", T.textDim, { padding: "10px 20px", fontSize: 13 })}>Skip</button>
-                <button onClick={() => tutStep < 4 ? setTutStep(tutStep + 1) : dismissTut()} style={btn(T.primary, "#0E0F13", { padding: "10px 24px", fontSize: 13, fontWeight: 700 })}>{tutStep < 4 ? "Next" : "Get Started"}</button>
+                <button onClick={() => tutStep < 6 ? setTutStep(tutStep + 1) : dismissTut()} style={btn(T.primary, "#0E0F13", { padding: "10px 24px", fontSize: 13, fontWeight: 700 })}>{tutStep < 6 ? "Next" : "Let's Go"}</button>
               </div>
             </div>
             {/* Bottom tab highlight */}
             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "space-around", padding: "0 16px", zIndex: 2 }}>
               {["🏠", "📚", "📅", "🧠", "👤"].map((icon, i) => (
-                <div key={i} style={{ width: 48, height: 48, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: (tutStep === 0 && i === 0) || (tutStep === 2 && i === 1) || (tutStep === 3 && i === 2) || (tutStep === 4 && i === 4) ? `${T.primary}30` : "transparent", border: (tutStep === 0 && i === 0) || (tutStep === 2 && i === 1) || (tutStep === 3 && i === 2) || (tutStep === 4 && i === 4) ? `2px solid ${T.primary}` : "2px solid transparent", transition: "all 0.3s", marginBottom: 16 }}>{icon}</div>
+                <div key={i} style={{ width: 48, height: 48, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: (tutStep === 0 && i === 0) || (tutStep === 3 && i === 1) || (tutStep === 4 && i === 2) || (tutStep === 5 && i === 4) ? `${T.primary}30` : "transparent", border: (tutStep === 0 && i === 0) || (tutStep === 3 && i === 1) || (tutStep === 4 && i === 2) || (tutStep === 5 && i === 4) ? `2px solid ${T.primary}` : "2px solid transparent", transition: "all 0.3s", marginBottom: 16 }}>{icon}</div>
               ))}
             </div>
           </div>
