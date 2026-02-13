@@ -704,49 +704,83 @@ function Dashboard({ name, quiz, onRetake }) {
   ].filter(r => r.dates.length > 0);
 
   // ——— FOR YOU SCORING ENGINE ———
-  const scoreDate = (d) => {
-    if (!quiz) return 0;
-    let score = 0;
+  const alcoholWords = ["cocktail","wine","tequila","bar","brewery","brew","beer","whiskey","bourbon","mixolog","sommelier","pub","happy hour","liquor","spirits","shots","aperitif"];
+  const hasAlcohol = (d) => { const t = (d.title + " " + d.description).toLowerCase(); return alcoholWords.some(w => t.includes(w)); };
+  const budgetMax = { "Under $20": 20, "Under $50": 50, "Under $100": 100, "Over $100": 999, "Mix it up": 999 };
+  const maxB = budgetMax[quiz?.q12] || 999;
 
-    // Vibe match (q3) — +3 per vibe match
+  const scoreDate = (d) => {
+    if (!quiz) return { score: 0, flags: [] };
+    let score = 0;
+    const flags = [];
+
+    // Vibe match (q3): strongest signal, +4 per match
     const vibeMap = { "Romantic / intimate": ["romantic", "intimate"], "Playful / competitive": ["playful", "competitive"], "Creative / artsy": ["creative", "hands-on"], "Athletic / outdoorsy": ["athletic", "adventurous"], "Intellectual / curious": ["intellectual"], "Chill / low-key": ["chill", "cozy"], "Bougie / sophisticated": ["sophisticated"], "Spontaneous / adventurous": ["spontaneous", "adventurous"] };
     const userVibes = (quiz.q3 || []).flatMap(v => vibeMap[v] || []);
-    d.vibe.forEach(v => { if (userVibes.includes(v)) score += 3; });
+    let vibeHits = 0;
+    d.vibe.forEach(v => { if (userVibes.includes(v)) { score += 4; vibeHits++; } });
+    if (vibeHits === 0 && userVibes.length > 0) { score -= 2; flags.push("vibe"); }
 
-    // Energy level match (q1) — +2 if category fits
-    const energyFit = { "Homebody, loves staying in": ["chill", "food", "creative", "romantic"], "Balanced, mix of in and out": ["chill", "food", "creative", "outdoor", "adventure"], "Active, always wants to go somewhere": ["outdoor", "adventure", "nightlife"], "Adventurous, the wilder the better": ["adventure", "outdoor", "nightlife"] };
-    if (quiz.q1 && (energyFit[quiz.q1] || []).includes(d.category)) score += 2;
-
-    // Budget match (q12) — +2 if within budget
-    const budgetMax = { "Under $20": 20, "Under $50": 50, "Under $100": 100, "Over $100": 999, "Mix it up": 999 };
-    const maxB = budgetMax[quiz.q12] || 999;
-    if (d.budget <= maxB) score += 2;
-    if (d.budget > maxB) score -= 3; // penalize over-budget
-
-    // Physical activity fit (q4) — penalize mismatches
-    if (quiz.q4 === "Light walks max" && d.difficulty === "hard") score -= 2;
-    if (quiz.q4 === "Light walks max" && d.category === "outdoor" && d.difficulty === "moderate") score -= 1;
-    if ((quiz.q4 === "They'll try anything athletic" || quiz.q4 === "They're more active than me") && (d.category === "outdoor" || d.category === "adventure")) score += 1;
-
-    // Alcohol fit (q7) — penalize cocktail/wine dates for non-drinkers
-    if (quiz.q7 === "Doesn't drink at all") {
-      const title = d.title.toLowerCase();
-      if (title.includes("cocktail") || title.includes("wine") || title.includes("tequila") || title.includes("bar")) score -= 4;
+    // Energy level match (q1): +3 if category fits, -2 if mismatch
+    const energyFit = { "Homebody, loves staying in": ["chill", "food", "creative", "romantic"], "Balanced, mix of in and out": ["chill", "food", "creative", "outdoor", "adventure", "romantic", "meaningful"], "Active, always wants to go somewhere": ["outdoor", "adventure", "nightlife"], "Adventurous, the wilder the better": ["adventure", "outdoor", "nightlife"] };
+    const fitCats = quiz.q1 ? (energyFit[quiz.q1] || []) : [];
+    if (fitCats.length > 0) {
+      if (fitCats.includes(d.category)) score += 3;
+      else { score -= 2; flags.push("energy"); }
     }
-    if ((quiz.q7 === "Loves trying new drinks" || quiz.q7 === "Can out-drink me") && (d.title.toLowerCase().includes("cocktail") || d.title.toLowerCase().includes("wine") || d.title.toLowerCase().includes("tequila"))) score += 2;
 
-    // Friday night preference (q2) — bonus for matching style
-    if (quiz.q2 === "Couch + movie + takeout" && ["chill", "food"].includes(d.category)) score += 1;
-    if (quiz.q2 === "Dinner at a nice restaurant" && d.category === "food" && d.budget >= 50) score += 1;
-    if (quiz.q2 === "Out with friends (bar, club, event)" && d.category === "nightlife") score += 1;
-    if (quiz.q2 === "Something spontaneous and unplanned" && d.vibe.includes("spontaneous")) score += 1;
+    // Budget: +3 if within, flag if over
+    if (d.budget <= maxB) score += 3;
+    else { score -= 5; flags.push("budget"); }
 
-    return score;
+    // Physical activity fit (q4)
+    if (quiz.q4 === "Light walks max") {
+      if (d.difficulty === "hard") { score -= 3; flags.push("activity"); }
+      else if (d.category === "outdoor" && d.difficulty === "moderate") { score -= 1; flags.push("activity"); }
+    }
+    if ((quiz.q4 === "They'll try anything athletic" || quiz.q4 === "They're more active than me") && (d.category === "outdoor" || d.category === "adventure")) score += 2;
+
+    // Alcohol fit (q7): hard flag for non-drinkers
+    if (quiz.q7 === "Doesn't drink at all" && hasAlcohol(d)) {
+      score -= 6;
+      flags.push("alcohol");
+    }
+    if ((quiz.q7 === "Loves trying new drinks" || quiz.q7 === "Can out-drink me") && hasAlcohol(d)) score += 3;
+
+    // Friday night preference (q2)
+    if (quiz.q2 === "Couch + movie + takeout" && ["chill", "food"].includes(d.category)) score += 2;
+    if (quiz.q2 === "Dinner at a nice restaurant" && d.category === "food" && d.budget >= 50) score += 2;
+    if (quiz.q2 === "Out with friends (bar, club, event)" && d.category === "nightlife") score += 2;
+    if (quiz.q2 === "Something spontaneous and unplanned" && d.vibe.includes("spontaneous")) score += 2;
+
+    // Cuisine match (q8): bonus if date mentions a favored cuisine
+    const cuisineMap = { "Italian": "italian", "Mexican": "mexican", "Japanese / Sushi": "japanese|sushi", "Thai / Vietnamese": "thai|vietnamese", "Indian": "indian", "Mediterranean": "mediterranean", "American / BBQ": "bbq|american|burger", "Korean": "korean", "French": "french", "Chinese": "chinese" };
+    (quiz.q8 || []).forEach(c => {
+      const keywords = (cuisineMap[c] || "").split("|");
+      const t = (d.title + " " + d.description).toLowerCase();
+      if (keywords.some(k => k && t.includes(k))) score += 2;
+    });
+
+    return { score, flags };
   };
 
+  const seasonal = DATES.filter(d => isInSeason(d.id));
+  const scored = quiz ? seasonal.map(d => { const { score, flags } = scoreDate(d); return { ...d, _score: score, _flags: flags }; }) : seasonal.map(d => ({ ...d, _score: 0, _flags: [] }));
+
+  // For You: high score AND no deal-breaker flags
   const forYouDates = quiz
-    ? [...DATES].filter(d => isInSeason(d.id)).map(d => ({ ...d, _score: scoreDate(d) })).sort((a, b) => b._score - a._score).filter(d => d._score > 0).slice(0, 12)
-    : DATES.filter(d => isInSeason(d.id)).slice(0, 12);
+    ? scored.filter(d => d._score >= 4 && !d._flags.includes("alcohol") && !d._flags.includes("budget")).sort((a, b) => b._score - a._score).slice(0, 12)
+    : seasonal.slice(0, 12);
+
+  // Outside the Box: dates that have a mismatch flag but are still interesting
+  const outsideBoxDates = quiz
+    ? scored.filter(d => d._score > 0 && (d._flags.includes("alcohol") || d._flags.includes("energy") || d._flags.includes("activity") || d._flags.includes("vibe"))).filter(d => !forYouDates.some(f => f.id === d.id)).sort((a, b) => b._score - a._score).slice(0, 8)
+    : [];
+
+  // Stretch the Budget: over budget but otherwise a decent match
+  const stretchDates = quiz
+    ? scored.filter(d => d._flags.includes("budget") && !d._flags.includes("alcohol")).sort((a, b) => b._score - a._score).slice(0, 8)
+    : [];
 
   const generateHypeNotifs = (title, dateStr) => {
     // No longer dumps notifications immediately — the useEffect below handles timing
@@ -1041,11 +1075,28 @@ function Dashboard({ name, quiz, onRetake }) {
           </div>}
 
           <div style={{ marginTop: 4 }}>
-            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 14px", fontWeight: 700, fontFamily: T.display }}>For You ✨</h3>
+            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>For You ✨</h3>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Picked based on what she likes</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
           </div>
+
+          {outsideBoxDates.length > 0 && <div style={{ marginTop: 22 }}>
+            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Outside the Box 🧭</h3>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>A little different from the usual, but worth a shot</p>
+            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+              {outsideBoxDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+            </div>
+          </div>}
+
+          {stretchDates.length > 0 && <div style={{ marginTop: 22 }}>
+            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Stretch the Budget 💸</h3>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Worth it if you want to go all out</p>
+            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+              {stretchDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+            </div>
+          </div>}
         </>}
 
         {tab === "calendar" && <>
