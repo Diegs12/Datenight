@@ -580,8 +580,8 @@ function Detail({ date: d, onClose, onSchedule }) {
           <div style={{ position: "absolute", top: 0, right: 0, width: 5, height: "100%", background: `linear-gradient(180deg, ${accent}00 0%, ${accent} 30%, ${accent} 70%, ${accent}00 100%)` }} />
           <div style={{ position: "absolute", top: -50, right: -50, width: 180, height: 180, borderRadius: "50%", background: `radial-gradient(circle, ${accent}12 0%, transparent 70%)` }} />
           <div style={{ position: "absolute", bottom: -30, left: -30, width: 120, height: 120, borderRadius: "50%", background: `radial-gradient(circle, ${mood.color}08 0%, transparent 70%)` }} />
-          <button onClick={onClose} style={{ position: "absolute", top: 14, right: 14, width: 34, height: 34, borderRadius: "50%", background: "rgba(0,0,0,0.3)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "none", color: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+          <button onClick={onClose} style={{ position: "absolute", top: 14, right: 14, width: 34, height: 34, borderRadius: "50%", background: "rgba(0,0,0,0.4)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 }}>✕</button>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, paddingRight: 44 }}>
             <div style={{ width: 52, height: 52, borderRadius: 14, background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>{emoji}</div>
             <div style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", padding: "8px 16px", borderRadius: 12, textAlign: "center", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
               <span style={{ color: tier.color, fontSize: 20, fontWeight: 800, fontFamily: T.font, display: "block", lineHeight: 1.1 }}>${d.budget}</span>
@@ -1084,7 +1084,7 @@ function Dashboard({ name, quiz, onRetake }) {
 
           {outsideBoxDates.length > 0 && <div style={{ marginTop: 22 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Outside the Box 🧭</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>A little different from the usual, but worth a shot</p>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>A little different from the usual, but could be worth a shot</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {outsideBoxDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
