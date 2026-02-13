@@ -531,6 +531,83 @@ function RealInvite({ date, scheduledFor, onClose, onSend }) {
   );
 }
 
+// ——— PLAN PROMPT MODAL ———
+function PlanPromptModal({ date, scheduledFor, quiz, onClose }) {
+  const [copied, setCopied] = useState(false);
+
+  const dateDisplay = new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
+  const quizContext = quiz ? [
+    quiz.q1 ? `Energy level: ${quiz.q1}` : "",
+    quiz.q2 ? `Ideal Friday night: ${quiz.q2}` : "",
+    quiz.q3 && quiz.q3.length ? `Vibes they like: ${quiz.q3.join(", ")}` : "",
+    quiz.q4 ? `Physical activity comfort: ${quiz.q4}` : "",
+    quiz.q5 && quiz.q5.length && !quiz.q5.includes("None") ? `Food allergies: ${quiz.q5.join(", ")}` : "",
+    quiz.q6 && quiz.q6.length && !quiz.q6.includes("No restrictions") ? `Food preferences: ${quiz.q6.join(", ")}` : "",
+    quiz.q7 ? `Alcohol: ${quiz.q7}` : "",
+    quiz.q8 && quiz.q8.length ? `Cuisine favorites: ${quiz.q8.join(", ")}` : "",
+    quiz.q9 ? `Food dislikes: ${quiz.q9}` : "",
+    quiz.q10 ? `Best date so far: ${quiz.q10}` : "",
+    quiz.q11 ? `Things they want to try: ${quiz.q11}` : "",
+    quiz.q12 ? `Typical budget: ${quiz.q12}` : "",
+  ].filter(Boolean).join("\n") : "";
+
+  const prompt = `I need you to be my date night planner. Plan every single detail for this date so all I have to do is follow your instructions step by step.
+
+DATE: ${date.title}
+SCHEDULED FOR: ${dateDisplay}
+BUDGET: $${date.budget}
+DURATION: ~${Math.round(date.duration / 60)} hours
+CATEGORY: ${date.category}
+DESCRIPTION: ${date.description}
+
+STEPS FROM THE APP:
+${date.instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+${date.materials.length > 0 ? `\nMATERIALS NEEDED:\n${date.materials.map(m => `- ${m.name} (~$${m.price})`).join("\n")}` : ""}
+${quizContext ? `\nABOUT MY PARTNER (from quiz):\n${quizContext}` : ""}
+
+NOW PLAN THIS OUT COMPLETELY. I need:
+
+1. TIMELINE: Hour-by-hour schedule from start to finish, including prep time before the date starts
+2. SHOPPING LIST: Exactly what to buy, where to buy it, and estimated cost for each item
+3. RESERVATIONS/BOOKINGS: What needs to be booked ahead of time, with specific recommendations if possible
+4. OUTFIT SUGGESTION: What I should wear based on the vibe
+5. PLAYLIST: Suggest a mood-appropriate playlist or genre for background music
+6. BACKUP PLAN: What to do if something goes wrong (weather, closed venue, etc.)
+7. PRO TIPS: 3-5 small details that will take this from good to unforgettable
+8. DAY-OF CHECKLIST: A final checklist I can run through the day of to make sure nothing is forgotten
+
+Make it specific. No generic advice. Plan it like you're a professional date planner being paid $500 for this.`;
+
+  const copyPrompt = () => {
+    navigator.clipboard.writeText(prompt).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }).catch(() => {});
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
+      <div onClick={e => e.stopPropagation()} style={{ ...crd(), maxWidth: 520, width: "100%", padding: 30, maxHeight: "90vh", display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+          <span style={{ fontSize: 28 }}>🧠</span>
+          <h3 style={{ color: T.text, fontSize: 20, margin: 0, fontWeight: 700, fontFamily: T.display }}>Plan This Date</h3>
+        </div>
+        <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 16px", lineHeight: 1.5 }}>Copy this prompt and paste it into ChatGPT, Claude, or any AI to get a fully personalized, step-by-step plan for your date.</p>
+
+        <div style={{ flex: 1, minHeight: 0, overflow: "hidden", marginBottom: 16 }}>
+          <textarea readOnly value={prompt} style={{ width: "100%", height: "100%", minHeight: 280, background: T.bg, color: T.text, border: `1px solid ${T.border}`, borderRadius: 12, padding: 16, fontSize: 13, fontFamily: T.font, lineHeight: 1.6, resize: "none", outline: "none" }} onClick={e => e.target.select()} />
+        </div>
+
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Close</button>
+          <button onClick={copyPrompt} style={btn(copied ? T.green : T.purple, "#fff", { flex: 1 })}>{copied ? "✓ Copied!" : "📋 Copy Prompt"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ——— HYPE NOTIFICATIONS PANEL ———
 function HypePanel({ notifications, onDismiss, onClose }) {
   const [copied, setCopied] = useState(null);
@@ -768,6 +845,7 @@ function Dashboard({ name, quiz, onRetake }) {
   const [detailSched, setDetailSched] = useState(null);
   const [schedModal, setSchedModal] = useState(null);
   const [invitePicker, setInvitePicker] = useState(null);
+  const [planPrompt, setPlanPrompt] = useState(null);
   const [debrief, setDebrief] = useState(null);
   const [bf, setBf] = useState(null);
   const [cf, setCf] = useState(null);
@@ -1131,6 +1209,7 @@ function Dashboard({ name, quiz, onRetake }) {
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
       {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} />}
       {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} />}
+      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} onClose={() => setPlanPrompt(null)} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
       {toast && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.surface, color: T.text, padding: "12px 24px", borderRadius: 12, border: `1px solid ${T.border}`, zIndex: 1000, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>{toast}</div>}
 
@@ -1231,7 +1310,10 @@ function Dashboard({ name, quiz, onRetake }) {
                   <button onClick={(e) => { e.stopPropagation(); setSched(p => p.filter(x => x.id !== s.id)); }} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
                 </div>
               </div>
-              <button onClick={(e) => { e.stopPropagation(); if (fullDate) setInvitePicker({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.pink + "12", T.pink, { width: "100%", padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.pink}33`, borderRadius: 10 })}>📧 Send Invite</button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={(e) => { e.stopPropagation(); if (fullDate) setInvitePicker({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.pink + "12", T.pink, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.pink}33`, borderRadius: 10 })}>📧 Send Invite</button>
+                <button onClick={(e) => { e.stopPropagation(); if (fullDate) setPlanPrompt({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.purple + "12", T.purple, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.purple}33`, borderRadius: 10 })}>🧠 Plan This Date</button>
+              </div>
             </div>; })}
         </>}
 
