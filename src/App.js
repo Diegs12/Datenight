@@ -417,13 +417,9 @@ function ScheduleModal({ date, onClose, onSchedule }) {
     const d = new Date(Date.now() + (Math.floor(Math.random() * 14) + 1) * 86400000);
     return d.toISOString().split("T")[0];
   });
-  const [showMystery, setShowMystery] = useState(false);
-  const [sent, setSent] = useState(false);
 
   if (!date) return null;
   const tier = getTier(date.budget);
-
-  if (showMystery) return <MysteryInvite date={date} scheduledFor={dateStr} onClose={() => setShowMystery(false)} onSend={(email) => { setSent(true); setShowMystery(false); }} />;
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20, overflowY: "auto" }}>
@@ -433,15 +429,103 @@ function ScheduleModal({ date, onClose, onSchedule }) {
 
         <MiniCalendar selected={dateStr} onSelect={setDateStr} />
 
-        <button onClick={() => { onSchedule(date, dateStr); if (!sent) { } onClose(); }} style={{ ...btn(T.primary, "#fff"), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 700, marginBottom: 12 }}>✓ Schedule It</button>
+        <button onClick={() => { onSchedule(date, dateStr); onClose(); }} style={{ ...btn(T.primary, "#fff"), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 700, marginBottom: 12 }}>✓ Schedule It</button>
 
-        <button onClick={() => setShowMystery(true)} style={{ ...btn(T.pink + "18", T.pink), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 600, border: `1.5px solid ${T.pink}44` }}>
-          📦 Send a Mystery Invite
+        <button onClick={onClose} style={{ ...btn("transparent", T.textDim), width: "100%", fontSize: 13 }}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+// ——— INVITE PICKER MODAL (Mystery vs Real) ———
+function InvitePicker({ date, scheduledFor, onClose }) {
+  const [mode, setMode] = useState(null);
+
+  if (mode === "mystery") return <MysteryInvite date={date} scheduledFor={scheduledFor} onClose={onClose} onSend={() => onClose()} />;
+
+  if (mode === "real") {
+    return <RealInvite date={date} scheduledFor={scheduledFor} onClose={onClose} onSend={() => onClose()} />;
+  }
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
+      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 30 }}>
+        <h3 style={{ color: T.text, fontSize: 20, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Send Invite</h3>
+        <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 24px" }}>{date.title} · {new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</p>
+
+        <button onClick={() => setMode("mystery")} style={{ ...crd({ padding: 20, marginBottom: 12, cursor: "pointer", border: `1.5px solid ${T.pink}33`, textAlign: "left", width: "100%" }), background: T.pink + "08" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+            <span style={{ fontSize: 24 }}>📦</span>
+            <h4 style={{ color: T.pink, fontSize: 16, margin: 0, fontWeight: 700 }}>Mystery Invite</h4>
+          </div>
+          <p style={{ color: T.textDim, fontSize: 13, margin: 0, lineHeight: 1.5 }}>Keep it a surprise. They'll get a dress code hint and a teaser, but no details.</p>
         </button>
 
-        {sent && <p style={{ color: T.green, fontSize: 13, textAlign: "center", margin: "12px 0 0", fontWeight: 600 }}>✓ Mystery invite sent!</p>}
+        <button onClick={() => setMode("real")} style={{ ...crd({ padding: 20, marginBottom: 16, cursor: "pointer", border: `1.5px solid ${T.primary}33`, textAlign: "left", width: "100%" }), background: T.primary + "08" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+            <span style={{ fontSize: 24 }}>📅</span>
+            <h4 style={{ color: T.primary, fontSize: 16, margin: 0, fontWeight: 700 }}>Full Details Invite</h4>
+          </div>
+          <p style={{ color: T.textDim, fontSize: 13, margin: 0, lineHeight: 1.5 }}>Send the full plan with the date name, description, and what to expect.</p>
+        </button>
 
-        <button onClick={onClose} style={{ ...btn("transparent", T.textDim), width: "100%", marginTop: 12, fontSize: 13 }}>Cancel</button>
+        <button onClick={onClose} style={{ ...btn("transparent", T.textDim), width: "100%", fontSize: 13 }}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+// ——— REAL (FULL DETAILS) INVITE ———
+function RealInvite({ date, scheduledFor, onClose, onSend }) {
+  const [email, setEmail] = useState("");
+  const [time, setTime] = useState("19:00");
+  const desc = `${date.title}\n\n${date.description}\n\nBudget: $${date.budget}\nDuration: ~${Math.round(date.duration / 60)}h\n\nSent with Vela`;
+
+  const send = () => {
+    const ics = generateICS(date.title, desc, scheduledFor, time);
+    const blob = new Blob([ics], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const subject = encodeURIComponent(`Date Night: ${date.title}`);
+    const body = encodeURIComponent(desc + "\n\n(Calendar invite attached, check your downloads!)");
+    const a = document.createElement("a");
+    a.href = url; a.download = "vela.ics"; a.click();
+    URL.revokeObjectURL(url);
+    setTimeout(() => {
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }, 800);
+    onSend();
+  };
+
+  const ready = email.includes("@") && email.includes(".");
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
+      <div style={{ ...crd(), maxWidth: 480, width: "100%", padding: 30, maxHeight: "90vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+          <span style={{ fontSize: 28 }}>📅</span>
+          <h3 style={{ color: T.text, fontSize: 20, margin: 0, fontWeight: 700, fontFamily: T.display }}>Send Full Invite</h3>
+        </div>
+        <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 22px" }}>They'll see exactly what's planned, so they can get excited and prepare.</p>
+
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Partner's email</p>
+        <input type="email" placeholder="partner@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ ...inp(), marginBottom: 16 }} />
+
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Date & Time</p>
+        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
+          <div style={{ ...inp(), flex: 1, padding: "12px 16px", color: T.text }}>{new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
+          <input type="time" value={time} onChange={e => setTime(e.target.value)} style={{ ...inp(), flex: 1 }} />
+        </div>
+
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>What they'll see</p>
+        <div style={{ background: T.bg, borderRadius: 10, padding: 16, border: `1px solid ${T.border}`, marginBottom: 16, whiteSpace: "pre-wrap" }}>
+          <p style={{ color: T.text, fontSize: 14, margin: 0, lineHeight: 1.6 }}>{desc}</p>
+        </div>
+
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Cancel</button>
+          <button onClick={send} disabled={!ready} style={btn(ready ? T.primary : T.border, ready ? "#fff" : T.textFaint, { flex: 1 })}>📧 Send Invite</button>
+        </div>
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Downloads a .ics file + opens your email app to send it</p>
       </div>
     </div>
   );
@@ -569,7 +653,7 @@ function Debrief({ entry, onSave, onClose }) {
 }
 
 // ——— DETAIL MODAL ———
-function Detail({ date: d, onClose, onSchedule }) {
+function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite }) {
   if (!d) return null;
   const tier = getTier(d.budget); const grad = getGrad(d); const emoji = EMOJI[d.category] || "📌"; const accent = CAT_ACCENT[d.category] || "#fff";
   const mood = getMood(d);
@@ -599,7 +683,20 @@ function Detail({ date: d, onClose, onSchedule }) {
         </div>
         <div style={{ padding: "24px 24px 32px" }}>
           <p style={{ color: T.text, fontSize: 15, lineHeight: 1.65, margin: "0 0 24px", fontFamily: T.font }}>{d.description}</p>
-          <button onClick={() => { onSchedule(d); }} style={{ ...btn(T.accent, "#fff"), width: "100%", padding: "15px 24px", fontSize: 16, fontWeight: 700, marginBottom: 24, borderRadius: 14 }}>📅 Schedule This Date</button>
+          {scheduledInfo ? (
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ background: T.primary + "12", border: `1px solid ${T.primary}33`, borderRadius: 12, padding: "12px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 18 }}>📅</span>
+                <div>
+                  <p style={{ color: T.primary, fontSize: 13, fontWeight: 700, margin: 0 }}>Scheduled</p>
+                  <p style={{ color: T.text, fontSize: 14, margin: 0 }}>{new Date(scheduledInfo.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+                </div>
+              </div>
+              <button onClick={() => onSendInvite({ date: d, scheduledFor: scheduledInfo.scheduled_for })} style={{ ...btn(T.pink + "12", T.pink), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 600, border: `1.5px solid ${T.pink}44`, borderRadius: 14 }}>📧 Send Invite</button>
+            </div>
+          ) : (
+            <button onClick={() => { onSchedule(d); }} style={{ ...btn(T.accent, "#fff"), width: "100%", padding: "15px 24px", fontSize: 16, fontWeight: 700, marginBottom: 24, borderRadius: 14 }}>📅 Schedule This Date</button>
+          )}
           <div style={{ marginBottom: 24 }}>
             <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 14px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>Step-by-Step</h4>
             {d.instructions.map((s, i) => <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10 }}>
@@ -668,7 +765,9 @@ function Dashboard({ name, quiz, onRetake }) {
   const [sched, setSched] = useState(() => { try { const s = localStorage.getItem("vela_sched"); return s ? JSON.parse(s) : []; } catch { return []; } });
   const [hist, setHist] = useState(() => { try { const h = localStorage.getItem("vela_hist"); return h ? JSON.parse(h) : []; } catch { return []; } });
   const [detail, setDetail] = useState(null);
+  const [detailSched, setDetailSched] = useState(null);
   const [schedModal, setSchedModal] = useState(null);
+  const [invitePicker, setInvitePicker] = useState(null);
   const [debrief, setDebrief] = useState(null);
   const [bf, setBf] = useState(null);
   const [cf, setCf] = useState(null);
@@ -1030,7 +1129,8 @@ function Dashboard({ name, quiz, onRetake }) {
       `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
-      {!schedModal && <Detail date={detail} onClose={() => setDetail(null)} onSchedule={(d) => { setSchedModal(d); }} />}
+      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} />}
+      {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
       {toast && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.surface, color: T.text, padding: "12px 24px", borderRadius: 12, border: `1px solid ${T.border}`, zIndex: 1000, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>{toast}</div>}
 
@@ -1123,13 +1223,16 @@ function Dashboard({ name, quiz, onRetake }) {
             <button onClick={genMonth} style={btn(T.primary, "#fff", { padding: "8px 14px", fontSize: 12 })}>+ Generate</button>
           </div>
           {sched.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>Nothing scheduled yet. Hit "Generate" or browse the library!</p></div>
-            : sched.map(s => <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
-              <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => complete(s)} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓</button>
-                <button onClick={() => setSched(p => p.filter(x => x.id !== s.id))} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
+            : sched.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer" }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
+                <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                  <button onClick={(e) => { e.stopPropagation(); complete(s); }} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓</button>
+                  <button onClick={(e) => { e.stopPropagation(); setSched(p => p.filter(x => x.id !== s.id)); }} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
+                </div>
               </div>
-            </div>)}
+              <button onClick={(e) => { e.stopPropagation(); if (fullDate) setInvitePicker({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.pink + "12", T.pink, { width: "100%", padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.pink}33`, borderRadius: 10 })}>📧 Send Invite</button>
+            </div>; })}
         </>}
 
         {tab === "library" && <>
@@ -1424,17 +1527,67 @@ function Splash({ onDone }) {
   );
 }
 
+// ——— UNLOCK SCREEN (collect contact info after quiz) ———
+function UnlockScreen({ name, onComplete }) {
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const valid = email.trim() && email.includes("@") && email.includes(".");
+
+  const handleSubmit = () => {
+    if (!valid) return;
+    setLoading(true);
+    try { localStorage.setItem("vela_email", email.trim()); } catch {}
+    try { localStorage.setItem("vela_phone", phone.trim()); } catch {}
+    setTimeout(() => onComplete(), 600);
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
+      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40 }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>🔓</div>
+          <h2 style={{ color: T.text, fontSize: 26, margin: 0, fontWeight: 700, fontFamily: T.display, lineHeight: 1.2 }}>
+            Your dates are ready, {name}.
+          </h2>
+          <p style={{ color: T.textDim, margin: "12px 0 0", fontSize: 14, lineHeight: 1.6 }}>
+            Drop your info below so we can send you date reminders, new ideas, and the occasional nudge when it's been too long.
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Email *</label>
+            <input type="email" placeholder="you@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
+          </div>
+          <div>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Phone</label>
+            <input type="tel" placeholder="(555) 123-4567" value={phone} onChange={e => setPhone(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
+          </div>
+          <button onClick={handleSubmit} disabled={!valid || loading} style={btn(valid ? T.primary : T.border, valid ? "#fff" : T.textFaint, { padding: "15px 24px", fontSize: 16, fontWeight: 700, marginTop: 6, opacity: loading ? 0.6 : 1 })}>
+            {loading ? "Unlocking..." : "Unlock My Dates →"}
+          </button>
+        </div>
+        <p style={{ color: T.textFaint, fontSize: 11, textAlign: "center", marginTop: 16, lineHeight: 1.5 }}>
+          No spam. No selling your info. Just dates.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ——— APP ROOT ———
 export default function App() {
   const [screen, setScreen] = useState("splash");
   const [name, setName] = useState(() => { try { return localStorage.getItem("vela_name") || ""; } catch { return ""; } });
   const [quiz, setQuiz] = useState(() => { try { const q = localStorage.getItem("vela_quiz"); return q ? JSON.parse(q) : null; } catch { return null; } });
+  const [contactDone, setContactDone] = useState(() => { try { return !!localStorage.getItem("vela_email"); } catch { return false; } });
 
   useEffect(() => { try { if (name) localStorage.setItem("vela_name", name); } catch {} }, [name]);
   useEffect(() => { try { if (quiz) localStorage.setItem("vela_quiz", JSON.stringify(quiz)); } catch {} }, [quiz]);
 
-  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz ? "dashboard" : "welcome")} />;
+  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : name && quiz ? "unlock" : "welcome")} />;
   if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("quiz"); }} />;
-  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("dashboard"); }} existing={quiz} />;
+  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} />;
+  if (screen === "unlock") return <UnlockScreen name={name} onComplete={() => { setContactDone(true); setScreen("dashboard"); }} />;
   return <Dashboard name={name} quiz={quiz} onRetake={() => setScreen("quiz")} />;
 }

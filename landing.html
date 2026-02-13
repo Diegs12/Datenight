@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vela — Date Night. Figured Out.</title>
+  <meta name="description" content="90+ curated date ideas personalized to her. Stop overthinking. Start planning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0E0F13;
+      --surface: #151620;
+      --border: #2A2520;
+      --amber: #D4A574;
+      --warm: #E8C49A;
+      --stone: #7D786F;
+      --text: #E8C49A;
+      --dim: #7D786F;
+      --body: 'DM Sans', sans-serif;
+      --display: 'Fraunces', serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.6; overflow-x: hidden; }
+    a { color: var(--amber); text-decoration: none; }
+
+    /* ——— HERO ——— */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; padding: 60px 24px;
+      position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,165,116,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block; padding: 8px 20px; border-radius: 100px;
+      background: rgba(212,165,116,0.1); border: 1px solid rgba(212,165,116,0.2);
+      font-size: 13px; font-weight: 600; color: var(--amber); letter-spacing: 0.5px;
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-family: var(--display); font-size: clamp(40px, 7vw, 72px); font-weight: 700;
+      line-height: 1.1; color: #fff; max-width: 800px; margin-bottom: 24px;
+    }
+    .hero h1 span { color: var(--amber); }
+    .hero .sub {
+      font-size: clamp(17px, 2.5vw, 21px); color: var(--stone); max-width: 560px;
+      line-height: 1.6; margin-bottom: 40px;
+    }
+    .cta-btn {
+      display: inline-block; padding: 18px 48px; border-radius: 14px; font-size: 18px;
+      font-weight: 700; font-family: var(--body); color: #0E0F13; cursor: pointer;
+      background: linear-gradient(135deg, #D4A574, #E8C49A); border: none;
+      transition: transform 0.2s, box-shadow 0.2s; letter-spacing: -0.3px;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(212,165,116,0.3); }
+    .cta-sub { font-size: 13px; color: var(--dim); margin-top: 14px; }
+
+    /* ——— PROBLEM ——— */
+    .problem {
+      padding: 100px 24px; text-align: center;
+      background: linear-gradient(180deg, var(--bg) 0%, #12110E 100%);
+    }
+    .problem .label {
+      font-size: 12px; font-weight: 700; color: var(--amber); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .problem h2 {
+      font-family: var(--display); font-size: clamp(28px, 5vw, 44px); font-weight: 700;
+      color: #fff; max-width: 700px; margin: 0 auto 40px; line-height: 1.2;
+    }
+    .pain-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px; max-width: 900px; margin: 0 auto;
+    }
+    .pain-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 28px 24px; text-align: left;
+    }
+    .pain-card .emoji { font-size: 28px; margin-bottom: 14px; }
+    .pain-card h3 { font-size: 17px; color: #fff; font-weight: 700; margin-bottom: 8px; }
+    .pain-card p { font-size: 14px; color: var(--dim); line-height: 1.6; }
+
+    /* ——— SOLUTION / VALUE STACK ——— */
+    .solution {
+      padding: 100px 24px; text-align: center;
+    }
+    .solution .label {
+      font-size: 12px; font-weight: 700; color: var(--amber); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .solution h2 {
+      font-family: var(--display); font-size: clamp(28px, 5vw, 44px); font-weight: 700;
+      color: #fff; max-width: 700px; margin: 0 auto 20px; line-height: 1.2;
+    }
+    .solution .sub {
+      font-size: 17px; color: var(--dim); max-width: 540px; margin: 0 auto 50px;
+    }
+    .value-stack {
+      max-width: 640px; margin: 0 auto; text-align: left;
+    }
+    .value-item {
+      display: flex; gap: 20px; align-items: flex-start; padding: 24px 0;
+      border-bottom: 1px solid rgba(42,37,32,0.6);
+    }
+    .value-item:last-child { border-bottom: none; }
+    .value-icon {
+      flex: 0 0 48px; height: 48px; border-radius: 12px;
+      background: rgba(212,165,116,0.1); border: 1px solid rgba(212,165,116,0.15);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .value-item h3 { font-size: 17px; color: #fff; font-weight: 700; margin-bottom: 4px; }
+    .value-item p { font-size: 14px; color: var(--dim); line-height: 1.5; }
+
+    /* ——— STATS BAR ——— */
+    .stats {
+      padding: 60px 24px;
+      background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .stats-grid {
+      display: flex; justify-content: center; gap: 60px; flex-wrap: wrap;
+      max-width: 700px; margin: 0 auto;
+    }
+    .stat { text-align: center; }
+    .stat .num {
+      font-family: var(--display); font-size: 42px; font-weight: 700; color: var(--amber);
+      line-height: 1;
+    }
+    .stat .lbl {
+      font-size: 13px; color: var(--dim); margin-top: 6px; font-weight: 500;
+    }
+
+    /* ——— HOW IT WORKS ——— */
+    .how {
+      padding: 100px 24px; text-align: center;
+    }
+    .how .label {
+      font-size: 12px; font-weight: 700; color: var(--amber); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .how h2 {
+      font-family: var(--display); font-size: clamp(28px, 5vw, 44px); font-weight: 700;
+      color: #fff; max-width: 700px; margin: 0 auto 50px; line-height: 1.2;
+    }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px; max-width: 800px; margin: 0 auto;
+    }
+    .step {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 32px 24px; text-align: center; position: relative;
+    }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #D4A574, #E8C49A);
+      color: #0E0F13; font-weight: 800; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+    }
+    .step h3 { font-size: 17px; color: #fff; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--dim); line-height: 1.5; }
+
+    /* ——— OBJECTION CRUSHER ——— */
+    .objections {
+      padding: 80px 24px;
+      background: linear-gradient(180deg, var(--bg) 0%, #12110E 100%);
+    }
+    .objections h2 {
+      font-family: var(--display); font-size: clamp(24px, 4vw, 36px); font-weight: 700;
+      color: #fff; text-align: center; margin-bottom: 40px;
+    }
+    .obj-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; max-width: 800px; margin: 0 auto;
+    }
+    .obj-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px;
+    }
+    .obj-card .q {
+      font-size: 15px; color: #fff; font-weight: 700; margin-bottom: 8px;
+      font-style: italic;
+    }
+    .obj-card .a { font-size: 14px; color: var(--dim); line-height: 1.6; }
+
+    /* ——— FINAL CTA ——— */
+    .final-cta {
+      padding: 100px 24px; text-align: center; position: relative;
+    }
+    .final-cta::before {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,165,116,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta h2 {
+      font-family: var(--display); font-size: clamp(32px, 6vw, 56px); font-weight: 700;
+      color: #fff; max-width: 700px; margin: 0 auto 20px; line-height: 1.15;
+    }
+    .final-cta h2 span { color: var(--amber); }
+    .final-cta .sub {
+      font-size: 18px; color: var(--dim); max-width: 500px; margin: 0 auto 40px;
+    }
+
+    /* ——— FOOTER ——— */
+    footer {
+      padding: 40px 24px; text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    .footer-logo {
+      font-family: var(--display); font-size: 22px; font-weight: 600;
+      color: var(--text); margin-bottom: 8px;
+    }
+    footer p { font-size: 13px; color: var(--dim); }
+
+    /* ——— RESPONSIVE ——— */
+    @media (max-width: 600px) {
+      .stats-grid { gap: 32px; }
+      .pain-grid, .steps, .obj-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Free. Takes 2 minutes. Try it now.</div>
+    <h1>You don't need more romance.<br /><span>You need better ideas.</span></h1>
+    <p class="sub">90+ curated date ideas, personalized to her personality, your budget, and what actually works. Takes 2 minutes. No more "so what do you wanna do?"</p>
+    <a href="https://datenight-ruddy.vercel.app" class="cta-btn">Try Vela Free →</a>
+    <p class="cta-sub">Free. No credit card. Just open it and go.</p>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <p class="label">The Problem</p>
+    <h2>You're not bad at dating. You're bad at planning.</h2>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="emoji">😶</div>
+        <h3>"I don't know what to do"</h3>
+        <p>You've been together long enough that dinner and a movie feels lazy. But you have no idea what else to do. So you do nothing.</p>
+      </div>
+      <div class="pain-card">
+        <div class="emoji">🔁</div>
+        <h3>Same 3 dates on repeat</h3>
+        <p>Restaurant. Movie. Couch. You know it's getting stale but coming up with something new every week feels like a second job.</p>
+      </div>
+      <div class="pain-card">
+        <div class="emoji">😬</div>
+        <h3>She's dropping hints</h3>
+        <p>"We never do anything fun anymore." You hear it, you care, you just don't know where to start. That gap between caring and doing is where relationships get boring.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="num">90+</div>
+        <div class="lbl">Curated Date Ideas</div>
+      </div>
+      <div class="stat">
+        <div class="num">8</div>
+        <div class="lbl">Categories</div>
+      </div>
+      <div class="stat">
+        <div class="num">$0-300</div>
+        <div class="lbl">Budget Range</div>
+      </div>
+      <div class="stat">
+        <div class="num">2 min</div>
+        <div class="lbl">Setup Time</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="solution">
+    <p class="label">What You Get</p>
+    <h2>Everything you need to never run out of ideas again.</h2>
+    <p class="sub">A 2-minute quiz about her. Personalized recs that actually fit. No generic Pinterest boards.</p>
+    <div class="value-stack">
+      <div class="value-item">
+        <div class="value-icon">🧠</div>
+        <div>
+          <h3>Personalized to her, not generic</h3>
+          <p>Answer 12 quick questions about her energy, vibe, food preferences, and budget. The algorithm builds a profile and serves dates she'll actually love.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">📋</div>
+        <div>
+          <h3>Step-by-step instructions for every date</h3>
+          <p>No more "just wing it." Every date comes with what to buy, what to prep, and how to pull it off. Even if you've never planned a date in your life.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">📅</div>
+        <div>
+          <h3>Auto-schedule the whole month</h3>
+          <p>Hit one button and Vela fills your calendar with dates spaced out perfectly. Mystery box invites let you hype her up without spoiling the surprise.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🎲</div>
+        <div>
+          <h3>Surprise Me mode (Tinder for dates)</h3>
+          <p>Swipe through random ideas when you can't decide. Right to schedule, left to skip. Takes 30 seconds to lock in a date night.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">💸</div>
+        <div>
+          <h3>Works on any budget</h3>
+          <p>Free dates, $20 dates, splurge dates. Filter by what you can spend. Some of the best dates on here cost nothing.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🧭</div>
+        <div>
+          <h3>"Outside the Box" recs push you both</h3>
+          <p>Vela doesn't just give you safe picks. It shows you dates slightly outside her comfort zone too, so you can surprise her with something she didn't know she wanted.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <p class="label">How It Works</p>
+    <h2>Three steps. Two minutes. Done.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Take the quiz</h3>
+        <p>12 questions about her energy level, food preferences, budget, and vibe. Takes less time than ordering coffee.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Get your dates</h3>
+        <p>Vela scores every date against her profile and serves the best matches first. Browse, swipe, or auto-generate a whole month.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Show up and win</h3>
+        <p>Follow the step-by-step. Send her a mystery invite. Build the hype. Be the guy who always has a plan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OBJECTION CRUSHER -->
+  <section class="objections">
+    <h2>Yeah, but...</h2>
+    <div class="obj-grid">
+      <div class="obj-card">
+        <p class="q">"I don't have time to plan dates."</p>
+        <p class="a">That's the whole point. Vela does the planning. You just pick one and follow the steps. 2 minutes, not 2 hours.</p>
+      </div>
+      <div class="obj-card">
+        <p class="q">"We're on a tight budget."</p>
+        <p class="a">Filter by budget. Half the dates on here are under $25. Some are free. The best dates aren't about money, they're about effort.</p>
+      </div>
+      <div class="obj-card">
+        <p class="q">"She's picky."</p>
+        <p class="a">Good. That's what the quiz is for. Tell us what she likes, what she hates, what she's allergic to. The algorithm handles the rest.</p>
+      </div>
+      <div class="obj-card">
+        <p class="q">"An app can't know what she wants."</p>
+        <p class="a">You're right. But you do. The quiz uses what YOU know about her to find ideas that match. You're the secret ingredient.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <h2>Stop scrolling for ideas.<br /><span>Start planning dates she'll remember.</span></h2>
+    <p class="sub">Free. No signup. Just a guy who gives a damn and 2 minutes to prove it.</p>
+    <a href="https://datenight-ruddy.vercel.app" class="cta-btn">Try Vela Free →</a>
+    <p class="cta-sub">90+ dates. Personalized. Ready to go.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">vela</div>
+    <p>Date night. Figured out.</p>
+  </footer>
+
+</body>
+</html>
