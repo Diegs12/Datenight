@@ -969,6 +969,13 @@ function Dashboard({ name, quiz, onRetake }) {
         </div>}
       </div>}
 
+      <style>{`
+        .vela-scroll::-webkit-scrollbar { height: 4px; }
+        .vela-scroll::-webkit-scrollbar-track { background: #0E0F13; border-radius: 2px; }
+        .vela-scroll::-webkit-scrollbar-thumb { background: #D4A574; border-radius: 2px; }
+        .vela-scroll::-webkit-scrollbar-thumb:hover { background: #E8C49A; }
+        .vela-scroll { scrollbar-width: thin; scrollbar-color: #D4A574 #0E0F13; }
+      `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
       {!schedModal && <Detail date={detail} onClose={() => setDetail(null)} onSchedule={(d) => { setSchedModal(d); }} />}
@@ -1035,7 +1042,7 @@ function Dashboard({ name, quiz, onRetake }) {
 
           <div style={{ marginTop: 4 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 14px", fontWeight: 700, fontFamily: T.display }}>For You ✨</h3>
-            <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
           </div>
@@ -1072,7 +1079,7 @@ function Dashboard({ name, quiz, onRetake }) {
           {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).length > 0 && <div style={{ marginBottom: 28 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Recommended For You ✨</h3>
             <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 14px" }}>Based on your partner's preferences</p>
-            <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
           </div>}
@@ -1080,7 +1087,7 @@ function Dashboard({ name, quiz, onRetake }) {
           {/* Browse rows */}
           {rows.filter(row => row.dates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).length > 0).map(row => <div key={row.label} style={{ marginBottom: 24 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>{row.label}</h3>
-            <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {row.dates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
           </div>)}
