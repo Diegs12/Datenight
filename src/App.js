@@ -1216,7 +1216,7 @@ function Dashboard({ name, quiz, onRetake }) {
       {/* Top header bar */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "env(safe-area-inset-top, 0) 20px 0", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}><div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg, #D4A574 0%, #B8845A 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color: "#0E0F13", fontFamily: T.display }}>V</div><h1 style={{ color: T.text, fontSize: 18, margin: 0, fontWeight: 700, fontFamily: T.display }}>vela</h1></div>
+          <div onClick={() => setTab("home")} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}><div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg, #D4A574 0%, #B8845A 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color: "#0E0F13", fontFamily: T.display }}>V</div><h1 style={{ color: T.text, fontSize: 18, margin: 0, fontWeight: 700, fontFamily: T.display }}>vela</h1></div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <button onClick={() => setShowHype(true)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, position: "relative", padding: 8, minWidth: 44, minHeight: 44, display: "flex", alignItems: "center", justifyContent: "center" }}>
               🔔
