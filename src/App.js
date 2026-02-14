@@ -302,7 +302,7 @@ END:VCALENDAR`;
 }
 
 // ——— MYSTERY BOX INVITE MODAL ———
-function MysteryInvite({ date, scheduledFor, onClose, onSend }) {
+function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
   const [email, setEmail] = useState("");
   const [time, setTime] = useState("19:00");
   const [editing, setEditing] = useState(false);
@@ -336,8 +336,8 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend }) {
         </div>
         <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 22px" }}>Send a calendar invite with just enough info to prepare, but not enough to know what's happening.</p>
 
-        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Partner's email</p>
-        <input type="email" placeholder="partner@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ ...inp(), marginBottom: 16 }} />
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `${partnerName}'s email` : "Partner's email"}</p>
+        <input type="email" placeholder={partnerName ? `${partnerName.toLowerCase()}@email.com` : "partner@email.com"} value={email} onChange={e => setEmail(e.target.value)} style={{ ...inp(), marginBottom: 16 }} />
 
         <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Date & Time</p>
         <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
@@ -346,7 +346,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend }) {
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-          <p style={{ color: T.textFaint, fontSize: 11, margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>What they'll see</p>
+          <p style={{ color: T.textFaint, fontSize: 11, margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `What ${partnerName}'ll see` : "What they'll see"}</p>
           <button onClick={() => setEditing(!editing)} style={btn("transparent", T.primary, { padding: "4px 10px", fontSize: 11 })}>{editing ? "Done" : "Edit"}</button>
         </div>
         {editing ?
@@ -450,13 +450,13 @@ function ScheduleModal({ date, onClose, onSchedule }) {
 }
 
 // ——— INVITE PICKER MODAL (Mystery vs Real) ———
-function InvitePicker({ date, scheduledFor, onClose }) {
+function InvitePicker({ date, scheduledFor, onClose, partnerName, partnerGender }) {
   const [mode, setMode] = useState(null);
 
-  if (mode === "mystery") return <MysteryInvite date={date} scheduledFor={scheduledFor} onClose={onClose} onSend={() => onClose()} />;
+  if (mode === "mystery") return <MysteryInvite date={date} scheduledFor={scheduledFor} onClose={onClose} onSend={() => onClose()} partnerName={partnerName} />;
 
   if (mode === "real") {
-    return <RealInvite date={date} scheduledFor={scheduledFor} onClose={onClose} onSend={() => onClose()} />;
+    return <RealInvite date={date} scheduledFor={scheduledFor} onClose={onClose} onSend={() => onClose()} partnerName={partnerName} partnerGender={partnerGender} />;
   }
 
   return (
@@ -488,7 +488,7 @@ function InvitePicker({ date, scheduledFor, onClose }) {
 }
 
 // ——— REAL (FULL DETAILS) INVITE ———
-function RealInvite({ date, scheduledFor, onClose, onSend }) {
+function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerGender }) {
   const [email, setEmail] = useState("");
   const [time, setTime] = useState("19:00");
   const desc = `${date.title}\n\n${date.description}\n\nDuration: ~${Math.round(date.duration / 60)}h\n\nSent with Vela`;
@@ -517,10 +517,10 @@ function RealInvite({ date, scheduledFor, onClose, onSend }) {
           <span style={{ fontSize: 28 }}>📅</span>
           <h3 style={{ color: T.text, fontSize: 20, margin: 0, fontWeight: 700, fontFamily: T.display }}>Send Full Invite</h3>
         </div>
-        <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 22px" }}>They'll see exactly what's planned, so they can get excited and prepare.</p>
+        <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 22px" }}>{partnerName ? `${partnerName}'ll see exactly what's planned, so ${P(partnerGender || "girl").they} can get excited and prepare.` : "They'll see exactly what's planned, so they can get excited and prepare."}</p>
 
-        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Partner's email</p>
-        <input type="email" placeholder="partner@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ ...inp(), marginBottom: 16 }} />
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `${partnerName}'s email` : "Partner's email"}</p>
+        <input type="email" placeholder={partnerName ? `${partnerName.toLowerCase()}@email.com` : "partner@email.com"} value={email} onChange={e => setEmail(e.target.value)} style={{ ...inp(), marginBottom: 16 }} />
 
         <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Date & Time</p>
         <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
@@ -528,7 +528,7 @@ function RealInvite({ date, scheduledFor, onClose, onSend }) {
           <input type="time" value={time} onChange={e => setTime(e.target.value)} style={{ ...inp(), flex: 1 }} />
         </div>
 
-        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>What they'll see</p>
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `What ${partnerName}'ll see` : "What they'll see"}</p>
         <div style={{ background: T.bg, borderRadius: 10, padding: 16, border: `1px solid ${T.border}`, marginBottom: 16, whiteSpace: "pre-wrap" }}>
           <p style={{ color: T.text, fontSize: 14, margin: 0, lineHeight: 1.6 }}>{desc}</p>
         </div>
@@ -544,15 +544,17 @@ function RealInvite({ date, scheduledFor, onClose, onSend }) {
 }
 
 // ——— PLAN PROMPT MODAL ———
-function PlanPromptModal({ date, scheduledFor, quiz, city, onClose }) {
+function PlanPromptModal({ date, scheduledFor, quiz, city, onClose, partnerName, partnerGender }) {
   const [copied, setCopied] = useState(false);
+  const p = P(partnerGender || "girl");
+  const pn = partnerName || "my partner";
 
   const dateDisplay = new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   const quizContext = quiz ? [
     quiz.q1 ? `Energy level: ${quiz.q1}` : "",
     quiz.q2 ? `Ideal Friday night: ${quiz.q2}` : "",
-    quiz.q3 && quiz.q3.length ? `Vibes they like: ${quiz.q3.join(", ")}` : "",
+    quiz.q3 && quiz.q3.length ? `Vibes ${p.they} like${partnerGender === "guy" ? "s" : ""}: ${quiz.q3.join(", ")}` : "",
     quiz.q4 ? `Physical activity comfort: ${quiz.q4}` : "",
     quiz.q5 && quiz.q5.length && !quiz.q5.includes("None") ? `Food allergies: ${quiz.q5.join(", ")}` : "",
     quiz.q6 && quiz.q6.length && !quiz.q6.includes("No restrictions") ? `Food preferences: ${quiz.q6.join(", ")}` : "",
@@ -560,7 +562,7 @@ function PlanPromptModal({ date, scheduledFor, quiz, city, onClose }) {
     quiz.q8 && quiz.q8.length ? `Cuisine favorites: ${quiz.q8.join(", ")}` : "",
     quiz.q9 ? `Food dislikes: ${quiz.q9}` : "",
     quiz.q10 ? `Best date so far: ${quiz.q10}` : "",
-    quiz.q11 ? `Things they want to try: ${quiz.q11}` : "",
+    quiz.q11 ? `Things ${p.they} want${partnerGender === "guy" ? "s" : ""} to try: ${quiz.q11}` : "",
     quiz.q12 ? `Typical budget: ${quiz.q12}` : "",
   ].filter(Boolean).join("\n") : "";
 
@@ -576,7 +578,7 @@ DESCRIPTION: ${date.description}
 STEPS FROM THE APP:
 ${date.instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}
 ${date.materials.length > 0 ? `\nMATERIALS NEEDED:\n${date.materials.map(m => `- ${m.name} (~$${m.price})`).join("\n")}` : ""}
-${quizContext ? `\nABOUT MY PARTNER (these are her actual preferences from a quiz I filled out — use them to personalize every detail):\n${quizContext}` : ""}
+${quizContext ? `\nABOUT ${pn.toUpperCase()} (these are ${p.their} actual preferences from a quiz I filled out — use them to personalize every detail):\n${quizContext}` : ""}
 
 NOW PLAN THIS OUT COMPLETELY${city ? ` for ${city}` : ""}. I need:
 
@@ -589,7 +591,7 @@ NOW PLAN THIS OUT COMPLETELY${city ? ` for ${city}` : ""}. I need:
 7. PRO TIPS: 3-5 small details that will take this from good to unforgettable
 8. DAY-OF CHECKLIST: A final checklist I can run through the day of to make sure nothing is forgotten
 
-IMPORTANT: Use ALL the partner preferences listed above to personalize this plan. Her food preferences, allergies, cuisine favorites, activity comfort level, and vibes should directly influence your recommendations.${city ? ` All venue and restaurant suggestions must be real places in ${city}.` : ""}
+IMPORTANT: Use ALL the partner preferences listed above to personalize this plan. ${p.Their} food preferences, allergies, cuisine favorites, activity comfort level, and vibes should directly influence your recommendations.${city ? ` All venue and restaurant suggestions must be real places in ${city}.` : ""}
 
 Make it specific. No generic advice. Plan it like you're a professional date planner being paid $500 for this.`;
 
@@ -710,7 +712,7 @@ function QuizFlow({ onComplete, existing, partnerName, partnerGender }) {
 }
 
 // ——— DEBRIEF MODAL ———
-function Debrief({ entry, onSave, onClose }) {
+function Debrief({ entry, onSave, onClose, partnerName }) {
   const [rat, setRat] = useState(0); const [react, setReact] = useState(""); const [notes, setNotes] = useState(""); const [again, setAgain] = useState(null);
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
@@ -718,7 +720,7 @@ function Debrief({ entry, onSave, onClose }) {
         <h3 style={{ color: T.text, fontSize: 20, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>How'd It Go?</h3>
         <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 22px" }}>{entry.title}</p>
         <div style={{ marginBottom: 18 }}>
-          <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>Their reaction</p>
+          <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `${partnerName}'s reaction` : "Their reaction"}</p>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {["😐 Meh", "🙂 Liked it", "😍 Loved it", "🤩 Best ever"].map((r, i) =>
               <button key={r} onClick={() => { setRat(i + 1); setReact(r); }} style={btn(rat === i + 1 ? T.primary + "22" : T.bg, rat === i + 1 ? T.primary : T.textDim, { border: `1.5px solid ${rat === i + 1 ? T.primary : T.border}`, padding: "8px 10px", fontSize: 12, flex: 1, minWidth: 70 })}>{r}</button>
@@ -726,8 +728,8 @@ function Debrief({ entry, onSave, onClose }) {
           </div>
         </div>
         <div style={{ marginBottom: 18 }}>
-          <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>Anything they mentioned?</p>
-          <textarea placeholder="They said they want to try..." value={notes} onChange={e => setNotes(e.target.value)} style={{ ...inp(), height: 70, resize: "vertical" }} />
+          <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>{partnerName ? `Anything ${partnerName} mentioned?` : "Anything they mentioned?"}</p>
+          <textarea placeholder={partnerName ? `${partnerName} said they want to try...` : "They said they want to try..."} value={notes} onChange={e => setNotes(e.target.value)} style={{ ...inp(), height: 70, resize: "vertical" }} />
         </div>
         <div style={{ marginBottom: 22 }}>
           <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>Do this again?</p>
@@ -852,7 +854,7 @@ function Card({ date, onClick, grid }) {
 }
 
 // ——— DASHBOARD ———
-function Dashboard({ name, quiz, city, onRetake }) {
+function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   const [tab, setTab] = useState("home");
   const [sched, setSched] = useState(() => { try { const s = localStorage.getItem("vela_sched"); return s ? JSON.parse(s) : []; } catch { return []; } });
   const [hist, setHist] = useState(() => { try { const h = localStorage.getItem("vela_hist"); return h ? JSON.parse(h) : []; } catch { return []; } });
@@ -882,13 +884,15 @@ function Dashboard({ name, quiz, city, onRetake }) {
   const [featureTip, setFeatureTip] = useState(null);
   const [missionDone, setMissionDone] = useState(() => { try { return !!localStorage.getItem("vela_mission_done"); } catch { return false; } });
 
+  const pn = partnerName || "your partner";
+  const pp = P(partnerGender || "girl");
   const FEATURE_TIPS = {
-    home: { icon: "🕯️", title: "Your Home Base", desc: "Welcome to Vela. We pick dates based on what she actually likes. Scroll through your personalized picks, or hit Surprise Me to go full random." },
+    home: { icon: "🕯️", title: "Your Home Base", desc: `Welcome to Vela. We pick dates based on what ${partnerName || pp.they} actually like${partnerName ? "s" : ""}. Scroll through your personalized picks, or hit Surprise Me to go full random.` },
     library: { icon: "📚", title: "The Date Library", desc: "Every date we've got — over 90 ideas across 8 categories. Filter by budget, category, or search for something specific. Tap any card to see the full plan." },
     calendar: { icon: "📅", title: "Your Upcoming Dates", desc: "Everything you've scheduled lives here. Send mystery or full-detail invites, and use the AI planner to get a step-by-step game plan for each one." },
-    memories: { icon: "💾", title: "Date Memories", desc: "After each date, debrief it here — rate her reaction, note what she said, and track whether it's a repeater. This gets smarter the more you use it." },
-    profile: { icon: "👤", title: "Your Profile", desc: "Her vibe type, your quiz answers, budget preferences, and stats all live here. Retake the quiz anytime things change." },
-    surprise: { icon: "🎲", title: "Surprise Me", desc: "Swipe right to schedule a date, left to skip. Tap the info button in the middle to read the full details before deciding. We'll serve them up based on what she likes." },
+    memories: { icon: "💾", title: "Date Memories", desc: `After each date, debrief it here — rate ${pn}'s reaction, note what ${pp.they} said, and track whether it's a repeater. This gets smarter the more you use it.` },
+    profile: { icon: "👤", title: "Your Profile", desc: `${partnerName ? partnerName + "'s" : pp.Their} vibe type, your quiz answers, budget preferences, and stats all live here. Retake the quiz anytime things change.` },
+    surprise: { icon: "🎲", title: "Surprise Me", desc: `Swipe right to schedule a date, left to skip. Tap the info button in the middle to read the full details before deciding. We'll serve them up based on what ${partnerName || pp.they} like${partnerName ? "s" : ""}.` },
   };
 
   const showTipIfNew = (key) => {
@@ -1025,14 +1029,14 @@ function Dashboard({ name, quiz, city, onRetake }) {
         if (hoursUntil <= 12 && hoursUntil > 2) {
           const key = s.id + "_do";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "Day Of", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_COACHING.day_of[h % HYPE_COACHING.day_of.length], suggestedText: texts.day_of[h % texts.day_of.length] });
+            live.push({ id: key, timing: "Day Of", dateTitle: s.title, scheduledDate: fmtDate, message: sub(HYPE_COACHING.day_of[h % HYPE_COACHING.day_of.length], partnerName, partnerGender), suggestedText: texts.day_of[h % texts.day_of.length] });
           }
         }
         // Almost time: 2 hours to 0 hours before
         if (hoursUntil <= 2 && hoursUntil > -1) {
           const key = s.id + "_at";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "Almost Time", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_COACHING.hour_before[h % HYPE_COACHING.hour_before.length], suggestedText: texts.hour_before[h % texts.hour_before.length] });
+            live.push({ id: key, timing: "Almost Time", dateTitle: s.title, scheduledDate: fmtDate, message: sub(HYPE_COACHING.hour_before[h % HYPE_COACHING.hour_before.length], partnerName, partnerGender), suggestedText: texts.hour_before[h % texts.hour_before.length] });
           }
         }
       });
@@ -1236,11 +1240,11 @@ function Dashboard({ name, quiz, city, onRetake }) {
         .vela-scroll::-webkit-scrollbar-thumb:hover { background: #F5F0EB; }
         .vela-scroll { scrollbar-width: thin; scrollbar-color: #D68853 #141414; }
       `}</style>
-      {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} />}
+      {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} partnerName={partnerName} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
       {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} />}
-      {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} />}
-      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} />}
+      {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} partnerName={partnerName} partnerGender={partnerGender} />}
+      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} partnerName={partnerName} partnerGender={partnerGender} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
       {toast && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.surface, color: T.text, padding: "12px 24px", borderRadius: 12, border: `1px solid ${T.border}`, zIndex: 1000, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>{toast}</div>}
 
@@ -1277,7 +1281,7 @@ function Dashboard({ name, quiz, city, onRetake }) {
           {!missionDone && <div style={{ ...crd({ padding: 24, marginBottom: 20 }), border: `1px solid ${T.primary}33`, background: T.primary + "08", position: "relative" }}>
             <button onClick={() => { setMissionDone(true); try { localStorage.setItem("vela_mission_done", "1"); } catch {} }} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", color: T.textFaint, fontSize: 16, cursor: "pointer", padding: 4 }}>✕</button>
             <p style={{ color: T.primary, fontSize: 13, margin: "0 0 6px", fontWeight: 700, fontFamily: T.display }}>🕯️ Here's the deal.</p>
-            <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>Vela exists so you never have to Google "date ideas" again. We already know what she likes — now we're giving you the plans to match. Browse, schedule, send the invite, and show up like you've been planning it for weeks.</p>
+            <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>Vela exists so you never have to Google "date ideas" again. We already know what {partnerName || pp.they} like{partnerName ? "s" : ""} — now we're giving you the plans to match. Browse, schedule, send the invite, and show up like you've been planning it for weeks.</p>
           </div>}
           <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
             {[{ l: "Upcoming", v: sched.length, c: T.primary }, { l: "Completed", v: hist.length, c: T.green }, { l: "Library", v: DATES.length, c: T.yellow }].map(s =>
@@ -1309,7 +1313,7 @@ function Dashboard({ name, quiz, city, onRetake }) {
 
           <div style={{ marginTop: 4 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>For You ✨</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Picked based on what she likes</p>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>{`Picked based on what ${partnerName || pp.they} like${partnerName ? "s" : ""}`}</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
               {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
@@ -1421,7 +1425,7 @@ function Dashboard({ name, quiz, city, onRetake }) {
             <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 4px", fontWeight: 800, fontFamily: T.display }}>{name}</h2>
             <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>Vela Member</p>
           </div>
-          {(() => { const v = getPartnerVibe(quiz); return (
+          {(() => { const v = getPartnerVibe(quiz, partnerName, partnerGender); return (
             <div style={{ ...crd({ padding: 20, marginBottom: 20 }), borderLeft: `3px solid ${T.primary}` }}>
               <div style={{ fontSize: 36, marginBottom: 8 }}>{v.emoji}</div>
               <div style={{ fontFamily: T.display, fontWeight: 700, color: T.primary, fontSize: 18, marginBottom: 6 }}>{v.title}</div>
@@ -1462,6 +1466,42 @@ function Dashboard({ name, quiz, city, onRetake }) {
         </div>
       </div>}
 
+    </div>
+  );
+}
+
+// ——— PARTNER NAME SCREEN ———
+function PartnerScreen({ onComplete }) {
+  const [partnerName, setPartnerName] = useState("");
+  const [gender, setGender] = useState(null);
+  const ready = partnerName.trim() && gender;
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
+      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40 }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>💕</div>
+          <h2 style={{ color: T.text, fontSize: 26, margin: 0, fontWeight: 700, fontFamily: T.display, lineHeight: 1.2 }}>
+            Who are you planning for?
+          </h2>
+          <p style={{ color: T.textDim, margin: "12px 0 0", fontSize: 14, lineHeight: 1.6 }}>
+            We'll personalize everything around them.
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>What's your partner's name?</label>
+            <input placeholder="Their first name" value={partnerName} onChange={e => setPartnerName(e.target.value)} onKeyDown={e => e.key === "Enter" && ready && onComplete(partnerName.trim(), gender)} style={inp({ fontSize: 16, padding: "14px 18px", textAlign: "center" })} />
+          </div>
+          <div>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8, display: "block" }}>They are...</label>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={() => setGender("girl")} style={btn(gender === "girl" ? T.primary + "22" : T.bg, gender === "girl" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "girl" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👩 Girl</button>
+              <button onClick={() => setGender("guy")} style={btn(gender === "guy" ? T.primary + "22" : T.bg, gender === "guy" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "guy" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👨 Guy</button>
+            </div>
+          </div>
+          <button onClick={() => ready && onComplete(partnerName.trim(), gender)} disabled={!ready} style={btn(ready ? T.primary : T.border, ready ? "#fff" : T.textFaint, { padding: "15px 24px", fontSize: 16, fontWeight: 700, marginTop: 4 })}>Continue →</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1626,22 +1666,25 @@ function UnlockScreen({ name, onComplete }) {
 }
 
 // ——— PARTNER VIBE ———
-function getPartnerVibe(quiz) {
+function getPartnerVibe(quiz, partnerName, partnerGender) {
   const q1 = quiz?.q1 || "";
   const q3 = Array.isArray(quiz?.q3) ? quiz.q3 : [];
-  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: "The Cozy Queen", description: "Her perfect night starts with takeout and ends with a blanket fort. She falls hardest for the quiet, intentional moments — candlelit dinners, slow mornings, movie marathons where you actually stay in. Don't overthink it. Just make her feel like the world stopped for a night." };
-  if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: "She's the one who says 'let's go' before you even finish the sentence. Routine bores her. She wants the spontaneous road trip, the hole-in-the-wall restaurant you found by accident, the story she'll retell for years. Surprise her and she'll remember it forever." };
-  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: "She notices when you pull out her chair. Candles, flowers, a handwritten note tucked into her bag — the whole nine. She doesn't need expensive, she needs intentional. Put in the effort most guys skip and watch her light up." };
-  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: "Give her a paintbrush, a kitchen, a pottery wheel — anything where she can make something with her hands and she's in her element. She'd pick a messy DIY night over a fancy dinner every time. Plan dates that let her create, not just consume." };
-  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: "She turns everything into a competition — and honestly, she probably wins. Bowling, mini golf, card games, bar trivia — if there's a scoreboard, she's locked in. Keep it high-energy, keep it playful, and don't be afraid to talk a little trash." };
-  if (q3.includes("Intellectual / curious")) return { emoji: "📚", title: "The Deep Thinker", description: "She'd rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, wine bars with good lighting — she wants dates that feed the mind. Bring your curiosity, not just your credit card." };
-  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: "Her happy place has fresh air and a view. Sunrise hikes, beach days, kayaking, farmers markets — if it gets her outside and moving, she's already excited. She doesn't need fancy. She needs you, sunlight, and something to explore." };
-  return { emoji: "💫", title: "The Vibe", description: "She doesn't fit in one box — and that's what makes her fun to plan for. One week it's a cozy night in, the next she wants to try something completely new. Keep her guessing, mix up the energy, and she'll never get bored." };
+  const p = P(partnerGender || "girl");
+  const n = partnerName || p.They;
+  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: partnerGender === "guy" ? "The Cozy King" : "The Cozy Queen", description: `${p.Their} perfect night starts with takeout and ends with a blanket fort. ${p.They} fall${partnerGender === "girl" ? "s" : "s"} hardest for the quiet, intentional moments — candlelit dinners, slow mornings, movie marathons where you actually stay in. Don't overthink it. Just make ${p.them} feel like the world stopped for a night.` };
+  if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: `${p.Theyre} the one who says 'let's go' before you even finish the sentence. Routine bores ${p.them}. ${p.They} want${partnerGender === "girl" ? "s" : "s"} the spontaneous road trip, the hole-in-the-wall restaurant you found by accident, the story ${p.theyll} retell for years. Surprise ${p.them} and ${p.theyll} remember it forever.` };
+  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: `${p.They} notice${partnerGender === "girl" ? "s" : "s"} when you pull out ${p.their} chair. Candles, flowers, a handwritten note tucked into ${p.their} bag — the whole nine. ${p.They} don't need expensive, ${p.they} need${partnerGender === "girl" ? "s" : "s"} intentional. Put in the effort most people skip and watch ${p.them} light up.` };
+  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: `Give ${p.them} a paintbrush, a kitchen, a pottery wheel — anything where ${p.they} can make something with ${p.their} hands and ${p.theyre} in ${p.their} element. ${p.They}'d pick a messy DIY night over a fancy dinner every time. Plan dates that let ${p.them} create, not just consume.` };
+  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: `${p.They} turn${partnerGender === "girl" ? "s" : "s"} everything into a competition — and honestly, ${p.they} probably win${partnerGender === "girl" ? "s" : "s"}. Bowling, mini golf, card games, bar trivia — if there's a scoreboard, ${p.theyre} locked in. Keep it high-energy, keep it playful, and don't be afraid to talk a little trash.` };
+  if (q3.includes("Intellectual / curious")) return { emoji: "📚", title: "The Deep Thinker", description: `${p.They}'d rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, wine bars with good lighting — ${p.they} want${partnerGender === "girl" ? "s" : "s"} dates that feed the mind. Bring your curiosity, not just your credit card.` };
+  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: `${p.Their} happy place has fresh air and a view. Sunrise hikes, beach days, kayaking, farmers markets — if it gets ${p.them} outside and moving, ${p.theyre} already excited. ${p.They} don't need fancy. ${p.They} need${partnerGender === "girl" ? "s" : "s"} you, sunlight, and something to explore.` };
+  return { emoji: "💫", title: "The Vibe", description: `${p.They} don't fit in one box — and that's what makes ${p.them} fun to plan for. One week it's a cozy night in, the next ${p.they} want${partnerGender === "girl" ? "s" : "s"} to try something completely new. Keep ${p.them} guessing, mix up the energy, and ${p.theyll} never get bored.` };
 }
 
 // ——— VIBE REVEAL (after unlock, first time only) ———
-function VibeReveal({ quiz, onContinue }) {
-  const v = getPartnerVibe(quiz);
+function VibeReveal({ quiz, onContinue, partnerName, partnerGender }) {
+  const v = getPartnerVibe(quiz, partnerName, partnerGender);
+  const p = P(partnerGender || "girl");
   const vibes = Array.isArray(quiz?.q3) ? quiz.q3.slice(0, 3) : [];
   const cuisines = Array.isArray(quiz?.q8) ? quiz.q8.slice(0, 3) : [];
   const energy = quiz?.q1 || "";
@@ -1650,7 +1693,7 @@ function VibeReveal({ quiz, onContinue }) {
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
       <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40, textAlign: "center" }}>
         <div style={{ fontSize: 56, width: 80, height: 80, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", borderRadius: "50%", boxShadow: `0 0 30px ${T.primary}33, 0 0 60px ${T.primary}18` }}>{v.emoji}</div>
-        <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 4px", fontStyle: "italic" }}>She's...</p>
+        <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 4px", fontStyle: "italic" }}>{partnerName ? `${partnerName} is...` : `${p.Theyre}...`}</p>
         <h2 style={{ color: T.primary, fontSize: 28, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>{v.title}</h2>
         <p style={{ color: T.textDim, fontSize: 15, margin: "0 0 24px", lineHeight: 1.6 }}>{v.description}</p>
 
@@ -1665,7 +1708,7 @@ function VibeReveal({ quiz, onContinue }) {
           </div>
         </div>}
 
-        <button onClick={onContinue} style={btnHero({ width: "100%" })}>Let's Find Her Dates →</button>
+        <button onClick={onContinue} style={btnHero({ width: "100%" })}>Let's Find {partnerName ? `${partnerName}'s` : p.Their} Dates →</button>
       </div>
     </div>
   );
@@ -1675,17 +1718,22 @@ function VibeReveal({ quiz, onContinue }) {
 export default function App() {
   const [screen, setScreen] = useState("splash");
   const [name, setName] = useState(() => { try { return localStorage.getItem("vela_name") || ""; } catch { return ""; } });
+  const [partnerName, setPartnerName] = useState(() => { try { return localStorage.getItem("vela_partner_name") || ""; } catch { return ""; } });
+  const [partnerGender, setPartnerGender] = useState(() => { try { return localStorage.getItem("vela_partner_gender") || "girl"; } catch { return "girl"; } });
   const [quiz, setQuiz] = useState(() => { try { const q = localStorage.getItem("vela_quiz"); return q ? JSON.parse(q) : null; } catch { return null; } });
   const [contactDone, setContactDone] = useState(() => { try { return !!localStorage.getItem("vela_email"); } catch { return false; } });
   const [city, setCity] = useState(() => { try { return localStorage.getItem("vela_city") || ""; } catch { return ""; } });
 
   useEffect(() => { try { if (name) localStorage.setItem("vela_name", name); } catch {} }, [name]);
+  useEffect(() => { try { if (partnerName) localStorage.setItem("vela_partner_name", partnerName); } catch {} }, [partnerName]);
+  useEffect(() => { try { if (partnerGender) localStorage.setItem("vela_partner_gender", partnerGender); } catch {} }, [partnerGender]);
   useEffect(() => { try { if (quiz) localStorage.setItem("vela_quiz", JSON.stringify(quiz)); } catch {} }, [quiz]);
 
-  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : name && quiz ? "unlock" : "welcome")} />;
-  if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("quiz"); }} />;
-  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} />;
+  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : name && partnerName ? (quiz ? "unlock" : "quiz") : name ? "partner" : "welcome")} />;
+  if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("partner"); }} />;
+  if (screen === "partner") return <PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} />;
+  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} />;
   if (screen === "unlock") return <UnlockScreen name={name} onComplete={(c) => { if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} />;
-  if (screen === "vibe_reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} />;
-  return <Dashboard name={name} quiz={quiz} city={city} onRetake={() => setScreen("quiz")} />;
+  if (screen === "vibe_reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} />;
+  return <Dashboard name={name} quiz={quiz} city={city} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} />;
 }
