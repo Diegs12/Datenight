@@ -5,6 +5,10 @@ const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border
 const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 10px rgba(214,136,83,0.2), 0 4px 10px rgba(139,74,40,0.15), inset 0 1px 0 rgba(255,208,161,0.3)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
+// ——— PARTNER PRONOUN HELPER ———
+const P=(g)=>g==="guy"?{they:"he",them:"him",their:"his",theyre:"he's",theyll:"he'll",They:"He",Their:"His",Theyre:"He's"}:{they:"she",them:"her",their:"her",theyre:"she's",theyll:"she'll",They:"She",Their:"Her",Theyre:"She's"};
+const sub=(str,name,gender)=>{if(!name||!str)return str;const p=P(gender);return str.replace(/\{partner\}/g,name).replace(/\{they\}/g,p.they).replace(/\{them\}/g,p.them).replace(/\{their\}/g,p.their).replace(/\{theyre\}/g,p.theyre).replace(/\{theyll\}/g,p.theyll).replace(/\{They\}/g,p.They).replace(/\{Their\}/g,p.Their).replace(/\{Theyre\}/g,p.Theyre);};
+
 // ——— SEASON HELPER ———
 const SEASONAL_DATES = {
   d39: ["fall"], d59: ["fall"], d40: ["fall"], d55: ["fall"], d54: ["fall"], d76: ["fall"],
@@ -124,14 +128,14 @@ const RED_HERRINGS=[
 
 const HYPE_COACHING={
   day_of:[
-    "Today's the day! A quick text to let them know you're excited would set the tone",
-    "They're probably thinking about tonight already. Time to build some hype",
-    "A little anticipation goes a long way — send them something to look forward to",
+    "Today's the day! A quick text to let {partner} know you're excited would set the tone",
+    "{Theyre} probably thinking about tonight already. Time to build some hype",
+    "A little anticipation goes a long way — send {partner} something to look forward to",
   ],
   hour_before:[
-    "Almost time! One last text to build the final bit of excitement",
-    "The countdown is on — a quick 'get ready' message would hit perfectly right now",
-    "You're so close. Drop one more line to build the tension",
+    "Almost time! One last text to get {partner} excited",
+    "The countdown is on — a quick 'get ready' text to {partner} would hit perfectly right now",
+    "You're so close. Drop {partner} one more line to build the tension",
   ]
 };
 const ANTICIPATION_TEXTS={
@@ -264,17 +268,17 @@ const DATES=[
 ];
 
 const QUIZ=[
-  {id:"q1",sec:"About Them",q:"What's their energy level?",type:"single",opts:["Homebody, loves staying in","Balanced, mix of in and out","Active, always wants to go somewhere","Adventurous, the wilder the better"]},
-  {id:"q2",sec:"About Them",q:"What's their ideal Friday night?",type:"single",opts:["Couch + movie + takeout","Dinner at a nice restaurant","Out with friends (bar, club, event)","Something spontaneous and unplanned"]},
-  {id:"q3",sec:"About Them",q:"What vibes do they gravitate toward?",type:"multi",opts:["Romantic / intimate","Playful / competitive","Creative / artsy","Athletic / outdoorsy","Intellectual / curious","Chill / low-key","Bougie / sophisticated","Spontaneous / adventurous"]},
-  {id:"q4",sec:"About Them",q:"Comfort with physical activities?",type:"single",opts:["Light walks max","Moderate (hiking, biking, skating)","They'll try anything athletic","They're more active than me"]},
+  {id:"q1",sec:"About {partner}",q:"What's {partner}'s energy level?",type:"single",opts:["Homebody, loves staying in","Balanced, mix of in and out","Active, always wants to go somewhere","Adventurous, the wilder the better"]},
+  {id:"q2",sec:"About {partner}",q:"What's {partner}'s ideal Friday night?",type:"single",opts:["Couch + movie + takeout","Dinner at a nice restaurant","Out with friends (bar, club, event)","Something spontaneous and unplanned"]},
+  {id:"q3",sec:"About {partner}",q:"What vibes does {partner} gravitate toward?",type:"multi",opts:["Romantic / intimate","Playful / competitive","Creative / artsy","Athletic / outdoorsy","Intellectual / curious","Chill / low-key","Bougie / sophisticated","Spontaneous / adventurous"]},
+  {id:"q4",sec:"About {partner}",q:"{partner}'s comfort with physical activities?",type:"single",opts:["Light walks max","Moderate (hiking, biking, skating)","{Theyll} try anything athletic","{Theyre} more active than me"]},
   {id:"q5",sec:"Food & Drink",q:"Any food allergies?",type:"multi",opts:["Dairy","Gluten / Wheat","Peanuts","Tree nuts","Shellfish / Fish","Eggs","Soy","Sesame","None"]},
-  {id:"q6",sec:"Food & Drink",q:"Food preferences?",type:"multi",opts:["Vegetarian","Vegan","Pescatarian","Keto / Low-carb","No pork","No red meat","Halal","Kosher","No restrictions"]},
-  {id:"q7",sec:"Food & Drink",q:"How do they feel about alcohol?",type:"single",opts:["Doesn't drink at all","Occasional, wine or a cocktail","Loves trying new drinks","Can out-drink me"]},
-  {id:"q8",sec:"Food & Drink",q:"Cuisine favorites?",type:"multi",opts:["Italian","Mexican","Japanese / Sushi","Thai / Vietnamese","Indian","Mediterranean","American / BBQ","Korean","French","Chinese"]},
+  {id:"q6",sec:"Food & Drink",q:"{partner}'s food preferences?",type:"multi",opts:["Vegetarian","Vegan","Pescatarian","Keto / Low-carb","No pork","No red meat","Halal","Kosher","No restrictions"]},
+  {id:"q7",sec:"Food & Drink",q:"How does {partner} feel about alcohol?",type:"single",opts:["Doesn't drink at all","Occasional, wine or a cocktail","Loves trying new drinks","Can out-drink me"]},
+  {id:"q8",sec:"Food & Drink",q:"{partner}'s cuisine favorites?",type:"multi",opts:["Italian","Mexican","Japanese / Sushi","Thai / Vietnamese","Indian","Mediterranean","American / BBQ","Korean","French","Chinese"]},
   {id:"q9",sec:"Food & Drink",q:"Any food dislikes?",type:"text",ph:"e.g. hates mushrooms, won't eat raw fish..."},
   {id:"q10",sec:"Your History",q:"Best date together so far?",type:"text",ph:"What you did, where you went..."},
-  {id:"q11",sec:"Your History",q:"Anything they've mentioned wanting to try?",type:"text",ph:"e.g. pottery class, wine tasting..."},
+  {id:"q11",sec:"Your History",q:"Anything {partner}'s mentioned wanting to try?",type:"text",ph:"e.g. pottery class, wine tasting..."},
   {id:"q12",sec:"Budget",q:"Typical date budget?",type:"single",opts:["Under $20","Under $50","Under $100","Over $100","Mix it up"]},
   {id:"q13",sec:"Budget",q:"How often do you want date nights?",type:"single",opts:["1x per month","2x per month","3x per month","Every week"]},
 ];
@@ -487,7 +491,7 @@ function InvitePicker({ date, scheduledFor, onClose }) {
 function RealInvite({ date, scheduledFor, onClose, onSend }) {
   const [email, setEmail] = useState("");
   const [time, setTime] = useState("19:00");
-  const desc = `${date.title}\n\n${date.description}\n\nBudget: $${date.budget}\nDuration: ~${Math.round(date.duration / 60)}h\n\nSent with Vela`;
+  const desc = `${date.title}\n\n${date.description}\n\nDuration: ~${Math.round(date.duration / 60)}h\n\nSent with Vela`;
 
   const send = () => {
     const ics = generateICS(date.title, desc, scheduledFor, time);
@@ -668,8 +672,9 @@ function HypePanel({ notifications, onDismiss, onClose }) {
 }
 
 // ——— QUIZ FLOW ———
-function QuizFlow({ onComplete, existing }) {
+function QuizFlow({ onComplete, existing, partnerName, partnerGender }) {
   const [step, setStep] = useState(0); const [ans, setAns] = useState(existing || {});
+  const qSub = (s) => sub(s, partnerName, partnerGender);
   const q = QUIZ[step]; const secs = [...new Set(QUIZ.map(q => q.sec))]; const prog = (step / QUIZ.length) * 100;
   const set = (v) => { if (q.type === "multi") { const c = ans[q.id] || []; setAns({ ...ans, [q.id]: c.includes(v) ? c.filter(x => x !== v) : [...c, v] }); } else setAns({ ...ans, [q.id]: v }); };
   const next = () => { if (step < QUIZ.length - 1) setStep(step + 1); else onComplete(ans); };
@@ -679,18 +684,18 @@ function QuizFlow({ onComplete, existing }) {
       <div style={{ maxWidth: 560, width: "100%", padding: "0 10px" }}>
         <div style={{ marginBottom: 28 }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            {secs.map(s => <span key={s} style={{ fontSize: 11, fontWeight: 600, color: s === q.sec ? T.primary : T.textFaint, textTransform: "uppercase", letterSpacing: 1 }}>{s}</span>)}
+            {secs.map(s => <span key={s} style={{ fontSize: 11, fontWeight: 600, color: s === q.sec ? T.primary : T.textFaint, textTransform: "uppercase", letterSpacing: 1 }}>{qSub(s)}</span>)}
           </div>
           <div style={{ height: 4, background: T.surface, borderRadius: 2 }}><div style={{ height: "100%", width: `${prog}%`, background: T.primary, borderRadius: 2, transition: "width 0.3s" }} /></div>
         </div>
         <div style={crd()}>
           <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1 }}>{step + 1} of {QUIZ.length}</p>
-          <h2 style={{ color: T.text, fontSize: 21, margin: "0 0 22px", fontWeight: 700, fontFamily: T.display }}>{q.q}</h2>
+          <h2 style={{ color: T.text, fontSize: 21, margin: "0 0 22px", fontWeight: 700, fontFamily: T.display }}>{qSub(q.q)}</h2>
           {q.type === "single" && <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-            {q.opts.map(o => <button key={o} onClick={() => set(o)} style={{ ...btn(ans[q.id] === o ? T.primary + "22" : T.bg, ans[q.id] === o ? T.primary : T.textDim), textAlign: "left", border: `1.5px solid ${ans[q.id] === o ? T.primary : T.border}`, padding: "13px 16px" }}>{o}</button>)}
+            {q.opts.map(o => <button key={o} onClick={() => set(o)} style={{ ...btn(ans[q.id] === o ? T.primary + "22" : T.bg, ans[q.id] === o ? T.primary : T.textDim), textAlign: "left", border: `1.5px solid ${ans[q.id] === o ? T.primary : T.border}`, padding: "13px 16px" }}>{qSub(o)}</button>)}
           </div>}
           {q.type === "multi" && <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
-            {q.opts.map(o => { const s = (ans[q.id] || []).includes(o); return <button key={o} onClick={() => set(o)} style={{ ...btn(s ? T.primary + "22" : T.bg, s ? T.primary : T.textDim), border: `1.5px solid ${s ? T.primary : T.border}`, padding: "9px 14px", fontSize: 13 }}>{s ? "✓ " : ""}{o}</button>; })}
+            {q.opts.map(o => { const s = (ans[q.id] || []).includes(o); return <button key={o} onClick={() => set(o)} style={{ ...btn(s ? T.primary + "22" : T.bg, s ? T.primary : T.textDim), border: `1.5px solid ${s ? T.primary : T.border}`, padding: "9px 14px", fontSize: 13 }}>{s ? "✓ " : ""}{qSub(o)}</button>; })}
           </div>}
           {q.type === "text" && <textarea placeholder={q.ph} value={ans[q.id] || ""} onChange={e => setAns({ ...ans, [q.id]: e.target.value })} style={{ ...inp(), height: 90, resize: "vertical", fontFamily: T.font }} />}
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 26, gap: 10 }}>
