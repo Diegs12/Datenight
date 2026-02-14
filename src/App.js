@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#4ade80",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
-const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:10,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
+const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
+const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 20px rgba(214,136,83,0.45), 0 4px 12px rgba(139,74,40,0.3), inset 0 1px 0 rgba(255,208,161,0.4)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
 // ——— SEASON HELPER ———
@@ -121,46 +122,53 @@ const RED_HERRINGS=[
   "All I'll say is: trust me on this one",
 ];
 
-const HYPE_TEMPLATES={
-  night_before:[
-    "Hey, might be a good time to let them know you're looking forward to tomorrow",
-    "Quick text tonight could build some anticipation for tomorrow's date",
-    "A simple 'excited for tomorrow' text goes a long way",
-  ],
-  morning_of:[
-    "Morning! Today's the day. A quick text to build some hype would be solid",
-    "They're probably wondering what you have planned. A short message would be 🔥",
-    "Good time to drop a hint or just let them know you're thinking about tonight",
+const HYPE_COACHING={
+  day_of:[
+    "Today's the day! A quick text to let them know you're excited would set the tone",
+    "They're probably thinking about tonight already. Time to build some hype",
+    "A little anticipation goes a long way — send them something to look forward to",
   ],
   hour_before:[
-    "Almost time! Last chance to build the anticipation before you see her",
-    "One hour out. A 'get ready' text would hit right about now",
-    "Final countdown! Let them know it's almost go time",
+    "Almost time! One last text to build the final bit of excitement",
+    "The countdown is on — a quick 'get ready' message would hit perfectly right now",
+    "You're so close. Drop one more line to build the tension",
   ]
 };
-const SUGGESTED_TEXTS={
-  night_before:[
-    "Can't stop thinking about tomorrow night 😏",
-    "You're gonna want to clear your schedule tomorrow evening… just saying 😉",
-    "Fair warning, tomorrow's gonna be a good one 🔥",
-    "I've got something planned for us tomorrow and I'm way too excited",
-    "Don't make any plans tomorrow night. You're mine 😏",
-  ],
-  morning_of:[
-    "Tonight's gonna be fun. Trust me 😏",
-    "I've been looking forward to this all week",
-    "Hope you're ready for tonight 👀",
-    "Just a heads up, you might want to dress up tonight 😉",
-    "Counting down the hours til I see you ❤️",
-  ],
-  hour_before:[
-    "Almost ready? I'm coming for you 😏",
-    "One hour. Get ready 🔥",
-    "I'm so hyped for tonight. See you soon ❤️",
-    "On my way soon, you better be ready 👀",
-    "T-minus 60 minutes. Don't be late 😉",
-  ]
+const ANTICIPATION_TEXTS={
+  outdoor:{
+    day_of:["Tonight's going to be an adventure. Dress comfy 😏","Hope you're ready for some fresh air tonight 👀","I checked the weather just for us. We're golden 🔥","Wear something you can move in tonight… you'll thank me 😉","You + me + the great outdoors tonight ❤️"],
+    hour_before:["Lace up. I'm coming for you 🔥","One hour. Hope you're ready for this 😏","Almost time! Tonight's going to be so good 👀","Get your shoes on, we're heading out ❤️","60 minutes. Bring your sense of adventure 😏"]
+  },
+  food:{
+    day_of:["Hope you're hungry tonight 😏","Don't eat too much today… save room for tonight 👀","Tonight's going to be delicious. You have no idea 🔥","Save your appetite. I found us something amazing 😉","Your taste buds are not ready for what I have planned ❤️"],
+    hour_before:["One hour and we feast 🔥","I hope you're starving 😏","Get ready for the best food night ever 👀","Almost time. Come hungry ❤️","60 minutes. Your stomach will thank me 😏"]
+  },
+  adventure:{
+    day_of:["Tonight's going to be one for the books 😏","I hope you're feeling bold tonight 👀","Fair warning: tonight might get a little wild 🔥","You better be ready for a good time 😉","I planned something fun. That's all I'm saying ❤️"],
+    hour_before:["Game on. You ready? 🔥","One hour till the fun starts 😏","Get ready, tonight's going to be a ride 👀","Almost there. Bring your A-game ❤️","60 minutes. Let's go 😏"]
+  },
+  creative:{
+    day_of:["We're making something together tonight 😏","Hope you're feeling artsy tonight 👀","Tonight's going to be different. In the best way 🔥","Bring your creative energy tonight 😉","You're going to love what I have planned ❤️"],
+    hour_before:["Almost time to create something cool 🔥","One hour. Get in your zone 😏","Hope you're ready to get artsy with me 👀","See you soon. This is going to be fun ❤️","60 minutes till we make something amazing 😏"]
+  },
+  nightlife:{
+    day_of:["Tonight's going to be a vibe 😏","Hope you're saving your energy for tonight 👀","We're going out tonight. Dress up for me 🔥","Get ready to have the best night out 😉","Tonight's all about us and a good time ❤️"],
+    hour_before:["Get dressed up, I'm almost ready 🔥","One hour. Tonight's going to be electric 😏","Almost time to hit the town 👀","You better look good tonight ❤️","60 minutes. Let's make it a night to remember 😏"]
+  },
+  chill:{
+    day_of:["Tonight's going to be the coziest night ever 😏","All you need to do tonight is relax with me 👀","I've got the perfect low-key night planned 🔥","Sweatpants and vibes tonight 😉","Tonight's just about us. Nothing else matters ❤️"],
+    hour_before:["Get comfy, I'll be there soon 🔥","One hour. Sweatpants encouraged 😏","Almost time for the coziest night 👀","See you soon. Tonight's going to be perfect ❤️","60 minutes and we're chillin' 😏"]
+  },
+  romantic:{
+    day_of:["I've been thinking about tonight all day 😏","Tonight's going to be romantic. You've been warned 👀","I planned something special just for us 🔥","You have no idea what I have in store for you 😉","Tonight's about you and me ❤️"],
+    hour_before:["Get ready. I'm about to sweep you off your feet 🔥","One hour. Dress nice for me 😏","Almost time. I can't wait to see you 👀","I'm so excited for tonight ❤️","60 minutes. You're going to love this 😏"]
+  },
+  meaningful:{
+    day_of:["Tonight means a lot to me. Just wanted you to know 😏","I put a lot of thought into tonight 👀","Tonight's going to be one we remember 🔥","Can't wait to share tonight with you 😉","I planned something from the heart ❤️"],
+    hour_before:["Almost time. This one's special 🔥","One hour. I've been looking forward to this 😏","Get ready for something from the heart 👀","See you soon. Tonight's going to be beautiful ❤️","60 minutes. I can't wait 😏"]
+  }
 };
+const hashId=s=>[...s].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,0);
 
 const DATES=[
 {id:"d01",title:"Stargazing Picnic",description:"Pack a blanket, snacks, and a star map app. Drive somewhere with minimal light pollution, lay out under the sky, and find constellations together.",category:"outdoor",budget:15,difficulty:"easy",duration:180,vibe:["romantic","chill","adventurous"],instructions:["Check a light pollution map and pick a dark spot within 30 min drive","Pack a blanket, pillows, snacks, and warm drinks in a thermos","Download a stargazing app like SkyView or Star Walk","Drive out around sunset so you can watch the transition","Lay out the blanket, get cozy, and start finding constellations","Challenge each other to find specific stars or make up your own constellations"],materials:[{name:"Picnic blanket",price:20},{name:"Star map app",price:0}],variations:["Beach version . listen to waves while stargazing","Backyard version with a projector as backup if cloudy","Add a telescope for next-level stargazing"],is_trending:true,is_top_week:false,is_new_release:false},
@@ -429,7 +437,7 @@ function ScheduleModal({ date, onClose, onSchedule }) {
 
         <MiniCalendar selected={dateStr} onSelect={setDateStr} />
 
-        <button onClick={() => { onSchedule(date, dateStr); onClose(); }} style={{ ...btn(T.primary, "#fff"), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 700, marginBottom: 12 }}>✓ Schedule It</button>
+        <button onClick={() => { onSchedule(date, dateStr); onClose(); }} style={{ ...btnHero({ width: "100%", marginBottom: 12, fontSize: 15 }) }}>✓ Schedule It</button>
 
         <button onClick={onClose} style={{ ...btn("transparent", T.textDim), width: "100%", fontSize: 13 }}>Cancel</button>
       </div>
@@ -532,7 +540,7 @@ function RealInvite({ date, scheduledFor, onClose, onSend }) {
 }
 
 // ——— PLAN PROMPT MODAL ———
-function PlanPromptModal({ date, scheduledFor, quiz, onClose }) {
+function PlanPromptModal({ date, scheduledFor, quiz, city, onClose }) {
   const [copied, setCopied] = useState(false);
 
   const dateDisplay = new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
@@ -555,7 +563,7 @@ function PlanPromptModal({ date, scheduledFor, quiz, onClose }) {
   const prompt = `I need you to be my date night planner. Plan every single detail for this date so all I have to do is follow your instructions step by step.
 
 DATE: ${date.title}
-SCHEDULED FOR: ${dateDisplay}
+SCHEDULED FOR: ${dateDisplay}${city ? `\nCITY/LOCATION: ${city}` : ""}
 BUDGET: $${date.budget}
 DURATION: ~${Math.round(date.duration / 60)} hours
 CATEGORY: ${date.category}
@@ -564,18 +572,20 @@ DESCRIPTION: ${date.description}
 STEPS FROM THE APP:
 ${date.instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}
 ${date.materials.length > 0 ? `\nMATERIALS NEEDED:\n${date.materials.map(m => `- ${m.name} (~$${m.price})`).join("\n")}` : ""}
-${quizContext ? `\nABOUT MY PARTNER (from quiz):\n${quizContext}` : ""}
+${quizContext ? `\nABOUT MY PARTNER (these are her actual preferences from a quiz I filled out — use them to personalize every detail):\n${quizContext}` : ""}
 
-NOW PLAN THIS OUT COMPLETELY. I need:
+NOW PLAN THIS OUT COMPLETELY${city ? ` for ${city}` : ""}. I need:
 
 1. TIMELINE: Hour-by-hour schedule from start to finish, including prep time before the date starts
-2. SHOPPING LIST: Exactly what to buy, where to buy it, and estimated cost for each item
-3. RESERVATIONS/BOOKINGS: What needs to be booked ahead of time, with specific recommendations if possible
+2. SHOPPING LIST: Exactly what to buy, where to buy it${city ? ` in ${city}` : ""}, and estimated cost for each item
+3. RESERVATIONS/BOOKINGS: What needs to be booked ahead of time — give me specific real venue/restaurant recommendations${city ? ` in ${city}` : ""}
 4. OUTFIT SUGGESTION: What I should wear based on the vibe
 5. PLAYLIST: Suggest a mood-appropriate playlist or genre for background music
 6. BACKUP PLAN: What to do if something goes wrong (weather, closed venue, etc.)
 7. PRO TIPS: 3-5 small details that will take this from good to unforgettable
 8. DAY-OF CHECKLIST: A final checklist I can run through the day of to make sure nothing is forgotten
+
+IMPORTANT: Use ALL the partner preferences listed above to personalize this plan. Her food preferences, allergies, cuisine favorites, activity comfort level, and vibes should directly influence your recommendations.${city ? ` All venue and restaurant suggestions must be real places in ${city}.` : ""}
 
 Make it specific. No generic advice. Plan it like you're a professional date planner being paid $500 for this.`;
 
@@ -633,7 +643,7 @@ function HypePanel({ notifications, onDismiss, onClose }) {
                   <p style={{ color: T.text, fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>{n.dateTitle}</p>
                   <p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{n.scheduledDate}</p>
                 </div>
-                <span style={{ fontSize: 20, marginTop: 2 }}>{n.timing === "Night Before" ? "🌙" : n.timing === "Morning Of" ? "☀️" : "⏰"}</span>
+                <span style={{ fontSize: 20, marginTop: 2 }}>{n.timing === "Day Of" ? "☀️" : "⏰"}</span>
               </div>
               <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 14px", lineHeight: 1.5 }}>{n.message}</p>
 
@@ -772,7 +782,7 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite }) {
               <button onClick={() => onSendInvite({ date: d, scheduledFor: scheduledInfo.scheduled_for })} style={{ ...btn(T.pink + "12", T.pink), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 600, border: `1.5px solid ${T.pink}44`, borderRadius: 14 }}>📧 Send Invite</button>
             </div>
           ) : (
-            <button onClick={() => { onSchedule(d); }} style={{ ...btn(T.accent, "#fff"), width: "100%", padding: "15px 24px", fontSize: 16, fontWeight: 700, marginBottom: 24, borderRadius: 14 }}>📅 Schedule This Date</button>
+            <button onClick={() => { onSchedule(d); }} style={{ ...btnHero({ width: "100%", marginBottom: 24 }) }}>📅 Schedule This Date</button>
           )}
           <div style={{ marginBottom: 24 }}>
             <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 14px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>Step-by-Step</h4>
@@ -837,7 +847,7 @@ function Card({ date, onClick, grid }) {
 }
 
 // ——— DASHBOARD ———
-function Dashboard({ name, quiz, onRetake }) {
+function Dashboard({ name, quiz, city, onRetake }) {
   const [tab, setTab] = useState("home");
   const [sched, setSched] = useState(() => { try { const s = localStorage.getItem("vela_sched"); return s ? JSON.parse(s) : []; } catch { return []; } });
   const [hist, setHist] = useState(() => { try { const h = localStorage.getItem("vela_hist"); return h ? JSON.parse(h) : []; } catch { return []; } });
@@ -992,7 +1002,7 @@ function Dashboard({ name, quiz, onRetake }) {
     // No longer dumps notifications immediately — the useEffect below handles timing
   };
 
-  // Time-aware notification system: checks every 60s which notifications should be live
+  // Time-aware notification system: only fires on the day of the date
   const [dismissedNotifKeys, setDismissedNotifKeys] = useState([]);
   useEffect(() => {
     const checkNotifs = () => {
@@ -1002,26 +1012,22 @@ function Dashboard({ name, quiz, onRetake }) {
         const dateObj = new Date(s.scheduled_for + "T19:00:00"); // assume 7pm date time
         const fmtDate = dateObj.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
         const hoursUntil = (dateObj - now) / (1000 * 60 * 60);
+        const cat = s.category || "adventure";
+        const texts = ANTICIPATION_TEXTS[cat] || ANTICIPATION_TEXTS.adventure;
+        const h = Math.abs(hashId(s.id));
 
-        // Night before: between 36 hours and 12 hours before
-        if (hoursUntil <= 36 && hoursUntil > 12) {
-          const key = s.id + "_nb";
-          if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "Night Before", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_TEMPLATES.night_before[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.night_before.length], suggestedText: SUGGESTED_TEXTS.night_before[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.night_before.length] });
-          }
-        }
-        // Morning of: between 12 hours and 2 hours before
+        // Day of: between 12 hours and 2 hours before (morning/afternoon of the date)
         if (hoursUntil <= 12 && hoursUntil > 2) {
-          const key = s.id + "_mo";
+          const key = s.id + "_do";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "Morning Of", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_TEMPLATES.morning_of[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.morning_of.length], suggestedText: SUGGESTED_TEXTS.morning_of[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.morning_of.length] });
+            live.push({ id: key, timing: "Day Of", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_COACHING.day_of[h % HYPE_COACHING.day_of.length], suggestedText: texts.day_of[h % texts.day_of.length] });
           }
         }
-        // 1 hour before: 2 hours to 0 hours before
+        // Almost time: 2 hours to 0 hours before
         if (hoursUntil <= 2 && hoursUntil > -1) {
-          const key = s.id + "_hb";
+          const key = s.id + "_at";
           if (!dismissedNotifKeys.includes(key)) {
-            live.push({ id: key, timing: "1 Hour Before", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_TEMPLATES.hour_before[Math.abs(s.id.charCodeAt(0)) % HYPE_TEMPLATES.hour_before.length], suggestedText: SUGGESTED_TEXTS.hour_before[Math.abs(s.id.charCodeAt(0)) % SUGGESTED_TEXTS.hour_before.length] });
+            live.push({ id: key, timing: "Almost Time", dateTitle: s.title, scheduledDate: fmtDate, message: HYPE_COACHING.hour_before[h % HYPE_COACHING.hour_before.length], suggestedText: texts.hour_before[h % texts.hour_before.length] });
           }
         }
       });
@@ -1213,7 +1219,7 @@ function Dashboard({ name, quiz, onRetake }) {
           <p style={{ fontSize: 48, margin: "0 0 16px" }}>🎉</p>
           <h2 style={{ color: T.text, fontSize: 22, fontWeight: 700, margin: "0 0 8px", fontFamily: T.display }}>You've seen them all!</h2>
           <p style={{ color: T.textDim, fontSize: 15, margin: "0 0 24px" }}>You swiped through {swipeDeck.length} date ideas</p>
-          <button onClick={() => { setSwipeIdx(0); setSwipeDeck([...swipeDeck].sort(() => Math.random() - 0.5)); }} style={btn(T.primary, "#fff", { padding: "14px 28px", fontSize: 15, borderRadius: 12 })}>🔄 Shuffle & Restart</button>
+          <button onClick={() => { setSwipeIdx(0); setSwipeDeck([...swipeDeck].sort(() => Math.random() - 0.5)); }} style={btnHero({ padding: "14px 28px", fontSize: 15 })}>🔄 Shuffle & Restart</button>
           <button onClick={() => setSwipeMode(false)} style={btn("transparent", T.textDim, { padding: "14px 28px", fontSize: 14, marginTop: 12 })}>Back to Home</button>
         </div>}
       </div>}
@@ -1229,7 +1235,7 @@ function Dashboard({ name, quiz, onRetake }) {
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
       {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} />}
       {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} />}
-      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} onClose={() => setPlanPrompt(null)} />}
+      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
       {toast && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.surface, color: T.text, padding: "12px 24px", borderRadius: 12, border: `1px solid ${T.border}`, zIndex: 1000, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>{toast}</div>}
 
@@ -1273,7 +1279,7 @@ function Dashboard({ name, quiz, onRetake }) {
               <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p><p style={{ color: s.c, fontSize: 26, margin: 0, fontWeight: 800 }}>{s.v}</p></div>
             )}
           </div>
-          <button onClick={surprise} style={{ ...btn(T.accent, "#fff"), width: "100%", padding: "16px 24px", fontSize: 16, fontWeight: 800, marginBottom: 12, borderRadius: 14, background: `linear-gradient(135deg,${T.accent},${T.primary})` }}>🎲 Surprise Me</button>
+          <button onClick={surprise} style={{ ...btnHero({ width: "100%", marginBottom: 12 }) }}>🎲 Surprise Me</button>
           <button onClick={genMonth} style={{ ...btn(T.surface, T.text), width: "100%", padding: "13px 24px", fontSize: 14, marginBottom: 22, border: `1px solid ${T.border}` }}>📅 Generate This Month's Dates</button>
 
           {notifs.length > 0 && <div style={{ ...crd({ padding: 16, marginBottom: 20 }), border: `1.5px solid ${T.yellow}33`, background: T.yellow + "08", cursor: "pointer" }} onClick={() => setShowHype(true)}>
@@ -1564,6 +1570,7 @@ function Splash({ onDone }) {
 function UnlockScreen({ name, onComplete }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const valid = email.trim() && email.includes("@") && email.includes(".");
 
@@ -1572,7 +1579,8 @@ function UnlockScreen({ name, onComplete }) {
     setLoading(true);
     try { localStorage.setItem("vela_email", email.trim()); } catch {}
     try { localStorage.setItem("vela_phone", phone.trim()); } catch {}
-    setTimeout(() => onComplete(), 600);
+    try { localStorage.setItem("vela_city", city.trim()); } catch {}
+    setTimeout(() => onComplete(city.trim()), 600);
   };
 
   return (
@@ -1596,6 +1604,10 @@ function UnlockScreen({ name, onComplete }) {
             <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Phone</label>
             <input type="tel" placeholder="(555) 123-4567" value={phone} onChange={e => setPhone(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
           </div>
+          <div>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>City *</label>
+            <input type="text" placeholder="e.g. Austin, TX" value={city} onChange={e => setCity(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
+          </div>
           <button onClick={handleSubmit} disabled={!valid || loading} style={btn(valid ? T.primary : T.border, valid ? "#fff" : T.textFaint, { padding: "15px 24px", fontSize: 16, fontWeight: 700, marginTop: 6, opacity: loading ? 0.6 : 1 })}>
             {loading ? "Unlocking..." : "Unlock My Dates →"}
           </button>
@@ -1612,14 +1624,14 @@ function UnlockScreen({ name, onComplete }) {
 function getPartnerVibe(quiz) {
   const q1 = quiz?.q1 || "";
   const q3 = Array.isArray(quiz?.q3) ? quiz.q3 : [];
-  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: "The Cozy Queen", description: "She'd rather be under a blanket than under the stars. Candlelit dinners, movie nights, and anything involving pajamas." };
-  if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: "Sitting still isn't her thing. She wants surprises, new experiences, and stories worth telling." };
-  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: "She notices the details. Candles, flowers, handwritten notes — the whole nine. Effort is her love language." };
-  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: "She lights up when she's making something. Art, cooking, crafts — she wants to build memories with her hands." };
-  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: "She's down for anything with a scoreboard. Games, challenges, bets — keep it light and she's all in." };
-  if (q3.includes("Intellectual / curious")) return { emoji: "📚", title: "The Deep Thinker", description: "She wants conversation that goes somewhere. Museums, bookstores, and dates that feed the mind." };
-  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: "Fresh air is her happy place. Hikes, bikes, beaches — if it's outside, she's interested." };
-  return { emoji: "💫", title: "The Vibe", description: "She's a little bit of everything. Keep it varied and she'll keep showing up." };
+  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: "The Cozy Queen", description: "Her perfect night starts with takeout and ends with a blanket fort. She falls hardest for the quiet, intentional moments — candlelit dinners, slow mornings, movie marathons where you actually stay in. Don't overthink it. Just make her feel like the world stopped for a night." };
+  if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: "She's the one who says 'let's go' before you even finish the sentence. Routine bores her. She wants the spontaneous road trip, the hole-in-the-wall restaurant you found by accident, the story she'll retell for years. Surprise her and she'll remember it forever." };
+  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: "She notices when you pull out her chair. Candles, flowers, a handwritten note tucked into her bag — the whole nine. She doesn't need expensive, she needs intentional. Put in the effort most guys skip and watch her light up." };
+  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: "Give her a paintbrush, a kitchen, a pottery wheel — anything where she can make something with her hands and she's in her element. She'd pick a messy DIY night over a fancy dinner every time. Plan dates that let her create, not just consume." };
+  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: "She turns everything into a competition — and honestly, she probably wins. Bowling, mini golf, card games, bar trivia — if there's a scoreboard, she's locked in. Keep it high-energy, keep it playful, and don't be afraid to talk a little trash." };
+  if (q3.includes("Intellectual / curious")) return { emoji: "📚", title: "The Deep Thinker", description: "She'd rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, wine bars with good lighting — she wants dates that feed the mind. Bring your curiosity, not just your credit card." };
+  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: "Her happy place has fresh air and a view. Sunrise hikes, beach days, kayaking, farmers markets — if it gets her outside and moving, she's already excited. She doesn't need fancy. She needs you, sunlight, and something to explore." };
+  return { emoji: "💫", title: "The Vibe", description: "She doesn't fit in one box — and that's what makes her fun to plan for. One week it's a cozy night in, the next she wants to try something completely new. Keep her guessing, mix up the energy, and she'll never get bored." };
 }
 
 // ——— VIBE REVEAL (after unlock, first time only) ———
@@ -1648,7 +1660,7 @@ function VibeReveal({ quiz, onContinue }) {
           </div>
         </div>}
 
-        <button onClick={onContinue} style={btn(T.primary, "#fff", { width: "100%", padding: "15px 24px", fontSize: 16, fontWeight: 700 })}>Let's Find Her Dates →</button>
+        <button onClick={onContinue} style={btnHero({ width: "100%" })}>Let's Find Her Dates →</button>
       </div>
     </div>
   );
@@ -1660,6 +1672,7 @@ export default function App() {
   const [name, setName] = useState(() => { try { return localStorage.getItem("vela_name") || ""; } catch { return ""; } });
   const [quiz, setQuiz] = useState(() => { try { const q = localStorage.getItem("vela_quiz"); return q ? JSON.parse(q) : null; } catch { return null; } });
   const [contactDone, setContactDone] = useState(() => { try { return !!localStorage.getItem("vela_email"); } catch { return false; } });
+  const [city, setCity] = useState(() => { try { return localStorage.getItem("vela_city") || ""; } catch { return ""; } });
 
   useEffect(() => { try { if (name) localStorage.setItem("vela_name", name); } catch {} }, [name]);
   useEffect(() => { try { if (quiz) localStorage.setItem("vela_quiz", JSON.stringify(quiz)); } catch {} }, [quiz]);
@@ -1667,7 +1680,7 @@ export default function App() {
   if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : name && quiz ? "unlock" : "welcome")} />;
   if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("quiz"); }} />;
   if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} />;
-  if (screen === "unlock") return <UnlockScreen name={name} onComplete={() => { setContactDone(true); setScreen("vibe_reveal"); }} />;
+  if (screen === "unlock") return <UnlockScreen name={name} onComplete={(c) => { if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} />;
   if (screen === "vibe_reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} />;
-  return <Dashboard name={name} quiz={quiz} onRetake={() => setScreen("quiz")} />;
+  return <Dashboard name={name} quiz={quiz} city={city} onRetake={() => setScreen("quiz")} />;
 }
