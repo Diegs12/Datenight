@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Date Night — Card Redesign Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0f12;
+    font-family: 'Segoe UI', -apple-system, system-ui, sans-serif;
+    color: #e8e8f0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
+
+  h1 {
+    font-size: 32px; font-weight: 800;
+    background: linear-gradient(135deg, #fff 30%, #666);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+  .subtitle { color: #8888a0; font-size: 14px; margin-bottom: 32px; }
+
+  /* Mood filters */
+  .filters { display: flex; gap: 10px; margin-bottom: 36px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 8px 18px; border-radius: 12px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s ease; font-family: inherit;
+    background: transparent; border: 1px solid #2a2a38; color: #8888a0;
+  }
+  .filter-btn:hover { border-color: #555; color: #ccc; }
+  .filter-btn.active { border-color: var(--mood-color); color: var(--mood-color); background: var(--mood-bg); }
+
+  /* Card grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; }
+
+  /* Horizontal scroll row */
+  .scroll-row {
+    display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    -ms-overflow-style: none; scrollbar-width: thin;
+    scrollbar-color: #333 transparent;
+  }
+
+  h2 { font-size: 20px; font-weight: 700; margin: 52px 0 16px; color: #fff; }
+  .section-label { font-size: 11px; color: #8888a0; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-weight: 600; }
+
+  /* ——— CARD ——— */
+  .card {
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+    scroll-snap-align: start;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .card.grid-card { height: 230px; }
+  .card.scroll-card { flex: 0 0 210px; min-width: 210px; height: 270px; }
+  .card:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  /* Glass overlay */
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 45%, rgba(0,0,0,0.18) 100%);
+    z-index: 1; pointer-events: none;
+  }
+
+  /* Top accent line */
+  .card::after {
+    content: '';
+    position: absolute; top: 0; left: 15%; right: 15%; height: 2px;
+    z-index: 3; pointer-events: none;
+  }
+
+  /* Orbs */
+  .orb-1 {
+    position: absolute; top: -50px; right: -50px; width: 150px; height: 150px;
+    border-radius: 50%; z-index: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+  .card:hover .orb-1 { transform: scale(1.4); }
+  .orb-2 {
+    position: absolute; bottom: -35px; left: -35px; width: 110px; height: 110px;
+    border-radius: 50%; z-index: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 70%);
+  }
+
+  /* Card header */
+  .card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; }
+  .icon-box {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover .icon-box { transform: scale(1.1) rotate(-5deg); }
+
+  .budget-badge {
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px; padding: 5px 12px;
+    display: flex; flex-direction: column; align-items: flex-end;
+  }
+  .budget-amount { font-size: 16px; font-weight: 800; line-height: 1; }
+  .budget-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.65; }
+
+  /* Card bottom */
+  .card-bottom { position: relative; z-index: 2; }
+  .mood-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    border-radius: 7px; padding: 3px 9px; margin-bottom: 8px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .mood-tag-emoji { font-size: 9px; }
+  .card-title {
+    color: #fff; font-size: 16px; font-weight: 700;
+    margin: 0 0 8px; line-height: 1.25;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .grid-card .card-title { font-size: 14px; }
+  .vibes { display: flex; gap: 5px; flex-wrap: wrap; }
+  .vibe-tag {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6); font-size: 10px; font-weight: 600;
+    padding: 3px 9px; border-radius: 7px;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    transition: background 0.2s ease;
+  }
+  .card:hover .vibe-tag { background: rgba(255,255,255,0.12); }
+
+  /* Difficulty dot */
+  .diff-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+  /* Compare section */
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 48px;
+    padding: 32px; border-radius: 20px;
+    background: rgba(255,255,255,0.02); border: 1px solid #2a2a38;
+  }
+  .compare-label { font-size: 11px; color: #8888a0; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; text-align: center; }
+  .old-card {
+    height: 230px; border-radius: 16px; padding: 18px; cursor: default;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .old-card .old-circle {
+    position: absolute; top: -40px; right: -40px; width: 120px; height: 120px;
+    border-radius: 50%; background: rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>✨ Card Redesign</h1>
+  <p class="subtitle">Mood-based gradients · glassmorphic layers · purposeful categorization</p>
+
+  <!-- Mood Filters -->
+  <div class="filters" id="filters"></div>
+
+  <!-- Grid -->
+  <p class="section-label">Grid View</p>
+  <div class="grid" id="card-grid"></div>
+
+  <!-- Horizontal Scroll -->
+  <h2>Netflix-Style Row</h2>
+  <div class="scroll-row" id="scroll-row"></div>
+
+  <!-- Before/After Comparison -->
+  <h2>Before → After</h2>
+  <div class="compare-grid">
+    <div>
+      <p class="compare-label">Before</p>
+      <div id="old-card"></div>
+    </div>
+    <div>
+      <p class="compare-label">After</p>
+      <div id="new-card"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ——— DATA ———
+const GRADS = {
+  outdoor:   "linear-gradient(135deg, #0b3d2c 0%, #1a6b45 35%, #2ecc71 70%, #a8e6cf 100%)",
+  adventure: "linear-gradient(135deg, #4a1942 0%, #8e24aa 30%, #e040fb 65%, #f8bbd0 100%)",
+  romantic:  "linear-gradient(135deg, #5c0a2e 0%, #b91c55 35%, #ff4081 65%, #ff80ab 100%)",
+  meaningful:"linear-gradient(135deg, #1a3a2a 0%, #2e7d5e 35%, #66bb9a 65%, #b2dfdb 100%)",
+  nightlife: "linear-gradient(135deg, #1a0533 0%, #4a148c 30%, #7c4dff 60%, #b388ff 100%)",
+  food:      "linear-gradient(135deg, #4e1600 0%, #bf360c 30%, #ff6d3a 60%, #ffab91 100%)",
+  chill:     "linear-gradient(135deg, #0d1b3e 0%, #1565c0 35%, #42a5f5 65%, #bbdefb 100%)",
+  creative:  "linear-gradient(135deg, #1a1040 0%, #283593 30%, #536dfe 60%, #8c9eff 100%)",
+};
+
+const OLD_GRADS = {
+  outdoor: "linear-gradient(135deg,#1a5c2a,#2d8a4e)",
+  food: "linear-gradient(135deg,#8a4a1b,#c4712b)",
+  adventure: "linear-gradient(135deg,#6b1d5e,#a83292)",
+  creative: "linear-gradient(135deg,#1b4a8a,#2b7ac4)",
+  nightlife: "linear-gradient(135deg,#5c1a6b,#8a2da8)",
+  chill: "linear-gradient(135deg,#1a3d5c,#2d6a8a)",
+  romantic: "linear-gradient(135deg,#8a1b3d,#c42b5c)",
+  meaningful: "linear-gradient(135deg,#2a5c4a,#3d8a6e)",
+};
+
+const META = {
+  outdoor:    { mood: "Energizing",  moodEmoji: "⚡", icon: "🌿",  accent: "#2ecc71" },
+  adventure:  { mood: "Energizing",  moodEmoji: "⚡", icon: "🧭",  accent: "#e040fb" },
+  romantic:   { mood: "Intimate",    moodEmoji: "💫", icon: "🕯️",  accent: "#ff4081" },
+  meaningful: { mood: "Intimate",    moodEmoji: "💫", icon: "💎",  accent: "#66bb9a" },
+  nightlife:  { mood: "Social",      moodEmoji: "🎉", icon: "✨",  accent: "#7c4dff" },
+  food:       { mood: "Social",      moodEmoji: "🎉", icon: "🔥",  accent: "#ff6d3a" },
+  chill:      { mood: "Relaxing",    moodEmoji: "🌊", icon: "☁️",  accent: "#42a5f5" },
+  creative:   { mood: "Relaxing",    moodEmoji: "🌊", icon: "🎨",  accent: "#536dfe" },
+};
+
+const OLD_EMOJI = { outdoor:"🌄", food:"🍽️", adventure:"⚡", creative:"🎨", nightlife:"🌙", chill:"☁️", romantic:"❤️", meaningful:"🤝" };
+
+const getTier = (p) => {
+  if (p <= 20) return { label: "Free-ish", color: "#4ade80" };
+  if (p <= 50) return { label: "Sweet Spot", color: "#fbbf24" };
+  if (p <= 100) return { label: "Splurge", color: "#fb923c" };
+  return { label: "Go Big", color: "#f472b6" };
+};
+
+const DATES = [
+  { id:1, title:"Stargazing Picnic", category:"outdoor", budget:15, vibe:["romantic","chill"], difficulty:"easy" },
+  { id:2, title:"Sunset Hike + Peak Snacks", category:"outdoor", budget:10, vibe:["adventurous","athletic"], difficulty:"moderate" },
+  { id:3, title:"Thrift Store Challenge", category:"adventure", budget:25, vibe:["playful","competitive"], difficulty:"easy" },
+  { id:4, title:"Cook-Off Battle", category:"food", budget:30, vibe:["playful","competitive"], difficulty:"moderate" },
+  { id:5, title:"Wine & Paint Night", category:"creative", budget:35, vibe:["creative","romantic"], difficulty:"easy" },
+  { id:6, title:"Bookstore Date + Coffee", category:"chill", budget:40, vibe:["intellectual","chill"], difficulty:"easy" },
+  { id:7, title:"Homemade Pasta from Scratch", category:"food", budget:15, vibe:["romantic","hands-on"], difficulty:"moderate" },
+  { id:8, title:"Outdoor Movie Night", category:"chill", budget:20, vibe:["chill","romantic"], difficulty:"easy" },
+  { id:9, title:"Cocktail Creation Night", category:"food", budget:35, vibe:["playful","sophisticated"], difficulty:"easy" },
+  { id:10, title:"Spa Night at Home", category:"romantic", budget:25, vibe:["romantic","intimate"], difficulty:"easy" },
+  { id:11, title:"Food Truck Crawl", category:"food", budget:40, vibe:["adventurous","spontaneous"], difficulty:"easy" },
+  { id:12, title:"Arcade + Bar Night", category:"nightlife", budget:45, vibe:["playful","spontaneous"], difficulty:"easy" },
+  { id:14, title:"Escape Room", category:"adventure", budget:60, vibe:["adventurous","competitive"], difficulty:"moderate" },
+  { id:19, title:"Volunteer Together", category:"meaningful", budget:0, vibe:["meaningful","intimate"], difficulty:"easy" },
+  { id:23, title:"Build a Blanket Fort", category:"chill", budget:20, vibe:["chill","cozy"], difficulty:"easy" },
+  { id:31, title:"Progressive All-Day Date", category:"adventure", budget:280, vibe:["adventurous","spontaneous"], difficulty:"hard" },
+];
+
+// ——— RENDER ———
+let activeMood = null;
+
+function createCard(d, isGrid) {
+  const m = META[d.category];
+  const tier = getTier(d.budget);
+  const cls = isGrid ? 'card grid-card' : 'card scroll-card';
+
+  return `
+    <div class="${cls}"
+      style="background: ${GRADS[d.category]};"
+      onmouseenter="this.style.boxShadow='0 20px 50px rgba(0,0,0,0.45), 0 0 40px ${m.accent}20'"
+      onmouseleave="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.3)'"
+    >
+      <div class="orb-1" style="background: radial-gradient(circle, ${m.accent}18, transparent 70%)"></div>
+      <div class="orb-2"></div>
+      <div style="position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,${m.accent}55,transparent);z-index:3;"></div>
+
+      <div class="card-top" style="padding: ${isGrid ? '16px 16px 0' : '20px 20px 0'}">
+        <div class="icon-box" style="border: 1px solid ${m.accent}33; box-shadow: 0 2px 12px ${m.accent}22;">
+          ${m.icon}
+        </div>
+        <div class="budget-badge" style="border: 1px solid ${tier.color}33;">
+          <span class="budget-amount" style="color: ${tier.color}">$${d.budget}</span>
+          <span class="budget-label" style="color: ${tier.color}">${tier.label}</span>
+        </div>
+      </div>
+
+      <div class="card-bottom" style="padding: ${isGrid ? '0 16px 16px' : '0 20px 20px'}">
+        <div class="mood-tag" style="background: ${m.accent}20; border: 1px solid ${m.accent}30;">
+          <span class="mood-tag-emoji">${m.moodEmoji}</span>
+          <span style="color: ${m.accent}">${m.mood}</span>
+        </div>
+        <p class="card-title">${d.title}</p>
+        <div class="vibes">
+          ${d.vibe.slice(0,2).map(v => `<span class="vibe-tag">${v}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function createOldCard(d) {
+  const emoji = OLD_EMOJI[d.category] || "📌";
+  return `
+    <div class="old-card" style="background: ${OLD_GRADS[d.category]};">
+      <div class="old-circle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;">
+        <span style="font-size:28px">${emoji}</span>
+        <span style="background:rgba(0,0,0,0.35);color:#fbbf24;font-size:11px;font-weight:700;padding:4px 9px;border-radius:6px;">$${d.budget}</span>
+      </div>
+      <div style="position:relative;z-index:1;">
+        <p style="color:#fff;font-size:15px;font-weight:700;margin:0 0 6px;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,0.4)">${d.title}</p>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${d.vibe.slice(0,2).map(v => `<span style="background:rgba(0,0,0,0.25);color:rgba(255,255,255,0.55);font-size:10px;font-weight:600;padding:3px 7px;border-radius:5px">${v}</span>`).join('')}
+        </div>
+        <p style="color:rgba(255,255,255,0.5);font-size:10px;margin:6px 0 0;text-transform:capitalize">${d.category} · ${d.difficulty}</p>
+      </div>
+    </div>
+  `;
+}
+
+function render() {
+  const filtered = activeMood ? DATES.filter(d => META[d.category].mood === activeMood) : DATES;
+
+  document.getElementById('card-grid').innerHTML = filtered.map(d => createCard(d, true)).join('');
+  document.getElementById('scroll-row').innerHTML = DATES.map(d => createCard(d, false)).join('');
+
+  // Before / After
+  const sample = DATES[0];
+  document.getElementById('old-card').innerHTML = createOldCard(sample);
+  document.getElementById('new-card').innerHTML = createCard(sample, true);
+}
+
+// Filters
+const moods = [
+  { name: "All", color: "#fff", value: null },
+  { name: "⚡ Energizing", color: "#e040fb", value: "Energizing" },
+  { name: "💫 Intimate", color: "#ff4081", value: "Intimate" },
+  { name: "🎉 Social", color: "#7c4dff", value: "Social" },
+  { name: "🌊 Relaxing", color: "#42a5f5", value: "Relaxing" },
+];
+
+document.getElementById('filters').innerHTML = moods.map(m => {
+  return `<button class="filter-btn${activeMood === m.value ? ' active' : ''}"
+    style="--mood-color: ${m.color}; --mood-bg: ${m.color}18;"
+    onclick="activeMood = ${m.value ? `'${m.value}'` : 'null'}; renderFilters(); render();">
+    ${m.name}
+  </button>`;
+}).join('');
+
+function renderFilters() {
+  document.getElementById('filters').innerHTML = moods.map(m => {
+    const isActive = activeMood === m.value;
+    return `<button class="filter-btn${isActive ? ' active' : ''}"
+      style="--mood-color: ${m.color}; --mood-bg: ${m.color}18;"
+      onclick="activeMood = ${m.value ? `'${m.value}'` : 'null'}; renderFilters(); render();">
+      ${m.name}
+    </button>`;
+  }).join('');
+}
+
+render();
+</script>
+</body>
+</html>
