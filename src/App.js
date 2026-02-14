@@ -487,11 +487,62 @@ function InvitePicker({ date, scheduledFor, onClose, partnerName, partnerGender 
   );
 }
 
+// ——— ROMANTIC INVITE DESCRIPTION GENERATOR ———
+function getRomanticInvite(date) {
+  const t = date.title;
+  const hrs = Math.round(date.duration / 60);
+  const romantic = {
+    chill: [
+      `I'm setting something up just for us — ${t.toLowerCase()}. No agenda, no distractions. Just you, me, and the kind of night that makes everything else disappear. Clear your evening. ✨`,
+      `You + me + ${t.toLowerCase()}. I'm handling all the details. All you have to do is show up and let me take care of the rest. It's going to be one of those nights. ✨`,
+      `I planned a little something — ${t.toLowerCase()}. Think cozy, think perfect, think the kind of night you'll be telling your friends about. Just bring yourself. ✨`,
+    ],
+    food: [
+      `I've got a night planned around ${t.toLowerCase()} — and trust me, you're going to love it. Come hungry, dress cute, and leave everything else to me. 🍷`,
+      `Clear your schedule — I'm taking you on a ${t.toLowerCase()} kind of night. Good food, even better company, and a few surprises along the way. 🍷`,
+      `You deserve a night where someone else handles everything. So I'm planning ${t.toLowerCase()} for us. All you need to know: it involves amazing food and you. 🍷`,
+    ],
+    creative: [
+      `I found something I think we'd love — ${t.toLowerCase()}. It's creative, it's different, and it's going to be one of those nights we talk about forever. You in? 🎨`,
+      `We're doing something a little different — ${t.toLowerCase()}. No screens, no routine. Just us making something together and having the best time doing it. 🎨`,
+      `I planned a surprise that involves ${t.toLowerCase()}. It's hands-on, it's us, and it's going to be unforgettable. Dress for a little adventure. 🎨`,
+    ],
+    outdoor: [
+      `Pack your sense of adventure — I'm taking you out for ${t.toLowerCase()}. Fresh air, good views, and the kind of quality time that actually recharges you. See you there. 🌿`,
+      `I planned something outdoors for us — ${t.toLowerCase()}. It's going to be beautiful, it's going to be us, and you're going to love every second of it. 🌿`,
+      `You, me, and the great outdoors. I've got ${t.toLowerCase()} planned and it's exactly the kind of day we need. Dress comfortable and leave the rest to me. 🌿`,
+    ],
+    adventure: [
+      `I hope you're ready — I'm taking you on a real adventure. ${t}. It's going to be a rush, it's going to be unforgettable, and you're going to thank me later. ⚡`,
+      `Something exciting is happening and you're invited. ${t} — just the two of us, a little adrenaline, and a whole lot of memories in the making. ⚡`,
+      `Buckle up — I planned ${t.toLowerCase()} for us. It's bold, it's fun, and it's the kind of thing we'll be laughing about for years. Trust me on this one. ⚡`,
+    ],
+    nightlife: [
+      `Get dressed up — I'm taking you out. ${t}. Good energy, good drinks, and the kind of night where we forget what time it is. Let's do this. 🌙`,
+      `We're going out and I've got the whole thing planned. ${t} — just you, me, and a night that feels like it's straight out of a movie. Dress to impress. 🌙`,
+      `I planned a night out for us — ${t.toLowerCase()}. It's going to be the kind of evening that reminds you why date nights matter. All you have to do is look amazing (easy for you). 🌙`,
+    ],
+    romantic: [
+      `I planned something special — just for you. ${t}. No phones, no distractions. Just a night that's entirely about us and making a memory that sticks. 💫`,
+      `You deserve to be swept off your feet, so that's exactly what I'm doing. ${t} — every detail planned, every moment intentional. Just show up and be you. 💫`,
+      `I've been planning something and I can't wait to show you. ${t}. It's romantic, it's thoughtful, and it's everything you deserve. Clear your night. 💫`,
+    ],
+    meaningful: [
+      `I planned something that means a lot to me — ${t.toLowerCase()}. It's not flashy. It's better than that. It's the kind of night that brings us closer. 🤍`,
+      `Some dates are fun. This one's going to matter. ${t} — just us, being intentional about the thing that matters most. I can't wait. 🤍`,
+      `I want to do something real with you — ${t.toLowerCase()}. No gimmicks, just a night that reminds us both why we chose each other. You ready? 🤍`,
+    ],
+  };
+  const options = romantic[date.category] || romantic.romantic;
+  const pick = options[Math.floor(Math.random() * options.length)];
+  return `${pick}\n\n~${hrs} hours, all planned out.\n\nSent with Vela`;
+}
+
 // ——— REAL (FULL DETAILS) INVITE ———
 function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerGender }) {
   const [email, setEmail] = useState("");
   const [time, setTime] = useState("19:00");
-  const desc = `${date.title}\n\n${date.description}\n\nDuration: ~${Math.round(date.duration / 60)}h\n\nSent with Vela`;
+  const [desc] = useState(() => getRomanticInvite(date));
 
   const send = () => {
     const ics = generateICS(date.title, desc, scheduledFor, time);
