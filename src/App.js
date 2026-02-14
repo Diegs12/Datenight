@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const T={bg:"#0E0F13",surface:"#151620",surfaceAlt:"#1C1710",border:"#2A2520",primary:"#D4A574",accent:"#D4A574",green:"#4ade80",yellow:"#D4A574",text:"#E8C49A",textDim:"#7D786F",textFaint:"#5A564F",pink:"#C49080",purple:"#9A8AAA",font:`'DM Sans',sans-serif`,display:`'Fraunces',serif`};
+const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#4ade80",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:10,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
@@ -862,11 +862,30 @@ function Dashboard({ name, quiz, onRetake }) {
   const dragStart = useRef(null);
   const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2500); };
 
-  // Tutorial state
-  const [tutStep, setTutStep] = useState(() => {
-    try { return localStorage.getItem("vela_tutorial_done") ? -1 : 0; } catch { return 0; }
-  });
-  const dismissTut = () => { setTutStep(-1); try { localStorage.setItem("vela_tutorial_done", "1"); } catch {} };
+  // Contextual first-time feature tips
+  const [seenTips, setSeenTips] = useState(() => { try { const s = localStorage.getItem("vela_seen_tips"); return s ? JSON.parse(s) : []; } catch { return []; } });
+  const [featureTip, setFeatureTip] = useState(null);
+  const [missionDone, setMissionDone] = useState(() => { try { return !!localStorage.getItem("vela_mission_done"); } catch { return false; } });
+
+  const FEATURE_TIPS = {
+    home: { icon: "🕯️", title: "Your Home Base", desc: "Welcome to Vela. We pick dates based on what she actually likes. Scroll through your personalized picks, or hit Surprise Me to go full random." },
+    library: { icon: "📚", title: "The Date Library", desc: "Every date we've got — over 90 ideas across 8 categories. Filter by budget, category, or search for something specific. Tap any card to see the full plan." },
+    calendar: { icon: "📅", title: "Your Upcoming Dates", desc: "Everything you've scheduled lives here. Send mystery or full-detail invites, and use the AI planner to get a step-by-step game plan for each one." },
+    memories: { icon: "💾", title: "Date Memories", desc: "After each date, debrief it here — rate her reaction, note what she said, and track whether it's a repeater. This gets smarter the more you use it." },
+    profile: { icon: "👤", title: "Your Profile", desc: "Her vibe type, your quiz answers, budget preferences, and stats all live here. Retake the quiz anytime things change." },
+    surprise: { icon: "🎲", title: "Surprise Me", desc: "Swipe right to schedule a date, left to skip. Tap the info button in the middle to read the full details before deciding. We'll serve them up based on what she likes." },
+  };
+
+  const showTipIfNew = (key) => {
+    if (!seenTips.includes(key) && FEATURE_TIPS[key]) {
+      setFeatureTip(FEATURE_TIPS[key]);
+      const updated = [...seenTips, key];
+      setSeenTips(updated);
+      try { localStorage.setItem("vela_seen_tips", JSON.stringify(updated)); } catch {}
+    }
+  };
+
+  const dismissFeatureTip = () => setFeatureTip(null);
 
   useEffect(() => { try { localStorage.setItem("vela_sched", JSON.stringify(sched)); } catch {} }, [sched]);
   useEffect(() => { try { localStorage.setItem("vela_hist", JSON.stringify(hist)); } catch {} }, [hist]);
@@ -1049,6 +1068,7 @@ function Dashboard({ name, quiz, onRetake }) {
     setSwipeIdx(0);
     setDragX(0);
     setSwipeMode(true);
+    showTipIfNew("surprise");
   };
 
   const swipeCard = (dir) => {
@@ -1200,10 +1220,10 @@ function Dashboard({ name, quiz, onRetake }) {
 
       <style>{`
         .vela-scroll::-webkit-scrollbar { height: 4px; }
-        .vela-scroll::-webkit-scrollbar-track { background: #0E0F13; border-radius: 2px; }
-        .vela-scroll::-webkit-scrollbar-thumb { background: #D4A574; border-radius: 2px; }
-        .vela-scroll::-webkit-scrollbar-thumb:hover { background: #E8C49A; }
-        .vela-scroll { scrollbar-width: thin; scrollbar-color: #D4A574 #0E0F13; }
+        .vela-scroll::-webkit-scrollbar-track { background: #141414; border-radius: 2px; }
+        .vela-scroll::-webkit-scrollbar-thumb { background: #D68853; border-radius: 2px; }
+        .vela-scroll::-webkit-scrollbar-thumb:hover { background: #F5F0EB; }
+        .vela-scroll { scrollbar-width: thin; scrollbar-color: #D68853 #141414; }
       `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
@@ -1216,7 +1236,7 @@ function Dashboard({ name, quiz, onRetake }) {
       {/* Top header bar */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "env(safe-area-inset-top, 0) 20px 0", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0" }}>
-          <div onClick={() => setTab("home")} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}><div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg, #D4A574 0%, #B8845A 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color: "#0E0F13", fontFamily: T.display }}>V</div><h1 style={{ color: T.text, fontSize: 18, margin: 0, fontWeight: 700, fontFamily: T.display }}>vela</h1></div>
+          <div onClick={() => setTab("home")} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}><div style={{ width: 30, height: 30, borderRadius: 8, background: "#141414", border: "1px solid #D6885333", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, fontFamily: T.display }}><span style={{ background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>V</span></div><h1 style={{ fontSize: 18, margin: 0, fontWeight: 600, fontFamily: "'Playfair Display', serif", letterSpacing: "0.5px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>vela</h1></div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <button onClick={() => setShowHype(true)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, position: "relative", padding: 8, minWidth: 44, minHeight: 44, display: "flex", alignItems: "center", justifyContent: "center" }}>
               🔔
@@ -1230,7 +1250,7 @@ function Dashboard({ name, quiz, onRetake }) {
       {/* Fixed bottom nav */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: T.surface, borderTop: `1px solid ${T.border}`, display: "flex", justifyContent: "space-around", alignItems: "center", zIndex: 100, paddingBottom: "env(safe-area-inset-bottom, 8px)", paddingTop: 6 }}>
         {TABS.map(t => (
-          <button key={t.k} onClick={() => setTab(t.k)} style={{
+          <button key={t.k} onClick={() => { setTab(t.k); showTipIfNew(t.k); }} style={{
             background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column",
             alignItems: "center", gap: 3, padding: "6px 12px", minWidth: 56, minHeight: 48,
             transition: "all 0.15s",
@@ -1243,6 +1263,11 @@ function Dashboard({ name, quiz, onRetake }) {
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px 16px 100px" }}>
         {tab === "home" && <>
+          {!missionDone && <div style={{ ...crd({ padding: 24, marginBottom: 20 }), border: `1px solid ${T.primary}33`, background: T.primary + "08", position: "relative" }}>
+            <button onClick={() => { setMissionDone(true); try { localStorage.setItem("vela_mission_done", "1"); } catch {} }} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", color: T.textFaint, fontSize: 16, cursor: "pointer", padding: 4 }}>✕</button>
+            <p style={{ color: T.primary, fontSize: 13, margin: "0 0 6px", fontWeight: 700, fontFamily: T.display }}>🕯️ Here's the deal.</p>
+            <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>Vela exists so you never have to Google "date ideas" again. We already know what she likes — now we're giving you the plans to match. Browse, schedule, send the invite, and show up like you've been planning it for weeks.</p>
+          </div>}
           <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
             {[{ l: "Upcoming", v: sched.length, c: T.primary }, { l: "Completed", v: hist.length, c: T.green }, { l: "Library", v: DATES.length, c: T.yellow }].map(s =>
               <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p><p style={{ color: s.c, fontSize: 26, margin: 0, fontWeight: 800 }}>{s.v}</p></div>
@@ -1385,6 +1410,13 @@ function Dashboard({ name, quiz, onRetake }) {
             <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 4px", fontWeight: 800, fontFamily: T.display }}>{name}</h2>
             <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>Vela Member</p>
           </div>
+          {(() => { const v = getPartnerVibe(quiz); return (
+            <div style={{ ...crd({ padding: 20, marginBottom: 20 }), borderLeft: `3px solid ${T.primary}` }}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>{v.emoji}</div>
+              <div style={{ fontFamily: T.display, fontWeight: 700, color: T.primary, fontSize: 18, marginBottom: 6 }}>{v.title}</div>
+              <div style={{ color: T.textDim, fontSize: 14, lineHeight: 1.6 }}>{v.description}</div>
+            </div>
+          ); })()}
           <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
             {[{ l: "Dates Done", v: hist.length, i: "✓", c: T.green }, { l: "Upcoming", v: sched.length, i: "📅", c: T.primary }, { l: "In Library", v: DATES.length, i: "📚", c: T.yellow }].map(s =>
               <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ fontSize: 20, margin: "0 0 4px" }}>{s.i}</p><p style={{ color: s.c, fontSize: 22, margin: "0 0 2px", fontWeight: 800 }}>{s.v}</p><p style={{ color: T.textFaint, fontSize: 10, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p></div>
@@ -1404,50 +1436,20 @@ function Dashboard({ name, quiz, onRetake }) {
             <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700, fontFamily: T.display }}>Partner Preferences</h3>
             {QUIZ.filter(q => !["q12", "q13"].includes(q.id)).map(q => { const a = quiz[q.id]; if (!a || (Array.isArray(a) && !a.length)) return null; return <div key={q.id} style={{ ...crd({ padding: 14, marginBottom: 8 }) }}><p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: 0.5 }}>{q.q}</p><p style={{ color: T.text, fontSize: 14, margin: 0 }}>{Array.isArray(a) ? a.join(", ") : a}</p></div>; })}
           </>}
-          <div style={{ textAlign: "center", padding: "30px 0 40px" }}><p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 4px", fontFamily: T.display }}>Vela v2.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Date night. Figured out.</p></div>
+          <div style={{ textAlign: "center", padding: "30px 0 40px" }}><p style={{ fontSize: 12, margin: "0 0 4px", fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-2px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>Vela v2.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Date night. Figured out.</p></div>
         </>}
       </div>
 
-      {/* Tutorial Overlay */}
-      {tutStep >= 0 && tutStep < 7 && (() => {
-        const steps = [
-          { title: "Welcome to Vela", desc: "This is your home base. Scroll through curated date ideas picked just for you.", icon: "🏠" },
-          { title: "Surprise Me", desc: "Tap this to get random dates served up one at a time, Tinder-style.", icon: "🎲" },
-          { title: "Swipe to Decide", desc: "Swipe right or tap the heart to schedule it. Swipe left or tap X to skip. Tap the middle button to see the full details.", icon: "👆" },
-          { title: "Date Library", desc: "Browse the full collection. Filter by category and budget.", icon: "📚" },
-          { title: "Calendar", desc: "Schedule dates and track upcoming plans here.", icon: "📅" },
-          { title: "Your Profile", desc: "See your stats, vibe profile, and update preferences.", icon: "👤" },
-          { title: "You're All Set", desc: "That's it. Now go plan something she'll actually remember.", icon: "🕯️" },
-        ];
-        const s = steps[tutStep];
-        return (
-          <div style={{ position: "fixed", inset: 0, zIndex: 9998, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            {/* Dark overlay */}
-            <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.82)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }} />
-            {/* Content card */}
-            <div style={{ position: "relative", zIndex: 1, background: T.surface, borderRadius: 20, padding: "32px 28px", maxWidth: 320, width: "90%", textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>{s.icon}</div>
-              <h3 style={{ color: T.text, fontSize: 20, margin: "0 0 8px", fontWeight: 700, fontFamily: T.display }}>{s.title}</h3>
-              <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 24px", lineHeight: 1.5 }}>{s.desc}</p>
-              {/* Step dots */}
-              <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 20 }}>
-                {steps.map((_, i) => <div key={i} style={{ width: i === tutStep ? 20 : 6, height: 6, borderRadius: 3, background: i === tutStep ? T.primary : T.border, transition: "all 0.3s" }} />)}
-              </div>
-              {/* Buttons */}
-              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                <button onClick={dismissTut} style={btn("transparent", T.textDim, { padding: "10px 20px", fontSize: 13 })}>Skip</button>
-                <button onClick={() => tutStep < 6 ? setTutStep(tutStep + 1) : dismissTut()} style={btn(T.primary, "#0E0F13", { padding: "10px 24px", fontSize: 13, fontWeight: 700 })}>{tutStep < 6 ? "Next" : "Let's Go"}</button>
-              </div>
-            </div>
-            {/* Bottom tab highlight */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "space-around", padding: "0 16px", zIndex: 2 }}>
-              {["🏠", "📚", "📅", "🧠", "👤"].map((icon, i) => (
-                <div key={i} style={{ width: 48, height: 48, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: (tutStep === 0 && i === 0) || (tutStep === 3 && i === 1) || (tutStep === 4 && i === 2) || (tutStep === 5 && i === 4) ? `${T.primary}30` : "transparent", border: (tutStep === 0 && i === 0) || (tutStep === 3 && i === 1) || (tutStep === 4 && i === 2) || (tutStep === 5 && i === 4) ? `2px solid ${T.primary}` : "2px solid transparent", transition: "all 0.3s", marginBottom: 16 }}>{icon}</div>
-              ))}
-            </div>
-          </div>
-        );
-      })()}
+      {/* Contextual first-time tooltip */}
+      {featureTip && <div style={{ position: "fixed", inset: 0, zIndex: 9998, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => dismissFeatureTip()}>
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)" }} />
+        <div onClick={e => e.stopPropagation()} style={{ position: "relative", zIndex: 1, background: T.surface, borderRadius: 18, padding: "28px 24px", maxWidth: 320, width: "90%", textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 16px 48px rgba(0,0,0,0.5)" }}>
+          <div style={{ fontSize: 36, marginBottom: 10 }}>{featureTip.icon}</div>
+          <h3 style={{ color: T.text, fontSize: 18, margin: "0 0 8px", fontWeight: 700, fontFamily: T.display }}>{featureTip.title}</h3>
+          <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>{featureTip.desc}</p>
+          <button onClick={() => dismissFeatureTip()} style={btn(T.primary, "#141414", { padding: "10px 24px", fontSize: 14, fontWeight: 700 })}>Got it</button>
+        </div>
+      </div>}
 
     </div>
   );
@@ -1460,8 +1462,8 @@ function Welcome({ onStart }) {
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
       <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40 }}>
         <div style={{ textAlign: "center", marginBottom: 30 }}>
-          <div style={{ width: 56, height: 56, borderRadius: 14, background: "linear-gradient(135deg, #D4A574 0%, #B8845A 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 700, color: "#0E0F13", fontFamily: T.display, margin: "0 auto 12px" }}>V</div>
-          <h1 style={{ color: T.text, fontSize: 34, margin: 0, fontWeight: 700, letterSpacing: "-1px", fontFamily: T.display }}>vela</h1>
+          <div style={{ width: 56, height: 56, borderRadius: 14, background: "#141414", border: "1px solid #D6885333", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 700, fontFamily: T.display, margin: "0 auto 12px" }}><span style={{ background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>V</span></div>
+          <h1 style={{ fontSize: 34, margin: 0, fontWeight: 600, fontFamily: "'Playfair Display', serif", letterSpacing: "0.5px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>vela</h1>
           <p style={{ color: T.textDim, margin: "10px 0 0", fontSize: 15, lineHeight: 1.5 }}>Date night. Figured out.</p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -1500,8 +1502,8 @@ function Splash({ onDone }) {
           100% { opacity: 1; transform: translateY(0); letter-spacing: 2px; }
         }
         @keyframes velaGlow {
-          0%, 100% { text-shadow: 0 0 30px #D4A57433, 0 0 60px #D4A57418; }
-          50% { text-shadow: 0 0 50px #D4A57455, 0 0 100px #D4A57428; }
+          0%, 100% { text-shadow: 0 0 30px #E8753233, 0 0 60px #E8753218; }
+          50% { text-shadow: 0 0 50px #E8753255, 0 0 100px #E8753228; }
         }
         @keyframes tagSlide {
           0% { opacity: 0; transform: translateY(8px); }
@@ -1516,14 +1518,17 @@ function Splash({ onDone }) {
       {/* Ambient glow behind text */}
       <div style={{
         position: "absolute", width: 300, height: 300, borderRadius: "50%",
-        background: "radial-gradient(circle, #D4A57412 0%, transparent 70%)",
+        background: "radial-gradient(circle, #E8753212 0%, transparent 70%)",
         opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease",
       }} />
 
       {/* "vela" wordmark */}
       <h1 style={{
-        fontFamily: T.display, fontSize: 72, fontWeight: 700, color: "#D4A574", margin: 0,
-        lineHeight: 1, textTransform: "lowercase",
+        fontFamily: "'Playfair Display', serif", fontSize: 72, fontWeight: 600, margin: 0,
+        lineHeight: 1, textTransform: "lowercase", letterSpacing: "0.5px",
+        background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)",
+        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+        filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))",
         opacity: phase >= 1 ? 1 : 0,
         animation: phase >= 1 ? "velaFadeUp 1s cubic-bezier(0.16,1,0.3,1) forwards, velaGlow 3s ease-in-out 1s infinite" : "none",
       }}>vela</h1>
@@ -1603,6 +1608,52 @@ function UnlockScreen({ name, onComplete }) {
   );
 }
 
+// ——— PARTNER VIBE ———
+function getPartnerVibe(quiz) {
+  const q1 = quiz?.q1 || "";
+  const q3 = Array.isArray(quiz?.q3) ? quiz.q3 : [];
+  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: "The Cozy Queen", description: "She'd rather be under a blanket than under the stars. Candlelit dinners, movie nights, and anything involving pajamas." };
+  if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: "Sitting still isn't her thing. She wants surprises, new experiences, and stories worth telling." };
+  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: "She notices the details. Candles, flowers, handwritten notes — the whole nine. Effort is her love language." };
+  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: "She lights up when she's making something. Art, cooking, crafts — she wants to build memories with her hands." };
+  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: "She's down for anything with a scoreboard. Games, challenges, bets — keep it light and she's all in." };
+  if (q3.includes("Intellectual / curious")) return { emoji: "📚", title: "The Deep Thinker", description: "She wants conversation that goes somewhere. Museums, bookstores, and dates that feed the mind." };
+  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: "Fresh air is her happy place. Hikes, bikes, beaches — if it's outside, she's interested." };
+  return { emoji: "💫", title: "The Vibe", description: "She's a little bit of everything. Keep it varied and she'll keep showing up." };
+}
+
+// ——— VIBE REVEAL (after unlock, first time only) ———
+function VibeReveal({ quiz, onContinue }) {
+  const v = getPartnerVibe(quiz);
+  const vibes = Array.isArray(quiz?.q3) ? quiz.q3.slice(0, 3) : [];
+  const cuisines = Array.isArray(quiz?.q8) ? quiz.q8.slice(0, 3) : [];
+  const energy = quiz?.q1 || "";
+
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
+      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40, textAlign: "center" }}>
+        <div style={{ fontSize: 56, width: 80, height: 80, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", borderRadius: "50%", boxShadow: `0 0 30px ${T.primary}33, 0 0 60px ${T.primary}18` }}>{v.emoji}</div>
+        <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 4px", fontStyle: "italic" }}>She's...</p>
+        <h2 style={{ color: T.primary, fontSize: 28, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>{v.title}</h2>
+        <p style={{ color: T.textDim, fontSize: 15, margin: "0 0 24px", lineHeight: 1.6 }}>{v.description}</p>
+
+        <div style={{ height: 1, background: T.border, margin: "0 0 20px" }} />
+
+        {(vibes.length > 0 || energy || cuisines.length > 0) && <div style={{ marginBottom: 24 }}>
+          <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>Quick hits</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
+            {energy && <span style={{ background: T.primary + "18", color: T.primary, fontSize: 12, fontWeight: 600, padding: "6px 14px", borderRadius: 20, border: `1px solid ${T.primary}33` }}>{energy.split(",")[0]}</span>}
+            {vibes.map(v2 => <span key={v2} style={{ background: T.surface, color: T.textDim, fontSize: 12, fontWeight: 600, padding: "6px 14px", borderRadius: 20, border: `1px solid ${T.border}` }}>{v2.split(" / ")[0]}</span>)}
+            {cuisines.map(c => <span key={c} style={{ background: T.surface, color: T.textDim, fontSize: 12, fontWeight: 600, padding: "6px 14px", borderRadius: 20, border: `1px solid ${T.border}` }}>{c.split(" / ")[0]}</span>)}
+          </div>
+        </div>}
+
+        <button onClick={onContinue} style={btn(T.primary, "#fff", { width: "100%", padding: "15px 24px", fontSize: 16, fontWeight: 700 })}>Let's Find Her Dates →</button>
+      </div>
+    </div>
+  );
+}
+
 // ——— APP ROOT ———
 export default function App() {
   const [screen, setScreen] = useState("splash");
@@ -1616,6 +1667,7 @@ export default function App() {
   if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : name && quiz ? "unlock" : "welcome")} />;
   if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("quiz"); }} />;
   if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} />;
-  if (screen === "unlock") return <UnlockScreen name={name} onComplete={() => { setContactDone(true); setScreen("dashboard"); }} />;
+  if (screen === "unlock") return <UnlockScreen name={name} onComplete={() => { setContactDone(true); setScreen("vibe_reveal"); }} />;
+  if (screen === "vibe_reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} />;
   return <Dashboard name={name} quiz={quiz} onRetake={() => setScreen("quiz")} />;
 }
