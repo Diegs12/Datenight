@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#4ade80",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
-const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 20px rgba(214,136,83,0.45), 0 4px 12px rgba(139,74,40,0.3), inset 0 1px 0 rgba(255,208,161,0.4)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
+const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 10px rgba(214,136,83,0.2), 0 4px 10px rgba(139,74,40,0.15), inset 0 1px 0 rgba(255,208,161,0.3)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
 // ——— SEASON HELPER ———
