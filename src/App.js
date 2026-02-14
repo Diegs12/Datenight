@@ -1481,19 +1481,12 @@ function Splash({ onDone }) {
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 200);
-    const t2 = setTimeout(() => setPhase(2), 1400);
+    const t2 = setTimeout(() => setPhase(2), 1200);
     const t3 = setTimeout(() => setPhase(3), 2600);
     const t4 = setTimeout(() => onDone(), 3000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const LINES = [
-    "They're gonna remember this one.",
-    "Stop overthinking. Start planning.",
-    "Date nights that actually hit different.",
-  ];
-  const line = LINES[Math.floor(Math.random() * LINES.length)];
 
   return (
     <div style={{
@@ -1502,28 +1495,17 @@ function Splash({ onDone }) {
       opacity: phase >= 3 ? 0 : 1, transition: "opacity 0.35s ease-out",
     }}>
       <style>{`
-        @keyframes amberGlow {
-          0%, 100% { filter: drop-shadow(0 0 8px #D4A57455) drop-shadow(0 0 25px #D4A57422); transform: scale(1); }
-          50% { filter: drop-shadow(0 0 20px #D4A57488) drop-shadow(0 0 50px #D4A57444); transform: scale(1.04); }
+        @keyframes velaFadeUp {
+          0% { opacity: 0; transform: translateY(20px); letter-spacing: 12px; }
+          100% { opacity: 1; transform: translateY(0); letter-spacing: 2px; }
         }
-        @keyframes logoReveal {
-          0% { opacity: 0; transform: translateY(16px) scale(0.92); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes velaGlow {
+          0%, 100% { text-shadow: 0 0 30px #D4A57433, 0 0 60px #D4A57418; }
+          50% { text-shadow: 0 0 50px #D4A57455, 0 0 100px #D4A57428; }
         }
-        @keyframes tagFade {
-          0% { opacity: 0; transform: translateY(10px); }
+        @keyframes tagSlide {
+          0% { opacity: 0; transform: translateY(8px); }
           100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulseRing {
-          0% { transform: scale(0.8); opacity: 0.4; }
-          50% { transform: scale(1.4); opacity: 0; }
-          100% { transform: scale(0.8); opacity: 0; }
-        }
-        @keyframes flickerCandle {
-          0%, 100% { opacity: 1; transform: scaleX(1) translateY(0); }
-          25% { opacity: 0.85; transform: scaleX(0.92) translateY(-1px); }
-          50% { opacity: 1; transform: scaleX(1.05) translateY(-2px); }
-          75% { opacity: 0.9; transform: scaleX(0.96) translateY(0px); }
         }
         @keyframes barGrow {
           0% { width: 0%; }
@@ -1531,67 +1513,31 @@ function Splash({ onDone }) {
         }
       `}</style>
 
-      {/* Ambient glow */}
+      {/* Ambient glow behind text */}
       <div style={{
-        position: "absolute", width: 240, height: 240, borderRadius: "50%",
-        background: "radial-gradient(circle, #D4A57418 0%, transparent 70%)",
-        animation: phase >= 1 ? "pulseRing 2.5s ease-in-out infinite" : "none",
-        opacity: phase >= 1 ? 1 : 0,
+        position: "absolute", width: 300, height: 300, borderRadius: "50%",
+        background: "radial-gradient(circle, #D4A57412 0%, transparent 70%)",
+        opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease",
       }} />
 
-      {/* Vela logo word with candle "l" */}
+      {/* "vela" wordmark */}
+      <h1 style={{
+        fontFamily: T.display, fontSize: 72, fontWeight: 700, color: "#D4A574", margin: 0,
+        lineHeight: 1, textTransform: "lowercase",
+        opacity: phase >= 1 ? 1 : 0,
+        animation: phase >= 1 ? "velaFadeUp 1s cubic-bezier(0.16,1,0.3,1) forwards, velaGlow 3s ease-in-out 1s infinite" : "none",
+      }}>vela</h1>
+
+      {/* "DATE NIGHT  FIGURED OUT" tagline */}
       <div style={{
-        display: "flex", alignItems: "flex-end", gap: 0, marginBottom: 16,
-        opacity: phase >= 1 ? 1 : 0,
-        animation: phase >= 1 ? "logoReveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards" : "none",
-      }}>
-        <span style={{ fontFamily: T.display, fontSize: 64, fontWeight: 500, color: T.text, lineHeight: 1 }}>v</span>
-        <span style={{ fontFamily: T.display, fontSize: 64, fontWeight: 500, color: T.text, lineHeight: 1, marginRight: 1 }}>e</span>
-        {/* Candle "l" */}
-        <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", position: "relative", width: 18, marginBottom: 4 }}>
-          {/* Flame - SVG for clean shape */}
-          <svg width="18" height="24" viewBox="0 0 18 24" style={{ animation: phase >= 1 ? "flickerCandle 2s ease-in-out infinite" : "none", filter: "drop-shadow(0 0 8px #D4A57466) drop-shadow(0 0 16px #D4A57433)" }}>
-            <defs>
-              <linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#D4A574" />
-                <stop offset="40%" stopColor="#E8C49A" />
-                <stop offset="70%" stopColor="#FFF5E0" />
-                <stop offset="100%" stopColor="#FFFBF0" />
-              </linearGradient>
-              <linearGradient id="innerFlame" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#E8C49A" />
-                <stop offset="100%" stopColor="#FFFFFF" />
-              </linearGradient>
-            </defs>
-            {/* Outer flame */}
-            <path d="M9 1 C9 1, 15 10, 15 15 C15 19, 12 23, 9 23 C6 23, 3 19, 3 15 C3 10, 9 1, 9 1Z" fill="url(#flameGrad)" opacity="0.9" />
-            {/* Inner flame */}
-            <path d="M9 8 C9 8, 12 13, 12 16 C12 18.5, 10.5 21, 9 21 C7.5 21, 6 18.5, 6 16 C6 13, 9 8, 9 8Z" fill="url(#innerFlame)" opacity="0.7" />
-          </svg>
-          {/* Wick */}
-          <span style={{ display: "block", width: 1.5, height: 3, background: "#7D786F", marginTop: -2 }} />
-          {/* Candle body */}
-          <span style={{ display: "block", width: 6, height: 36, background: "linear-gradient(to bottom, #F0DCC0, #E8C49A, #D4A574)", borderRadius: "2px 2px 3px 3px", boxShadow: "1px 0 3px rgba(0,0,0,0.15), -1px 0 3px rgba(0,0,0,0.1)" }} />
-        </span>
-        <span style={{ fontFamily: T.display, fontSize: 64, fontWeight: 500, color: T.text, lineHeight: 1, marginLeft: 1 }}>a</span>
-      </div>
-
-      {/* Tagline */}
-      <p style={{
-        color: T.textDim, fontSize: 11, fontWeight: 500, margin: "8px 0 24px",
-        opacity: phase >= 1 ? 1 : 0,
-        letterSpacing: 4, textTransform: "uppercase", fontFamily: T.font,
-        transition: "opacity 0.5s ease 0.4s",
-      }}>DATE NIGHT. FIGURED OUT.</p>
-
-      {/* Rotating hype line */}
-      <p style={{
-        color: T.textDim, fontSize: 15, fontWeight: 400, margin: 0,
+        display: "flex", alignItems: "center", gap: 12, marginTop: 16,
         opacity: phase >= 2 ? 1 : 0,
-        animation: phase >= 2 ? "tagFade 0.6s ease-out forwards" : "none",
-        textAlign: "center", padding: "0 40px", lineHeight: 1.5,
-        fontFamily: T.display, fontStyle: "italic",
-      }}>{line}</p>
+        animation: phase >= 2 ? "tagSlide 0.6s ease-out forwards" : "none",
+      }}>
+        <span style={{ color: T.textDim, fontSize: 10, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", fontFamily: T.font }}>DATE NIGHT</span>
+        <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#D4A574", opacity: 0.5 }} />
+        <span style={{ color: T.textDim, fontSize: 10, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", fontFamily: T.font }}>FIGURED OUT</span>
+      </div>
 
       {/* Subtle loading bar */}
       <div style={{
