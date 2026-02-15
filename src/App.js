@@ -29,7 +29,7 @@ const isInSeason = (dateId) => {
   return seasons.includes(getCurrentSeason());
 };
 const crd=(x={})=>({background:T.surface,borderRadius:14,padding:24,border:`1px solid ${T.border}`,...x});
-const AMAZON_TAG="YOURTAG-20";
+const AMAZON_TAG="vallotaventur-20";
 const amazonUrl=(name)=>`https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=${AMAZON_TAG}`;
 
 const GRADS={
