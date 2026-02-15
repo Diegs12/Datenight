@@ -1080,7 +1080,6 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
 
   useEffect(() => { try { localStorage.setItem("vela_sched", JSON.stringify(sched)); } catch {} }, [sched]);
   useEffect(() => { try { localStorage.setItem("vela_hist", JSON.stringify(hist)); } catch {} }, [hist]);
-  useEffect(() => { try { localStorage.setItem("vela_dismissed_notifs", JSON.stringify(dismissedNotifKeys)); } catch {} }, [dismissedNotifKeys]);
 
   const cats = [...new Set(DATES.map(d => d.category))];
   const [searchQ, setSearchQ] = useState("");
@@ -1186,6 +1185,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
 
   // Time-aware notification system: only fires on the day of the date
   const [dismissedNotifKeys, setDismissedNotifKeys] = useState(() => { try { const d = localStorage.getItem("vela_dismissed_notifs"); return d ? JSON.parse(d) : []; } catch { return []; } });
+  useEffect(() => { try { localStorage.setItem("vela_dismissed_notifs", JSON.stringify(dismissedNotifKeys)); } catch {} }, [dismissedNotifKeys]);
   useEffect(() => {
     const checkNotifs = () => {
       const now = new Date();
@@ -1626,7 +1626,8 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
             <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700, fontFamily: T.display }}>{partnerName ? `${partnerName}'s Preferences` : "Partner Preferences"}</h3>
             {QUIZ.filter(q => !["q12", "q13"].includes(q.id)).map(q => { const a = quiz[q.id]; if (!a || (Array.isArray(a) && !a.length)) return null; return <div key={q.id} style={{ ...crd({ padding: 14, marginBottom: 8 }) }}><p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: 0.5 }}>{sub(q.q, partnerName, partnerGender)}</p><p style={{ color: T.text, fontSize: 14, margin: 0 }}>{Array.isArray(a) ? a.map(x => sub(x, partnerName, partnerGender)).join(", ") : sub(a, partnerName, partnerGender)}</p></div>; })}
           </>}
-          <div style={{ textAlign: "center", padding: "30px 0 40px" }}><p style={{ fontSize: 12, margin: "0 0 4px", fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-2px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>Vela v2.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Date night. Figured out.</p></div>
+          <p style={{ color: T.textFaint, fontSize: 10, textAlign: "center", margin: "20px 0 0", lineHeight: 1.5 }}>As an Amazon Associate, I earn from qualifying purchases.</p>
+          <div style={{ textAlign: "center", padding: "16px 0 40px" }}><p style={{ fontSize: 12, margin: "0 0 4px", fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-2px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>Vela v2.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Date night. Figured out.</p></div>
         </>}
       </div>
 
