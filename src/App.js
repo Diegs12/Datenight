@@ -6,8 +6,8 @@ const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"non
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
 // ——— PARTNER PRONOUN HELPER ———
-const P=(g)=>g==="guy"?{they:"he",them:"him",their:"his",theyre:"he's",theyll:"he'll",They:"He",Their:"His",Theyre:"He's"}:{they:"she",them:"her",their:"her",theyre:"she's",theyll:"she'll",They:"She",Their:"Her",Theyre:"She's"};
-const sub=(str,name,gender)=>{if(!name||!str)return str;const p=P(gender);return str.replace(/\{partner\}/g,name).replace(/\{they\}/g,p.they).replace(/\{them\}/g,p.them).replace(/\{their\}/g,p.their).replace(/\{theyre\}/g,p.theyre).replace(/\{theyll\}/g,p.theyll).replace(/\{They\}/g,p.They).replace(/\{Their\}/g,p.Their).replace(/\{Theyre\}/g,p.Theyre);};
+const P=(g)=>g==="guy"?{they:"he",them:"him",their:"his",theyre:"he's",theyll:"he'll",They:"He",Their:"His",Theyre:"He's",Theyll:"He'll"}:{they:"she",them:"her",their:"her",theyre:"she's",theyll:"she'll",They:"She",Their:"Her",Theyre:"She's",Theyll:"She'll"};
+const sub=(str,name,gender)=>{if(!name||!str)return str;const p=P(gender);return str.replace(/\{partner\}/g,name).replace(/\{they\}/g,p.they).replace(/\{them\}/g,p.them).replace(/\{their\}/g,p.their).replace(/\{theyre\}/g,p.theyre).replace(/\{theyll\}/g,p.theyll).replace(/\{They\}/g,p.They).replace(/\{Their\}/g,p.Their).replace(/\{Theyre\}/g,p.Theyre).replace(/\{Theyll\}/g,p.Theyll);};
 
 // ——— SEASON HELPER ———
 const SEASONAL_DATES = {
@@ -803,7 +803,7 @@ function QuizFlow({ onComplete, existing, partnerName, partnerGender }) {
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 26, gap: 10 }}>
             <button onClick={() => step > 0 && setStep(step - 1)} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, opacity: step === 0 ? 0.3 : 1 })} disabled={step === 0}>Back</button>
             <button onClick={() => { const updated = { ...ans }; delete updated[q.id]; setAns(updated); if (step < QUIZ.length - 1) setStep(step + 1); else onComplete(updated); }} style={btn("transparent", T.textFaint, { border: `1px solid ${T.border}`, fontSize: 13 })}>Skip</button>
-            <button onClick={next} style={btn(ok ? T.primary : T.border, ok ? "#fff" : T.textFaint)} disabled={!ok}>{step === QUIZ.length - 1 ? "Finish →" : "Next →"}</button>
+            <button onClick={next} style={ok ? btnHero() : btn(T.border, T.textFaint)} disabled={!ok}>{step === QUIZ.length - 1 ? "Finish →" : "Next →"}</button>
           </div>
         </div>
       </div>
@@ -839,7 +839,7 @@ function Debrief({ entry, onSave, onClose, partnerName }) {
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Skip</button>
-          <button onClick={() => onSave({ rating: rat, reaction: react, notes, again })} style={btn(T.primary, "#fff", { flex: 1 })}>Save</button>
+          <button onClick={() => onSave({ rating: rat, reaction: react, notes, again })} style={btnHero({ flex: 1 })}>Save</button>
         </div>
       </div>
     </div>
@@ -1389,7 +1389,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
             )}
           </div>
           <button onClick={surprise} style={{ ...btnHero({ width: "100%", marginBottom: 12 }) }}>🎲 Surprise Me</button>
-          <button onClick={genMonth} style={{ ...btn(T.surface, T.text), width: "100%", padding: "13px 24px", fontSize: 14, marginBottom: 22, border: `1px solid ${T.border}` }}>📅 Generate This Month's Dates</button>
+          <button onClick={genMonth} style={btnHero({ width: "100%", marginBottom: 22 })}>📅 Generate This Month's Dates</button>
 
           {notifs.length > 0 && <div style={{ ...crd({ padding: 16, marginBottom: 20 }), border: `1.5px solid ${T.yellow}33`, background: T.yellow + "08", cursor: "pointer" }} onClick={() => setShowHype(true)}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -1599,7 +1599,7 @@ function PartnerScreen({ onComplete }) {
               <button onClick={() => setGender("guy")} style={btn(gender === "guy" ? T.primary + "22" : T.bg, gender === "guy" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "guy" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👨 Guy</button>
             </div>
           </div>
-          <button onClick={() => ready && onComplete(partnerName.trim(), gender)} disabled={!ready} style={btn(ready ? T.primary : T.border, ready ? "#fff" : T.textFaint, { padding: "15px 24px", fontSize: 16, fontWeight: 700, marginTop: 4 })}>Continue →</button>
+          <button onClick={() => ready && onComplete(partnerName.trim(), gender)} disabled={!ready} style={ready ? btnHero({ marginTop: 4 }) : btn(T.border, T.textFaint, { padding: "16px 24px", fontSize: 16, fontWeight: 700, marginTop: 4 })}>Continue →</button>
         </div>
       </div>
     </div>
@@ -1619,7 +1619,7 @@ function Welcome({ onStart }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <input placeholder="Your first name" value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === "Enter" && name.trim() && onStart(name.trim())} style={inp({ fontSize: 16, padding: "14px 18px", textAlign: "center" })} />
-          <button onClick={() => name.trim() && onStart(name.trim())} disabled={!name.trim()} style={btn(name.trim() ? T.primary : T.border, name.trim() ? "#fff" : T.textFaint, { padding: "15px 24px", fontSize: 16, fontWeight: 700 })}>Get Started →</button>
+          <button onClick={() => name.trim() && onStart(name.trim())} disabled={!name.trim()} style={name.trim() ? btnHero() : btn(T.border, T.textFaint, { padding: "16px 24px", fontSize: 16, fontWeight: 700 })}>Get Started →</button>
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 24 }}>
           {[{ n: "90+", l: "Date Ideas" }, { n: "8", l: "Categories" }, { n: "$0–300", l: "Budget Range" }].map(s => <div key={s.l} style={{ textAlign: "center" }}><p style={{ color: T.primary, fontSize: 18, margin: "0 0 2px", fontWeight: 800 }}>{s.n}</p><p style={{ color: T.textFaint, fontSize: 10, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p></div>)}
@@ -1753,7 +1753,7 @@ function UnlockScreen({ name, onComplete }) {
             <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>City *</label>
             <input type="text" placeholder="e.g. Austin, TX" value={city} onChange={e => setCity(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
           </div>
-          <button onClick={handleSubmit} disabled={!valid || loading} style={btn(valid ? T.primary : T.border, valid ? "#fff" : T.textFaint, { padding: "15px 24px", fontSize: 16, fontWeight: 700, marginTop: 6, opacity: loading ? 0.6 : 1 })}>
+          <button onClick={handleSubmit} disabled={!valid || loading} style={valid ? btnHero({ marginTop: 6, opacity: loading ? 0.6 : 1 }) : btn(T.border, T.textFaint, { padding: "16px 24px", fontSize: 16, fontWeight: 700, marginTop: 6 })}>
             {loading ? "Unlocking..." : "Unlock My Dates →"}
           </button>
         </div>
