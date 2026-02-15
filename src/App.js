@@ -112,20 +112,16 @@ const getTier=(p)=>p<=20?BTIERS[0]:p<=50?BTIERS[1]:p<=100?BTIERS[2]:BTIERS[3];
 
 const DRESS_HINTS={outdoor:"Wear something comfortable and layered. Sneakers or boots recommended.",food:"Casual is perfect. Nothing too fancy.",adventure:"Dress for movement . comfortable shoes, clothes you can be active in.",creative:"Wear something you don't mind getting a little messy.",nightlife:"Dress to impress. Something you feel good in.",chill:"Cozy vibes . your comfiest cute outfit.",romantic:"Wear something that makes you feel confident 😏",meaningful:"Come as you are. Comfortable and real."};
 
-const RED_HERRINGS=[
-  "Might want to stretch beforehand... or maybe not 🤷‍♂️",
-  "Hope you're not afraid of the dark...",
-  "You might want to practice your poker face",
-  "Don't eat too much beforehand. Or do. I'm not the boss of you.",
-  "I'd say bring a jacket... but I might just be messing with you",
-  "Hope you've been working on your balance 😏",
-  "You'll want your phone charged for this one",
-  "Let's just say... plan to be impressed",
-  "I hope you like surprises. That's all I'm saying.",
-  "Bring your A-game. That's your only hint.",
-  "You might want to Google something before tonight... but I won't tell you what",
-  "All I'll say is: trust me on this one",
-];
+const MYSTERY_TEASERS={
+  outdoor:["Fresh air is involved. That's all I'm saying.","You'll want your phone charged for the photos 📸","Hope you like the view... that's your only hint.","Might want to stretch beforehand 😏","Bring your sense of adventure. Trust me."],
+  food:["Don't eat too much beforehand. Or do. I'm not the boss of you.","Your taste buds are in for a ride 😏","Hope you're hungry... that's your only hint.","Let's just say... plan to be impressed.","Something delicious is happening. That's all you get."],
+  adventure:["Bring your A-game. That's your only hint.","Hope you've been working on your balance 😏","This one's going to be a story. Trust me.","You might want to Google something beforehand... but I won't tell you what","Fair warning: this might get interesting 😏"],
+  creative:["Hope you're feeling inspired 😏","You might make something cool. Or terrible. Either way it'll be fun.","Your hands might get a little dirty. Just saying.","Bring your creative side tonight.","Let's just say... we're making memories. Literally."],
+  nightlife:["Dress to impress. That's your only clue.","Hope you've got your dancing shoes ready 😏","The night has plans for us. That's all I'll say.","Let's just say... plan to be out for a while.","You'll want your phone charged for this one."],
+  chill:["All I'll say is: trust me on this one.","I hope you like surprises. That's all I'm saying.","Get ready to relax. That's your only hint 😏","Tonight's going to be cozy. You have no idea.","Bring your comfiest vibes. That's it."],
+  romantic:["I've been planning this one for a while 😏","You're going to want to remember tonight.","Let's just say... I put some thought into this one.","Hope you're ready to be swept off your feet.","All I'll say is: you're going to love this."],
+  meaningful:["This one means something to me. That's your only hint.","I put a lot of thought into this. That's all you get.","Bring your whole heart. Trust me on this one.","Tonight's going to be different. In the best way.","Some things are worth the surprise. This is one of them."],
+};
 
 const HYPE_COACHING={
   day_of:[
@@ -372,14 +368,17 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
   const [time, setTime] = useState("19:00");
   const [editing, setEditing] = useState(false);
   const dressHint = DRESS_HINTS[date.category] || "Dress comfortably.";
-  const [herring] = useState(() => RED_HERRINGS[Math.floor(Math.random() * RED_HERRINGS.length)]);
-  const [desc, setDesc] = useState(`Vela Night ✨\n\n${dressHint}\n\n${herring}\n\nThat's all you get. See you there 😏`);
+  const teasers = MYSTERY_TEASERS[date.category] || MYSTERY_TEASERS.chill;
+  const [teaser] = useState(() => teasers[Math.floor(Math.random() * teasers.length)]);
+  const getVelaLabel = (t) => { const h = parseInt(t.split(":")[0]); if (h < 12) return "Vela Morning"; if (h < 17) return "Vela Date"; return "Vela Night"; };
+  const [desc, setDesc] = useState(`${getVelaLabel(time)} ✨\n\n${dressHint}\n\n${teaser}\n\nThat's all you get. See you there 😏`);
 
   const send = () => {
-    const ics = generateICS("Vela Night ✨", desc, scheduledFor, time);
+    const label = getVelaLabel(time);
+    const ics = generateICS(`${label} ✨`, desc, scheduledFor, time);
     const blob = new Blob([ics], { type: "text/calendar" });
     const url = URL.createObjectURL(blob);
-    const subject = encodeURIComponent("You've got a Vela night 😏");
+    const subject = encodeURIComponent(`You've got a ${label.toLowerCase()} 😏`);
     const body = encodeURIComponent(desc + "\n\n(Calendar invite attached, check your downloads!)");
     const a = document.createElement("a");
     a.href = url; a.download = "vela.ics"; a.click();
@@ -407,7 +406,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
         <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Date & Time</p>
         <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
           <div style={{ ...inp(), flex: 1, padding: "12px 16px", color: T.text }}>{new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
-          <input type="time" value={time} onChange={e => setTime(e.target.value)} style={{ ...inp(), flex: 1 }} />
+          <input type="time" value={time} onChange={e => { const newT = e.target.value; setTime(newT); if (!editing) setDesc(`${getVelaLabel(newT)} ✨\n\n${dressHint}\n\n${teaser}\n\nThat's all you get. See you there 😏`); }} style={{ ...inp(), flex: 1 }} />
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
