@@ -1080,6 +1080,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
 
   useEffect(() => { try { localStorage.setItem("vela_sched", JSON.stringify(sched)); } catch {} }, [sched]);
   useEffect(() => { try { localStorage.setItem("vela_hist", JSON.stringify(hist)); } catch {} }, [hist]);
+  useEffect(() => { try { localStorage.setItem("vela_dismissed_notifs", JSON.stringify(dismissedNotifKeys)); } catch {} }, [dismissedNotifKeys]);
 
   const cats = [...new Set(DATES.map(d => d.category))];
   const [searchQ, setSearchQ] = useState("");
@@ -1184,7 +1185,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   };
 
   // Time-aware notification system: only fires on the day of the date
-  const [dismissedNotifKeys, setDismissedNotifKeys] = useState([]);
+  const [dismissedNotifKeys, setDismissedNotifKeys] = useState(() => { try { const d = localStorage.getItem("vela_dismissed_notifs"); return d ? JSON.parse(d) : []; } catch { return []; } });
   useEffect(() => {
     const checkNotifs = () => {
       const now = new Date();
@@ -1220,6 +1221,8 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   }, [sched, dismissedNotifKeys, partnerName, partnerGender]);
 
   const schedule = (d, dateStr) => {
+    const isDupe = sched.some(s => s.date_id === d.id && s.scheduled_for === dateStr);
+    if (isDupe) { flash(`"${d.title}" is already scheduled for that day`); return; }
     const entry = { id: Date.now().toString(), date_id: d.id, title: d.title, budget: d.budget, category: d.category, scheduled_for: dateStr };
     setSched(p => [...p, entry].sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for)));
     generateHypeNotifs(d.title, dateStr);
@@ -1343,7 +1346,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
               onTouchStart={onDragStart} onTouchMove={onDragMove} onTouchEnd={onDragEnd}
               onMouseDown={onDragStart} onMouseMove={onDragMove} onMouseUp={onDragEnd} onMouseLeave={() => { if (dragging) onDragEnd(); }}
               style={{
-                width: "100%", maxWidth: 360, minHeight: 460, borderRadius: 22, background: grad, position: "relative", overflow: "hidden", cursor: "grab", userSelect: "none",
+                width: "100%", maxWidth: 360, minHeight: "min(460px, 70vh)", borderRadius: 22, background: grad, position: "relative", overflow: "hidden", cursor: "grab", userSelect: "none",
                 transform: `translateX(${animX}px) rotate(${animRot}deg)`,
                 transition: swipeAnim ? "transform 0.25s ease-out" : dragging ? "none" : "transform 0.3s ease",
                 boxShadow: "0 12px 40px rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.08)"
