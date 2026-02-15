@@ -1606,29 +1606,6 @@ function PartnerScreen({ onComplete }) {
   );
 }
 
-// ——— WELCOME ———
-function Welcome({ onStart }) {
-  const [name, setName] = useState("");
-  return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
-      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40 }}>
-        <div style={{ textAlign: "center", marginBottom: 30 }}>
-          <div style={{ width: 80, height: 80, borderRadius: 18, background: "#141414", border: "1px solid #D6885333", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", overflow: "hidden" }}><img src="/vela-logo.png" alt="Vela" style={{ width: 60, height: 60, objectFit: "contain" }} /></div>
-          <h1 style={{ fontSize: 34, margin: 0, fontWeight: 600, fontFamily: "'Playfair Display', serif", letterSpacing: "0.5px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>vela</h1>
-          <p style={{ color: T.textDim, margin: "10px 0 0", fontSize: 15, lineHeight: 1.5 }}>Date night. Figured out.</p>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <input placeholder="Your first name" value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === "Enter" && name.trim() && onStart(name.trim())} style={inp({ fontSize: 16, padding: "14px 18px", textAlign: "center" })} />
-          <button onClick={() => name.trim() && onStart(name.trim())} disabled={!name.trim()} style={name.trim() ? btnHero() : btn(T.border, T.textFaint, { padding: "16px 24px", fontSize: 16, fontWeight: 700 })}>Get Started →</button>
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 24 }}>
-          {[{ n: "90+", l: "Date Ideas" }, { n: "8", l: "Categories" }, { n: "$0–300", l: "Budget Range" }].map(s => <div key={s.l} style={{ textAlign: "center" }}><p style={{ color: T.primary, fontSize: 18, margin: "0 0 2px", fontWeight: 800 }}>{s.n}</p><p style={{ color: T.textFaint, fontSize: 10, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p></div>)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ——— ANIMATED SPLASH ———
 function Splash({ onDone }) {
   const [phase, setPhase] = useState(0);
@@ -1712,20 +1689,22 @@ function Splash({ onDone }) {
 }
 
 // ——— UNLOCK SCREEN (collect contact info after quiz) ———
-function UnlockScreen({ name, onComplete }) {
+function UnlockScreen({ onComplete }) {
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
-  const valid = email.trim() && email.includes("@") && email.includes(".");
+  const valid = userName.trim() && email.trim() && email.includes("@") && email.includes(".");
 
   const handleSubmit = () => {
     if (!valid) return;
     setLoading(true);
+    try { localStorage.setItem("vela_name", userName.trim()); } catch {}
     try { localStorage.setItem("vela_email", email.trim()); } catch {}
     try { localStorage.setItem("vela_phone", phone.trim()); } catch {}
     try { localStorage.setItem("vela_city", city.trim()); } catch {}
-    setTimeout(() => onComplete(city.trim()), 600);
+    setTimeout(() => onComplete(userName.trim(), city.trim()), 600);
   };
 
   return (
@@ -1734,13 +1713,17 @@ function UnlockScreen({ name, onComplete }) {
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>🔓</div>
           <h2 style={{ color: T.text, fontSize: 26, margin: 0, fontWeight: 700, fontFamily: T.display, lineHeight: 1.2 }}>
-            Your dates are ready, {name}.
+            Your dates are ready.
           </h2>
           <p style={{ color: T.textDim, margin: "12px 0 0", fontSize: 14, lineHeight: 1.6 }}>
             Drop your info below so we can send you date reminders, new ideas, and the occasional nudge when it's been too long.
           </p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Your Name *</label>
+            <input type="text" placeholder="Your first name" value={userName} onChange={e => setUserName(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
+          </div>
           <div>
             <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Email *</label>
             <input type="email" placeholder="you@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && valid && handleSubmit()} style={inp({ fontSize: 15, padding: "13px 16px" })} />
@@ -1828,11 +1811,10 @@ export default function App() {
   useEffect(() => { try { if (partnerGender) localStorage.setItem("vela_partner_gender", partnerGender); } catch {} }, [partnerGender]);
   useEffect(() => { try { if (quiz) localStorage.setItem("vela_quiz", JSON.stringify(quiz)); } catch {} }, [quiz]);
 
-  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : name && partnerName ? (quiz ? "unlock" : "quiz") : name ? "partner" : "welcome")} />;
-  if (screen === "welcome") return <Welcome onStart={(n) => { setName(n); setScreen("partner"); }} />;
+  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : partnerName ? (quiz ? "unlock" : "quiz") : "partner")} />;
   if (screen === "partner") return <PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} />;
   if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} />;
-  if (screen === "unlock") return <UnlockScreen name={name} onComplete={(c) => { if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} />;
+  if (screen === "unlock") return <UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} />;
   if (screen === "vibe_reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} />;
   return <Dashboard name={name} quiz={quiz} city={city} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} />;
 }
