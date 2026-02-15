@@ -1145,7 +1145,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
     checkNotifs();
     const interval = setInterval(checkNotifs, 60000);
     return () => clearInterval(interval);
-  }, [sched, dismissedNotifKeys]);
+  }, [sched, dismissedNotifKeys, partnerName, partnerGender]);
 
   const schedule = (d, dateStr) => {
     const entry = { id: Date.now().toString(), date_id: d.id, title: d.title, budget: d.budget, category: d.category, scheduled_for: dateStr };
@@ -1770,7 +1770,6 @@ function getPartnerVibe(quiz, partnerName, partnerGender) {
   const q1 = quiz?.q1 || "";
   const q3 = Array.isArray(quiz?.q3) ? quiz.q3 : [];
   const p = P(partnerGender || "girl");
-  const n = partnerName || p.They;
   if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: partnerGender === "guy" ? "The Cozy King" : "The Cozy Queen", description: `${p.Their} perfect night starts with takeout and ends with a blanket fort. ${p.They} fall${partnerGender === "girl" ? "s" : "s"} hardest for the quiet, intentional moments — candlelit dinners, slow mornings, movie marathons where you actually stay in. Don't overthink it. Just make ${p.them} feel like the world stopped for a night.` };
   if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: `${p.Theyre} the one who says 'let's go' before you even finish the sentence. Routine bores ${p.them}. ${p.They} want${partnerGender === "girl" ? "s" : "s"} the spontaneous road trip, the hole-in-the-wall restaurant you found by accident, the story ${p.theyll} retell for years. Surprise ${p.them} and ${p.theyll} remember it forever.` };
   if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: `${p.They} notice${partnerGender === "girl" ? "s" : "s"} when you pull out ${p.their} chair. Candles, flowers, a handwritten note tucked into ${p.their} bag — the whole nine. ${p.They} don't need expensive, ${p.they} need${partnerGender === "girl" ? "s" : "s"} intentional. Put in the effort most people skip and watch ${p.them} light up.` };
