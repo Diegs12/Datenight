@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#4ade80",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
@@ -355,8 +355,8 @@ PRODID:-//Vela//EN
 BEGIN:VEVENT
 DTSTART:${fmt(dt)}
 DTEND:${fmt(end)}
-SUMMARY:${title}
-DESCRIPTION:${description.replace(/\n/g, "\\n")}
+SUMMARY:${title.replace(/[;,\\]/g, c => "\\" + c)}
+DESCRIPTION:${description.replace(/[;,\\]/g, c => "\\" + c).replace(/\n/g, "\\n")}
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR`;
@@ -389,7 +389,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
     onSend(email);
   };
 
-  const ready = email.includes("@") && email.includes(".");
+  const ready = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
@@ -432,7 +432,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
 }
 
 // ——— SCHEDULE + MYSTERY FLOW ———
-function MiniCalendar({ selected, onSelect }) {
+function MiniCalendar({ selected, onSelect, bookedDates = [] }) {
   const today = new Date(); today.setHours(0,0,0,0);
   const sel = selected ? new Date(selected + "T12:00:00") : null;
   const [viewing, setViewing] = useState(() => sel ? new Date(sel.getFullYear(), sel.getMonth(), 1) : new Date(today.getFullYear(), today.getMonth(), 1));
@@ -452,6 +452,8 @@ function MiniCalendar({ selected, onSelect }) {
 
   const isToday = (d) => d && year === today.getFullYear() && month === today.getMonth() && d === today.getDate();
   const isSel = (d) => d && sel && year === sel.getFullYear() && month === sel.getMonth() && d === sel.getDate();
+  const bookedSet = new Set(bookedDates);
+  const isBooked = (d) => { if (!d) return false; const mm = String(month + 1).padStart(2, "0"); const dd = String(d).padStart(2, "0"); return bookedSet.has(`${year}-${mm}-${dd}`); };
   const isPast = (d) => d && new Date(year, month, d) < today;
 
   const pick = (d) => {
@@ -470,25 +472,32 @@ function MiniCalendar({ selected, onSelect }) {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, textAlign: "center" }}>
         {dayNames.map(dn => <div key={dn} style={{ color: T.textFaint, fontSize: 11, fontWeight: 600, padding: "6px 0", textTransform: "uppercase" }}>{dn}</div>)}
-        {cells.map((d, i) => (
+        {cells.map((d, i) => {
+          const booked = isBooked(d) && !isSel(d);
+          return (
           <button key={i} onClick={() => pick(d)} disabled={!d || isPast(d)} style={{
             background: isSel(d) ? T.primary : isToday(d) ? T.primary + "22" : "transparent",
             color: isSel(d) ? "#fff" : isPast(d) ? T.textFaint + "55" : isToday(d) ? T.primary : d ? T.text : "transparent",
-            border: isToday(d) && !isSel(d) ? `1px solid ${T.primary}44` : "1px solid transparent",
-            borderRadius: 10, padding: "8px 0", fontSize: 13, fontWeight: isSel(d) || isToday(d) ? 700 : 400,
+            border: booked ? `1.5px solid ${T.purple}` : isToday(d) && !isSel(d) ? `1px solid ${T.primary}44` : "1px solid transparent",
+            borderRadius: 10, padding: "8px 0", fontSize: 13, fontWeight: isSel(d) || isToday(d) || booked ? 700 : 400,
             cursor: d && !isPast(d) ? "pointer" : "default", transition: "all 0.15s",
             minHeight: 36, display: "flex", alignItems: "center", justifyContent: "center"
           }}>{d || ""}</button>
-        ))}
+          );
+        })}
       </div>
-      {sel && <p style={{ color: T.primary, fontSize: 13, fontWeight: 600, textAlign: "center", margin: "14px 0 0" }}>
+      {bookedDates.length > 0 && <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center", margin: "10px 0 0" }}>
+        <span style={{ width: 8, height: 8, borderRadius: 4, border: `1.5px solid ${T.purple}`, display: "inline-block" }} />
+        <span style={{ color: T.textFaint, fontSize: 11 }}>Date scheduled</span>
+      </div>}
+      {sel && <p style={{ color: T.primary, fontSize: 13, fontWeight: 600, textAlign: "center", margin: "10px 0 0" }}>
         {sel.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
       </p>}
     </div>
   );
 }
 
-function ScheduleModal({ date, onClose, onSchedule }) {
+function ScheduleModal({ date, onClose, onSchedule, bookedDates }) {
   const [dateStr, setDateStr] = useState(() => {
     const d = new Date(Date.now() + (Math.floor(Math.random() * 14) + 1) * 86400000);
     return d.toISOString().split("T")[0];
@@ -503,7 +512,7 @@ function ScheduleModal({ date, onClose, onSchedule }) {
         <h3 style={{ color: T.text, fontSize: 20, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>📅 Schedule Date</h3>
         <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 22px" }}>{date.title} <span style={{ color: tier.color }}>· ${date.budget}</span></p>
 
-        <MiniCalendar selected={dateStr} onSelect={setDateStr} />
+        <MiniCalendar selected={dateStr} onSelect={setDateStr} bookedDates={bookedDates} />
 
         <button onClick={() => { onSchedule(date, dateStr); onClose(); }} style={{ ...btnHero({ width: "100%", marginBottom: 12, fontSize: 15 }) }}>✓ Schedule It</button>
 
@@ -672,7 +681,7 @@ function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerG
     onSend();
   };
 
-  const ready = email.includes("@") && email.includes(".");
+  const ready = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
@@ -1173,7 +1182,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   };
 
   const seasonal = DATES.filter(d => isInSeason(d.id));
-  const scored = quiz ? seasonal.map(d => { const { score, flags } = scoreDate(d); return { ...d, _score: score, _flags: flags }; }) : seasonal.map(d => ({ ...d, _score: 0, _flags: [] }));
+  const scored = useMemo(() => quiz ? seasonal.map(d => { const { score, flags } = scoreDate(d); return { ...d, _score: score, _flags: flags }; }) : seasonal.map(d => ({ ...d, _score: 0, _flags: [] })), [quiz, seasonal.length]);
 
   // For You: high score AND no deal-breaker flags
   const forYouDates = quiz
@@ -1190,9 +1199,9 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
     ? scored.filter(d => d._flags.includes("budget") && !d._flags.includes("alcohol")).sort((a, b) => b._score - a._score).slice(0, 8)
     : [];
 
-  const generateHypeNotifs = (title, dateStr) => {
-    // No longer dumps notifications immediately — the useEffect below handles timing
-  };
+  const bcFilter = (arr) => arr.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; });
+  const filteredForYou = bcFilter(forYouDates);
+  const filteredRows = rows.map(r => ({ ...r, dates: bcFilter(r.dates) })).filter(r => r.dates.length > 0);
 
   // Time-aware notification system: only fires on the day of the date
   const [dismissedNotifKeys, setDismissedNotifKeys] = useState(() => { try { const d = localStorage.getItem("vela_dismissed_notifs"); return d ? JSON.parse(d) : []; } catch { return []; } });
@@ -1249,7 +1258,6 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
     if (isDupe) { flash(`"${d.title}" is already scheduled for that day`); return; }
     const entry = { id: Date.now().toString(), date_id: d.id, title: d.title, budget: d.budget, category: d.category, scheduled_for: dateStr };
     setSched(p => [...p, entry].sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for)));
-    generateHypeNotifs(d.title, dateStr);
     flash(`✓ "${d.title}" scheduled!`);
   };
 
@@ -1336,7 +1344,6 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
       const dateStr = when.toISOString().split("T")[0];
       const entry = { id: (Date.now() + i).toString(), date_id: pick.id, title: pick.title, budget: pick.budget, category: pick.category, scheduled_for: dateStr };
       setSched(p => [...p, entry].sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for)));
-      generateHypeNotifs(pick.title, dateStr);
     }
     flash(`✓ ${ct} dates scheduled!`);
   };
@@ -1367,7 +1374,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           const animRot = swipeAnim ? (swipeAnim === "right" ? 15 : -15) : rot;
           return <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 20px", position: "relative", overflow: "hidden" }}>
             <div
-              onTouchStart={onDragStart} onTouchMove={onDragMove} onTouchEnd={onDragEnd}
+              onTouchStart={onDragStart} onTouchMove={onDragMove} onTouchEnd={onDragEnd} onTouchCancel={onDragEnd}
               onMouseDown={onDragStart} onMouseMove={onDragMove} onMouseUp={onDragEnd} onMouseLeave={() => { if (dragging) onDragEnd(); }}
               style={{
                 width: "100%", maxWidth: 360, minHeight: "min(460px, 70vh)", borderRadius: 22, background: grad, position: "relative", overflow: "hidden", cursor: "grab", userSelect: "none",
@@ -1440,7 +1447,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
         .vela-scroll { scrollbar-width: thin; scrollbar-color: #D68853 #141414; }
       `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} partnerName={partnerName} />}
-      {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
+      {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} bookedDates={sched.map(s => s.scheduled_for)} />}
       {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} ownedMats={ownedMats} onToggleMat={toggleMat} />}
       {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} partnerName={partnerName} partnerGender={partnerGender} />}
       {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} partnerName={partnerName} partnerGender={partnerGender} />}
@@ -1574,19 +1581,19 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           </div>
 
           {/* Recommended For You */}
-          {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).length > 0 && <div style={{ marginBottom: 28 }}>
+          {filteredForYou.length > 0 && <div style={{ marginBottom: 28 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Recommended For You ✨</h3>
             <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 14px" }}>Based on your partner's preferences</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {forYouDates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {filteredForYou.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
           </div>}
 
           {/* Browse rows */}
-          {rows.filter(row => row.dates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).length > 0).map(row => <div key={row.label} style={{ marginBottom: 24 }}>
+          {filteredRows.map(row => <div key={row.label} style={{ marginBottom: 24 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>{row.label}</h3>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {row.dates.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; }).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {row.dates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
             </div>
           </div>)}
 
@@ -1805,7 +1812,7 @@ function UnlockScreen({ onComplete }) {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
-  const valid = userName.trim() && email.trim() && email.includes("@") && email.includes(".");
+  const valid = userName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   const handleSubmit = () => {
     if (!valid) return;
