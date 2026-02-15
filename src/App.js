@@ -370,15 +370,15 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
   const dressHint = DRESS_HINTS[date.category] || "Dress comfortably.";
   const teasers = MYSTERY_TEASERS[date.category] || MYSTERY_TEASERS.chill;
   const [teaser] = useState(() => teasers[Math.floor(Math.random() * teasers.length)]);
-  const getVelaLabel = (t) => { const h = parseInt(t.split(":")[0]); if (h < 12) return "Vela Morning"; if (h < 17) return "Vela Date"; return "Vela Night"; };
-  const [desc, setDesc] = useState(`${getVelaLabel(time)} ✨\n\n${dressHint}\n\n${teaser}\n\nThat's all you get. See you there 😏`);
+  const getTimeWord = (t) => { const h = parseInt(t.split(":")[0]); if (h < 12) return "morning"; if (h < 17) return "afternoon"; return "evening"; };
+  const buildDesc = (t) => `We have a ${getTimeWord(t)} surprise planned.\n\n${dressHint}\n\n${teaser}\n\nThat's all you get. See you there 😏\n\nSent with Vela`;
+  const [desc, setDesc] = useState(buildDesc(time));
 
   const send = () => {
-    const label = getVelaLabel(time);
-    const ics = generateICS(`${label} ✨`, desc, scheduledFor, time);
+    const ics = generateICS("Surprise Date ✨", desc, scheduledFor, time);
     const blob = new Blob([ics], { type: "text/calendar" });
     const url = URL.createObjectURL(blob);
-    const subject = encodeURIComponent(`You've got a ${label.toLowerCase()} 😏`);
+    const subject = encodeURIComponent("You've got a surprise date planned 😏");
     const body = encodeURIComponent(desc + "\n\n(Calendar invite attached, check your downloads!)");
     const a = document.createElement("a");
     a.href = url; a.download = "vela.ics"; a.click();
@@ -406,7 +406,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
         <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>Date & Time</p>
         <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
           <div style={{ ...inp(), flex: 1, padding: "12px 16px", color: T.text }}>{new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
-          <input type="time" value={time} onChange={e => { const newT = e.target.value; setTime(newT); if (!editing) setDesc(`${getVelaLabel(newT)} ✨\n\n${dressHint}\n\n${teaser}\n\nThat's all you get. See you there 😏`); }} style={{ ...inp(), flex: 1 }} />
+          <input type="time" value={time} onChange={e => { const newT = e.target.value; setTime(newT); if (!editing) setDesc(buildDesc(newT)); }} style={{ ...inp(), flex: 1 }} />
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
