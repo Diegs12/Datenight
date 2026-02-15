@@ -584,8 +584,7 @@ const ROMANTIC_INVITES = {
 function getRomanticInvite(date) {
   const custom = ROMANTIC_INVITES[date.id];
   if (custom) return `${custom}\n\nSent with Vela`;
-  const hrs = Math.round(date.duration / 60);
-  return `I planned something special just for us — ${date.title.toLowerCase()}. Every detail is handled. Just show up and let me take care of the rest. ~${hrs} hours, all yours. ✨\n\nSent with Vela`;
+  return `I planned something special just for us — ${date.title.toLowerCase()}. Every detail is handled. Just show up and let me take care of the rest. ✨\n\nSent with Vela`;
 }
 
 // ——— REAL (FULL DETAILS) INVITE ———
