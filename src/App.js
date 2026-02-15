@@ -736,19 +736,20 @@ function PlanPromptModal({ date, scheduledFor, quiz, city, onClose, partnerName,
 
   const dateDisplay = new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
+  const s = (v) => sub(v, partnerName, partnerGender);
   const quizContext = quiz ? [
-    quiz.q1 ? `Energy level: ${quiz.q1}` : "",
-    quiz.q2 ? `Ideal Friday night: ${quiz.q2}` : "",
-    quiz.q3 && quiz.q3.length ? `Vibes ${p.they} like${partnerGender === "guy" ? "s" : ""}: ${quiz.q3.join(", ")}` : "",
-    quiz.q4 ? `Physical activity comfort: ${quiz.q4}` : "",
-    quiz.q5 && quiz.q5.length && !quiz.q5.includes("None") ? `Food allergies: ${quiz.q5.join(", ")}` : "",
-    quiz.q6 && quiz.q6.length && !quiz.q6.includes("No restrictions") ? `Food preferences: ${quiz.q6.join(", ")}` : "",
-    quiz.q7 ? `Alcohol: ${quiz.q7}` : "",
-    quiz.q8 && quiz.q8.length ? `Cuisine favorites: ${quiz.q8.join(", ")}` : "",
-    quiz.q9 ? `Food dislikes: ${quiz.q9}` : "",
-    quiz.q10 ? `Best date so far: ${quiz.q10}` : "",
-    quiz.q11 ? `Things ${p.they} want${partnerGender === "guy" ? "s" : ""} to try: ${quiz.q11}` : "",
-    quiz.q12 ? `Typical budget: ${quiz.q12}` : "",
+    quiz.q1 ? `Energy level: ${s(quiz.q1)}` : "",
+    quiz.q2 ? `Ideal Friday night: ${s(quiz.q2)}` : "",
+    quiz.q3 && quiz.q3.length ? `Vibes ${p.they} like${partnerGender === "guy" ? "s" : ""}: ${quiz.q3.map(s).join(", ")}` : "",
+    quiz.q4 ? `Physical activity comfort: ${s(quiz.q4)}` : "",
+    quiz.q5 && quiz.q5.length && !quiz.q5.includes("None") ? `Food allergies: ${quiz.q5.map(s).join(", ")}` : "",
+    quiz.q6 && quiz.q6.length && !quiz.q6.includes("No restrictions") ? `Food preferences: ${quiz.q6.map(s).join(", ")}` : "",
+    quiz.q7 ? `Alcohol: ${s(quiz.q7)}` : "",
+    quiz.q8 && quiz.q8.length ? `Cuisine favorites: ${quiz.q8.map(s).join(", ")}` : "",
+    quiz.q9 ? `Food dislikes: ${s(quiz.q9)}` : "",
+    quiz.q10 ? `Best date so far: ${s(quiz.q10)}` : "",
+    quiz.q11 ? `Things ${p.they} want${partnerGender === "guy" ? "s" : ""} to try: ${s(quiz.q11)}` : "",
+    quiz.q12 ? `Typical budget: ${s(quiz.q12)}` : "",
   ].filter(Boolean).join("\n") : "";
 
   const prompt = `I need you to be my date night planner. Plan every single detail for this date so all I have to do is follow your instructions step by step.
