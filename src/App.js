@@ -1063,7 +1063,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
       if (d.difficulty === "hard") { score -= 3; flags.push("activity"); }
       else if (d.category === "outdoor" && d.difficulty === "moderate") { score -= 1; flags.push("activity"); }
     }
-    if ((quiz.q4 === "They'll try anything athletic" || quiz.q4 === "They're more active than me") && (d.category === "outdoor" || d.category === "adventure")) score += 2;
+    if ((quiz.q4 === "{Theyll} try anything athletic" || quiz.q4 === "{Theyre} more active than me") && (d.category === "outdoor" || d.category === "adventure")) score += 2;
 
     // Alcohol fit (q7): hard flag for non-drinkers
     if (quiz.q7 === "Doesn't drink at all" && hasAlcohol(d)) {
