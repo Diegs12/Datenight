@@ -818,6 +818,14 @@ function HypePanel({ notifications, onDismiss, onClose }) {
               </div>
               <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 14px", lineHeight: 1.5 }}>{n.message}</p>
 
+              {n.prepMaterials && n.prepMaterials.length > 0 && <div style={{ background: T.bg, borderRadius: 10, padding: "12px 14px", marginBottom: 14, border: `1px solid ${T.border}` }}>
+                <p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>🛒 Still needed</p>
+                {n.prepMaterials.map((mat, mi) => <a key={mi} href={amazonUrl(mat)} target="_blank" rel="noopener noreferrer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: T.surface, borderRadius: 8, marginBottom: 6, border: `1px solid ${T.border}`, textDecoration: "none" }}>
+                  <span style={{ color: T.text, fontSize: 13 }}>{mat}</span>
+                  <span style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>Shop →</span>
+                </a>)}
+              </div>}
+
               {n.suggestedText && <div style={{ background: T.bg, borderRadius: 10, padding: "12px 14px", marginBottom: 14, border: `1px solid ${T.border}` }}>
                 <p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>💬 Try sending this</p>
                 <p style={{ color: T.text, fontSize: 14, margin: "0 0 10px", lineHeight: 1.5, fontStyle: "italic" }}>"{n.suggestedText}"</p>
@@ -912,7 +920,7 @@ function Debrief({ entry, onSave, onClose, partnerName }) {
 }
 
 // ——— DETAIL MODAL ———
-function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite }) {
+function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, ownedMats, onToggleMat }) {
   if (!d) return null;
   const tier = getTier(d.budget); const grad = getGrad(d); const emoji = EMOJI[d.category] || "📌"; const accent = CAT_ACCENT[d.category] || "#fff";
   const mood = getMood(d);
@@ -965,16 +973,17 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite }) {
           </div>
           {d.materials.length > 0 && <div style={{ marginBottom: 24 }}>
             <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>What You Need</h4>
-            {d.materials.map((m, i) => m.price > 0 ? <a key={i} href={amazonUrl(m.name)} target="_blank" rel="noopener noreferrer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: T.surface, borderRadius: 10, marginBottom: 8, border: `1px solid ${T.border}`, textDecoration: "none", cursor: "pointer" }}>
+            {d.materials.map((m, i) => { const owned = ownedMats && ownedMats[d.id + "_" + m.name]; return <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: T.surface, borderRadius: 10, marginBottom: 8, border: `1px solid ${owned ? T.green + "33" : T.border}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ color: T.text, fontSize: 14 }}>{m.name}</span>
-                <span style={{ color: T.textFaint, fontSize: 12 }}>~${m.price}</span>
+                <div onClick={() => onToggleMat && onToggleMat(d.id, m.name)} style={{ width: 24, height: 24, borderRadius: 7, border: `2px solid ${owned ? T.green : T.textFaint}`, background: owned ? T.green + "22" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+                  {owned && <span style={{ color: T.green, fontSize: 14, fontWeight: 700, lineHeight: 1 }}>✓</span>}
+                </div>
+                <span style={{ color: owned ? T.textFaint : T.text, fontSize: 14, textDecoration: owned ? "line-through" : "none" }}>{m.name}</span>
+                {m.price > 0 && <span style={{ color: T.textFaint, fontSize: 12 }}>~${m.price}</span>}
+                {m.price === 0 && <span style={{ color: T.green, fontSize: 12, fontWeight: 600 }}>Free</span>}
               </div>
-              <span style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>Shop →</span>
-            </a> : <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: T.surface, borderRadius: 10, marginBottom: 8, border: `1px solid ${T.border}` }}>
-              <span style={{ color: T.text, fontSize: 14 }}>{m.name}</span>
-              <span style={{ color: T.green, fontSize: 14, fontWeight: 600 }}>Free</span>
-            </div>)}
+              {!owned && m.price > 0 ? <a href={amazonUrl(m.name)} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none" }} onClick={e => e.stopPropagation()}>Shop →</a> : null}
+            </div>; })}
           </div>}
           {d.variations.length > 0 && <div style={{ marginBottom: 16 }}>
             <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>Variations</h4>
@@ -1054,6 +1063,9 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   const [seenTips, setSeenTips] = useState(() => { try { const s = localStorage.getItem("vela_seen_tips"); return s ? JSON.parse(s) : []; } catch { return []; } });
   const [featureTip, setFeatureTip] = useState(null);
   const [missionDone, setMissionDone] = useState(() => { try { return !!localStorage.getItem("vela_mission_done"); } catch { return false; } });
+  const [ownedMats, setOwnedMats] = useState(() => { try { const s = localStorage.getItem("vela_owned_mats"); return s ? JSON.parse(s) : {}; } catch { return {}; } });
+  useEffect(() => { try { localStorage.setItem("vela_owned_mats", JSON.stringify(ownedMats)); } catch {} }, [ownedMats]);
+  const toggleMat = (dateId, matName) => setOwnedMats(p => { const k = dateId + "_" + matName; const next = { ...p }; if (next[k]) delete next[k]; else next[k] = true; return next; });
 
   const pn = partnerName || "your partner";
   const pp = P(partnerGender || "girl");
@@ -1197,6 +1209,19 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
         const texts = ANTICIPATION_TEXTS[cat] || ANTICIPATION_TEXTS.adventure;
         const h = Math.abs(hashId(s.id));
 
+        // Prep reminder: 12-24 hours before — only if unowned materials exist
+        if (hoursUntil <= 24 && hoursUntil > 12) {
+          const key = s.id + "_prep";
+          if (!dismissedNotifKeys.includes(key)) {
+            const fullDate = DATES.find(dd => dd.id === s.date_id);
+            if (fullDate && fullDate.materials && fullDate.materials.length > 0) {
+              const unowned = fullDate.materials.filter(m => !ownedMats[fullDate.id + "_" + m.name]).map(m => m.name);
+              if (unowned.length > 0) {
+                live.push({ id: key, timing: "Prep Time", dateTitle: s.title, scheduledDate: fmtDate, message: "You scheduled this date and mentioned you didn't have everything. Just a reminder \u2014 time's ticking. If you need help grabbing the supplies, that's what I'm here for.", prepMaterials: unowned, date_id: s.date_id });
+              }
+            }
+          }
+        }
         // Day of: between 12 hours and 2 hours before (morning/afternoon of the date)
         if (hoursUntil <= 12 && hoursUntil > 2) {
           const key = s.id + "_do";
@@ -1217,7 +1242,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
     checkNotifs();
     const interval = setInterval(checkNotifs, 60000);
     return () => clearInterval(interval);
-  }, [sched, dismissedNotifKeys, partnerName, partnerGender]);
+  }, [sched, dismissedNotifKeys, partnerName, partnerGender, ownedMats]);
 
   const schedule = (d, dateStr) => {
     const isDupe = sched.some(s => s.date_id === d.id && s.scheduled_for === dateStr);
@@ -1416,7 +1441,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
       `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} partnerName={partnerName} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} />}
-      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} />}
+      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} ownedMats={ownedMats} onToggleMat={toggleMat} />}
       {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} partnerName={partnerName} partnerGender={partnerGender} />}
       {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} partnerName={partnerName} partnerGender={partnerGender} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
@@ -1723,6 +1748,16 @@ function Splash({ onDone }) {
         position: "absolute", width: 300, height: 300, borderRadius: "50%",
         background: "radial-gradient(circle, #E8753212 0%, transparent 70%)",
         opacity: phase >= 1 ? 1 : 0, transition: "opacity 1s ease",
+      }} />
+
+      {/* App icon */}
+      <img src="/vela-icon-splash.png" alt="" style={{
+        width: 100, height: 100, borderRadius: 22,
+        opacity: phase >= 1 ? 1 : 0,
+        transform: phase >= 1 ? "scale(1)" : "scale(0.8)",
+        transition: "opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+        marginBottom: 20,
+        filter: "drop-shadow(0 0 30px rgba(232, 117, 50, 0.4))",
       }} />
 
       {/* "vela" wordmark */}
