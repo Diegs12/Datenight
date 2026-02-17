@@ -33,7 +33,251 @@ const isInSeason = (dateId) => {
 };
 const crd=(x={})=>({background:T.surface,borderRadius:14,padding:24,border:`1px solid ${T.border}`,boxShadow:"0 2px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,208,161,0.04)",...x});
 const AMAZON_TAG="vallotaventur-20";
-const amazonUrl=(name)=>`https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=${AMAZON_TAG}`;
+// ——— SMART LINK SYSTEM ———
+// t:"a" = Amazon product | t:"g" = Google local search | null = no link
+const MATERIAL_LINKS={
+"00 flour":{t:"a",q:"Caputo 00 flour Italian pizza pasta"},
+"4-5 different cold brew coffees":{t:"a",q:"cold brew coffee variety pack sampler bottles"},
+"5K race registration (per person)":{t:"g",q:"5K races near me registration"},
+"Acrylic paint set":{t:"a",q:"acrylic paint set for adults beginners"},
+"Admission (per car)":{t:"g",q:"drive in movie theater near me"},
+"Admission fees and snacks":{t:"g",q:"fun activities near me admission"},
+"Admission tickets (per person)":{t:"g",q:"local attractions near me tickets"},
+"Adult coloring books (2)":{t:"a",q:"adult coloring books stress relief 2 pack"},
+"Adventure Challenge Couples Edition":{t:"a",q:"Adventure Challenge Couples Edition book"},
+"Afternoon tea service for two":{t:"g",q:"afternoon tea service near me"},
+"Air-dry clay pack":{t:"a",q:"air dry clay for adults sculpting"},
+"Antique or thrift store budget":{t:"g",q:"thrift stores antique shops near me"},
+"Apple cider":{t:"a",q:"apple cider sparkling martinelli variety pack"},
+"Assorted loose-leaf teas":{t:"a",q:"loose leaf tea sampler gift set variety"},
+"Ax-throwing session for two":{t:"g",q:"ax throwing near me couples"},
+"Baking ingredients":{t:"a",q:"baking essentials kit starter set vanilla extract"},
+"Bamboo rolling mat":{t:"a",q:"bamboo sushi rolling mat kit"},
+"Basic sculpting tools":{t:"a",q:"clay sculpting tools set beginners"},
+"Bath bomb set":{t:"a",q:"bath bomb gift set luxury"},
+"Bath caddy tray":{t:"a",q:"bathtub caddy tray bamboo wine holder"},
+"Battery-powered lanterns 2-pack":{t:"a",q:"battery powered camping lanterns 2 pack LED"},
+"Beach pillows":{t:"a",q:"inflatable beach pillow portable"},
+"Bead and jewelry-making kit":{t:"a",q:"jewelry making kit adults beading set"},
+"Beginner RPG set or cards":{t:"a",q:"Dungeons Dragons starter set beginners"},
+"Bike phone mount":{t:"a",q:"bike phone mount universal handlebar"},
+"Blanket and thermos":{t:"a",q:"outdoor blanket waterproof thermos set"},
+"Blankets and pillows":{t:"a",q:"cozy throw blanket and pillow set"},
+"Board game":{t:"a",q:"board games for couples adults date night"},
+"Board games":{t:"a",q:"board games for couples adults date night"},
+"Book you'll both enjoy":{t:"a",q:"best couples books read together"},
+"Botanical garden tickets (2)":{t:"g",q:"botanical garden near me tickets"},
+"Bottle to take home":{t:"a",q:"wine bottle gift bag carrier tote"},
+"Breakfast tray":{t:"a",q:"bamboo bed tray breakfast in bed folding"},
+"Brush set":{t:"a",q:"paint brush set variety acrylic"},
+"Cafe cover fee and drinks for two":{t:"g",q:"live music cafe near me"},
+"Calligraphy pens":{t:"a",q:"calligraphy pen set beginners modern"},
+"Candle making kit":{t:"a",q:"candle making kit adults soy wax complete"},
+"Candles":{t:"a",q:"scented candles set romantic"},
+"Canvas 2-pack":{t:"a",q:"canvas for painting 2 pack 16x20"},
+"Card deck and poker chips":{t:"a",q:"poker chip set playing cards case"},
+"Card game pack":{t:"a",q:"card games for couples date night"},
+"Card games":{t:"a",q:"card games for couples date night"},
+"Cardstock and envelopes":{t:"a",q:"cardstock paper and envelopes set"},
+"Cardstock for plans":{t:"a",q:"cardstock paper pack assorted colors"},
+"Cheese tasting fee or flight for two":{t:"g",q:"cheese tasting near me"},
+"Cheeses and cured meats":{t:"a",q:"charcuterie board set meat cheese gift box"},
+"Cheesy souvenir":{t:"a",q:"funny novelty couple gift souvenir"},
+"Class fee (per person)":{t:"g",q:"couples classes near me"},
+"Cloth napkins":{t:"a",q:"cloth dinner napkins cotton set"},
+"Cloth napkins set":{t:"a",q:"cloth dinner napkins set elegant"},
+"Clue materials (paper, envelopes, tape)":{t:"a",q:"scavenger hunt supplies envelopes cardstock tape"},
+"Cocktail shaker set":{t:"a",q:"cocktail shaker set bartender kit stainless steel"},
+"Coffee and pastries":{t:"g",q:"best coffee shop near me"},
+"Coffee drinks at 4 stops":{t:"g",q:"best coffee shops near me"},
+"Coffee or drinks":{t:"g",q:"coffee shop near me"},
+"Coffee or drinks after":{t:"g",q:"coffee shop near me"},
+"Coffee or lunch nearby":{t:"g",q:"lunch restaurants near me"},
+"Coffee or snack from local cafe":{t:"g",q:"cafe near me"},
+"Colored pencils or markers":{t:"a",q:"colored pencils markers adult set"},
+"Comedy club tickets (2)":{t:"g",q:"comedy club near me tickets"},
+"Compact blanket":{t:"a",q:"compact outdoor blanket waterproof portable"},
+"Compact speaker":{t:"a",q:"portable bluetooth speaker waterproof small"},
+"Cones or bowls":{t:"a",q:"ice cream bowls dessert cups ceramic set"},
+"Couples yoga class for two":{t:"g",q:"couples yoga class near me"},
+"Crackers, fruit, nuts, and extras":{t:"a",q:"gourmet crackers nuts dried fruit snack set charcuterie"},
+"Craft or build kit":{t:"a",q:"DIY craft kit adults couples project"},
+"Day pass and gear rental (per person)":{t:"g",q:"rock climbing gym near me day pass"},
+"Deck of playing cards":{t:"a",q:"playing cards premium deck"},
+"Decorating supplies":{t:"a",q:"home decorating supplies craft kit"},
+"Decorative envelopes (10)":{t:"a",q:"decorative envelopes vintage style"},
+"Decorative envelopes 12-pack":{t:"a",q:"decorative envelopes assorted 12 pack"},
+"Decorative items . pillows, candles, small plant":{t:"a",q:"decorative throw pillows candles plant set"},
+"Dice set":{t:"a",q:"polyhedral dice set tabletop games"},
+"Dinner cruise tickets for two":{t:"g",q:"dinner cruise near me"},
+"Dinner or drinks out":{t:"g",q:"restaurants near me date night"},
+"Dog treats and a ball":{t:"a",q:"dog treats and ball set"},
+"Drinks and appetizer":{t:"g",q:"happy hour near me"},
+"Drinks and tips":{t:"g",q:"best bars near me"},
+"Drinks at the club":{t:"g",q:"nightclub near me"},
+"Drinks at the venue":{t:"g",q:"bars near me"},
+"Drinks or snacks at intermission":{t:"g",q:"snack bar near me"},
+"Drop-in class fee for two":{t:"g",q:"dance class near me drop in"},
+"Drop-in improv class (per person)":{t:"g",q:"improv class near me drop in"},
+"Extra glue or tools if needed":{t:"a",q:"craft glue set tools"},
+"Extra premium flowers (optional)":{t:"a",q:"artificial silk roses bouquet romantic gift"},
+"Extra wire, clasps, and string":{t:"a",q:"jewelry wire clasps string findings kit"},
+"Face mask set":{t:"a",q:"face mask set couples spa night"},
+"Fairy lights":{t:"a",q:"fairy string lights LED warm white"},
+"Fairy lights 33ft (2-3 strands)":{t:"a",q:"fairy string lights 33ft LED 3 pack warm white"},
+"Final prize or surprise":{t:"a",q:"surprise gift box couples"},
+"Fire starter kit":{t:"a",q:"fire starter kit camping"},
+"Floor pillows (4)":{t:"a",q:"floor pillows cushions large 4 pack"},
+"Food and activities":{t:"g",q:"fun activities near me"},
+"Food and drinks after":{t:"g",q:"restaurants near me"},
+"Food and drinks at fair":{t:"g",q:"fairs and festivals near me"},
+"Fortune telling session":{t:"g",q:"fortune teller psychic reading near me"},
+"Frame or wall art":{t:"a",q:"picture frame couples wall art"},
+"Fresh flowers + vase":{t:"a",q:"flower vase glass clear bouquet centerpiece romantic"},
+"Frosting, sprinkles, candy, piping bags":{t:"a",q:"cake decorating kit sprinkles frosting piping bags set"},
+"Gallery or museum admission":{t:"g",q:"art gallery museum near me admission"},
+"Gas money":null,
+"Geocaching app":null,
+"Glue, scissors, markers":{t:"a",q:"craft supplies glue scissors markers set"},
+"Go-kart races (per person)":{t:"g",q:"go kart racing near me"},
+"Gourmet hot chocolate kit":{t:"a",q:"gourmet hot chocolate gift set luxury"},
+"Grocery ingredients for two recipes":{t:"a",q:"date night cooking kit couples meal ingredients"},
+"Grocery items":{t:"a",q:"gourmet food gift basket snack variety"},
+"Guided trail ride (per person)":{t:"g",q:"horseback trail ride near me"},
+"Hand warmers 10-pack":{t:"a",q:"hand warmers HotHands 10 pack"},
+"Heavy cream and condensed milk":{t:"a",q:"condensed milk sweetened baking canned"},
+"Hot cocoa supplies":{t:"a",q:"gourmet hot cocoa mix marshmallows gift set"},
+"Ice cream or snacks":{t:"g",q:"ice cream shop near me"},
+"Ice skating tickets (2)":{t:"g",q:"ice skating rink near me"},
+"Indoor s'mores maker":{t:"a",q:"indoor smores maker tabletop"},
+"Inflatable screen":{t:"a",q:"inflatable projector screen outdoor movie"},
+"Jigger measure":{t:"a",q:"cocktail jigger measuring cup stainless steel"},
+"Kitchen timer":{t:"a",q:"kitchen timer digital magnetic"},
+"Kites 2-pack":{t:"a",q:"kite for adults 2 pack easy fly"},
+"Large tarp":{t:"a",q:"camping tarp waterproof heavy duty"},
+"Large thermos":{t:"a",q:"large thermos stainless steel 1 liter"},
+"Laser tag sessions (per person)":{t:"g",q:"laser tag near me"},
+"Lecture tickets or donation":{t:"g",q:"interesting lectures events near me"},
+"LED floating lights":{t:"a",q:"LED floating pool lights waterproof"},
+"Lunch after the ride":{t:"g",q:"restaurants near me lunch"},
+"Lunch or coffee after":{t:"g",q:"lunch spots near me"},
+"Luxury bath bombs":{t:"a",q:"luxury bath bombs gift set organic"},
+"Magic show tickets (2)":{t:"g",q:"magic show near me tickets"},
+"Markers, stickers, and craft supplies":{t:"a",q:"craft supplies markers stickers scrapbook set"},
+"Massage oil":{t:"a",q:"massage oil couples relaxing aromatherapy"},
+"Matching aprons":{t:"a",q:"matching couple aprons set funny"},
+"Matching robes 2-pack":{t:"a",q:"couples matching robes plush 2 pack"},
+"Menu card stock":{t:"a",q:"menu cards cardstock printable"},
+"Mini golf for two":{t:"g",q:"mini golf near me"},
+"Mini projector":{t:"a",q:"mini projector portable 1080p home theater"},
+"Mix-ins and toppings":{t:"a",q:"ice cream sundae toppings kit sprinkles sauce"},
+"Movie snack pack":{t:"a",q:"movie night snack box variety pack"},
+"Museum admission for two":{t:"g",q:"museum near me admission"},
+"Nice ingredients":{t:"a",q:"gourmet cooking ingredients spice set premium"},
+"Nice notebook or journal":{t:"a",q:"leather journal notebook couples"},
+"Nice stationery and envelopes":{t:"a",q:"stationery set envelopes premium writing"},
+"Notepad + pens":{t:"a",q:"notepad pen set quality writing"},
+"Oversized floor pillows (4)":{t:"a",q:"oversized floor pillows cushions 4 pack"},
+"Pasta roller":{t:"a",q:"pasta roller machine manual stainless steel"},
+"Pastries or snacks for pairing":{t:"a",q:"gourmet shortbread cookies tea pairing biscuits"},
+"Phone tripod with remote":{t:"a",q:"phone tripod with bluetooth remote flexible"},
+"Photo print of favorites":{t:"a",q:"photo prints custom pictures matte glossy"},
+"Photo prints":{t:"a",q:"instant photo printer portable smartphone"},
+"Picnic backpack":{t:"a",q:"picnic backpack for 2 insulated set"},
+"Picnic blanket":{t:"a",q:"waterproof picnic blanket large outdoor"},
+"Picnic food and snacks":{t:"a",q:"picnic snack box gourmet cheese crackers couples"},
+"Picnic supplies":{t:"a",q:"picnic set for 2 outdoor complete"},
+"Pie dish":{t:"a",q:"ceramic pie dish deep dish"},
+"Pillow chocolates":{t:"a",q:"gourmet chocolate truffles gift box"},
+"Polaroid camera + film":{t:"a",q:"Fujifilm Instax Mini 12 camera bundle film"},
+"Portable projector":{t:"a",q:"portable projector 1080p HDMI home movie"},
+"Portable screen":{t:"a",q:"portable projector screen 100 inch"},
+"Post-class drinks or food":{t:"g",q:"restaurants near me"},
+"Post-climb food":{t:"g",q:"restaurants near me"},
+"Post-talk drinks":{t:"g",q:"bars near me"},
+"Post-workout smoothies":{t:"g",q:"smoothie shop near me"},
+"Poster boards and magazines":{t:"a",q:"poster board large magazines collage"},
+"Potting soil and pots":{t:"a",q:"indoor plant pot set potting soil mix starter"},
+"Pumpkin carving kit":{t:"a",q:"pumpkin carving kit professional tools"},
+"Quality pens":{t:"a",q:"quality pens smooth writing set"},
+"Reading lamp":{t:"a",q:"reading lamp LED adjustable warm light"},
+"Reusable market bags":{t:"a",q:"reusable shopping bags market bag set"},
+"Reusable water bottles":{t:"a",q:"reusable water bottles BPA free 2 pack"},
+"Roasting sticks":{t:"a",q:"marshmallow roasting sticks telescoping"},
+"Rolling pin":{t:"a",q:"rolling pin wooden classic"},
+"Rowboat rental for two hours":{t:"g",q:"rowboat rental near me"},
+"S'mores kit":{t:"a",q:"smores kit indoor outdoor marshmallow"},
+"Scrapbook and photo corners":{t:"a",q:"scrapbook album photo corners set"},
+"Scroll-style paper":{t:"a",q:"scroll paper vintage parchment roll"},
+"Shadow box frame":{t:"a",q:"shadow box frame display case"},
+"Shortbread or chocolate for pairing":{t:"a",q:"gourmet chocolate shortbread cookies tea coffee pairing"},
+"Show tickets (per person)":{t:"g",q:"live show tickets near me"},
+"Silicone wine glasses (2)":{t:"a",q:"silicone wine glasses unbreakable 2 pack outdoor"},
+"Silk blindfolds (2)":{t:"a",q:"silk sleep mask blindfold 2 pack luxury"},
+"Silly trophy or prize for the winner":{t:"a",q:"funny trophy award small"},
+"Skating tickets (2)":{t:"g",q:"roller skating rink near me"},
+"Sled or snow saucer":{t:"a",q:"snow sled saucer adults durable"},
+"Sleeping bags (2)":{t:"a",q:"sleeping bags 2 pack camping adults"},
+"Small gardening tools":{t:"a",q:"garden tool set small hand tools"},
+"Small glass bottles 12-pack":{t:"a",q:"small glass bottles with corks 12 pack"},
+"Small purchases from vendors":{t:"g",q:"local market vendors near me"},
+"Small whiteboards (2)":{t:"a",q:"small dry erase whiteboards 2 pack markers"},
+"Smash room session for two":{t:"g",q:"smash room rage room near me"},
+"Snacks and arcade games":{t:"g",q:"arcade near me"},
+"Snacks and concessions":{t:"a",q:"movie theater snack box candy popcorn variety pack"},
+"Snacks and drink supplies":{t:"a",q:"snack variety pack drinks date night"},
+"Snacks and drinks":{t:"a",q:"couples snack box variety pack date night"},
+"Snacks and drinks for the boat":{t:"a",q:"boat snack box waterproof bag variety pack"},
+"Snacks and gift shop":{t:"g",q:"local attractions near me"},
+"Snacks for practice fuel":{t:"a",q:"protein energy snack box variety pack athletes"},
+"Snacks or pastries":{t:"a",q:"gourmet pastry cookies snack box gift"},
+"Star map app":null,
+"Starter plants or seeds":{t:"a",q:"indoor herb garden starter kit seeds couples"},
+"Stickers, washi tape, markers":{t:"a",q:"washi tape stickers markers craft set"},
+"Streaming rental if needed":null,
+"String lights 50ft":{t:"a",q:"outdoor string lights 50ft LED waterproof"},
+"Sushi rice":{t:"a",q:"sushi rice premium Japanese Nishiki calrose"},
+"Take-home fermentation supplies":{t:"a",q:"fermentation kit starter home"},
+"Tandem bike rental":{t:"g",q:"tandem bike rental near me"},
+"Tandem kayak or canoe rental":{t:"g",q:"kayak canoe rental near me"},
+"Taper candles + holders":{t:"a",q:"taper candles holders set elegant dinner"},
+"Tasting variety pack":{t:"a",q:"gourmet food tasting sampler gift"},
+"Taza chocolate tasting kit":{t:"a",q:"Taza chocolate tasting squares gift set"},
+"Tea infuser or strainer":{t:"a",q:"tea infuser strainer stainless steel"},
+"Tea lights":{t:"a",q:"tea light candles LED flameless"},
+"Telescope":{t:"a",q:"telescope for adults beginners astronomy"},
+"Theater tickets (2)":{t:"g",q:"live theater near me tickets"},
+"Themed snacks and drinks":{t:"a",q:"themed snack box party variety pack"},
+"Thrift store outfits (per person)":{t:"g",q:"thrift stores near me"},
+"Tie-dye kit":{t:"a",q:"tie dye kit adults complete"},
+"Tiki torches 6-pack":{t:"a",q:"tiki torches outdoor 6 pack bamboo"},
+"Torch fuel":{t:"a",q:"tiki torch fuel citronella"},
+"Tournament snacks and drinks":{t:"a",q:"game night snack variety pack drinks"},
+"Trade trinkets 20-pack":{t:"a",q:"small trinkets toys treasure box assorted 20 pack"},
+"Trail snack box":{t:"a",q:"trail mix snack box variety pack"},
+"Transportation or ride share":{t:"g",q:"uber lyft ride share"},
+"Travel thermos":{t:"a",q:"travel thermos stainless steel insulated"},
+"Trivia entry fee (if applicable)":{t:"g",q:"trivia night near me"},
+"Two plain cakes":{t:"g",q:"bakery near me cakes"},
+"Vanilla ice cream":{t:"g",q:"grocery store near me"},
+"Waterproof backpack":{t:"a",q:"waterproof backpack hiking outdoor"},
+"Waterproof blanket":{t:"a",q:"waterproof outdoor blanket camping picnic"},
+"Waterproof phone case":{t:"a",q:"waterproof phone case pouch universal"},
+"We're Not Really Strangers":{t:"a",q:"Were Not Really Strangers card game couples"},
+"White sheet set":{t:"a",q:"white sheet set queen cotton"},
+"White t-shirts 2pk":{t:"a",q:"white t-shirts 2 pack plain cotton"},
+"Wicker picnic basket":{t:"a",q:"wicker picnic basket for 2 set"},
+"Wine for pairing":{t:"g",q:"wine shop near me"},
+"Wine or drinks":{t:"g",q:"wine shop liquor store near me"},
+"Wine pairing add-on":{t:"g",q:"wine pairing experience near me"},
+"Wine tasting flights (per person)":{t:"g",q:"wine tasting near me"},
+"Wooden crate":{t:"a",q:"wooden crate box decorative storage"},
+"Yoga mat rental if needed":{t:"g",q:"yoga studio near me drop in"},
+};
+// Smart URL: Amazon for products (with affiliate tag), Google for local/experiences
+const materialUrl=(name)=>{const m=MATERIAL_LINKS[name];if(!m)return{url:`https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=${AMAZON_TAG}`,type:"a"};if(m.t==="a")return{url:`https://www.amazon.com/s?k=${encodeURIComponent(m.q)}&tag=${AMAZON_TAG}`,type:"a"};return{url:`https://www.google.com/search?q=${encodeURIComponent(m.q)}`,type:"g"};};
+// Legacy wrapper for backward compat
+const amazonUrl=(name)=>materialUrl(name).url;
 
 const GRADS={
   outdoor:[
@@ -832,10 +1076,13 @@ function HypePanel({ notifications, onDismiss, onClose }) {
 
               {n.prepMaterials && n.prepMaterials.length > 0 && <div style={{ background: T.bg, borderRadius: 10, padding: "12px 14px", marginBottom: 14, border: `1px solid ${T.border}` }}>
                 <p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 }}>🛒 Still needed</p>
-                {n.prepMaterials.map((mat, mi) => <a key={mi} href={amazonUrl(mat)} target="_blank" rel="noopener noreferrer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: T.surface, borderRadius: 8, marginBottom: 6, border: `1px solid ${T.border}`, textDecoration: "none" }}>
+                {n.prepMaterials.map((mat, mi) => { const ml=materialUrl(mat); const isNull=MATERIAL_LINKS[mat]===null; return isNull ? <div key={mi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: T.surface, borderRadius: 8, marginBottom: 6, border: `1px solid ${T.border}` }}>
                   <span style={{ color: T.text, fontSize: 13 }}>{mat}</span>
-                  <span style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>Shop →</span>
-                </a>)}
+                  <span style={{ color: T.textFaint, fontSize: 12 }}>Free</span>
+                </div> : <a key={mi} href={ml.url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: T.surface, borderRadius: 8, marginBottom: 6, border: `1px solid ${T.border}`, textDecoration: "none" }}>
+                  <span style={{ color: T.text, fontSize: 13 }}>{mat}</span>
+                  <span style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{ml.type==="a"?"Shop →":"Find →"}</span>
+                </a>; })}
               </div>}
 
               {n.suggestedText && <div style={{ background: T.bg, borderRadius: 10, padding: "12px 14px", marginBottom: 14, border: `1px solid ${T.border}` }}>
@@ -1016,7 +1263,7 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
                 {m.price > 0 && <span style={{ color: T.textFaint, fontSize: 12 }}>~${m.price}</span>}
                 {m.price === 0 && <span style={{ color: T.green, fontSize: 12, fontWeight: 600 }}>Free</span>}
               </div>
-              {!owned && m.price > 0 ? <a href={amazonUrl(m.name)} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none" }} onClick={e => e.stopPropagation()}>Shop →</a> : null}
+              {!owned && m.price > 0 && MATERIAL_LINKS[m.name]!==null ? (()=>{const ml=materialUrl(m.name);return <a href={ml.url} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none" }} onClick={e => e.stopPropagation()}>{ml.type==="a"?"Shop →":"Find →"}</a>;})() : null}
             </div>; })}
           </div>}
           {d.variations.length > 0 && <div style={{ marginBottom: 16 }}>
@@ -1424,7 +1671,9 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
 
   const genMonth = () => {
     const fm = { "1x per month": 1, "2x per month": 2, "3x per month": 3, "Every week": 4 };
-    const ct = fm[(quiz || {}).q13] || 2; const recent = hist.slice(0, 15).map(h => h.date_id);
+    const max = fm[(quiz || {}).q13] || 2;
+    const ct = sched.length >= max ? 1 : max - sched.length;
+    const recent = hist.slice(0, 15).map(h => h.date_id);
     const scheduled = sched.map(s => s.date_id);
     const exclude = new Set([...recent, ...scheduled]);
     let pool = DATES.filter(d => !exclude.has(d.id) && isInSeason(d.id)); if (!pool.length) pool = DATES.filter(d => isInSeason(d.id)); if (!pool.length) pool = DATES;
@@ -1442,7 +1691,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
       const entry = { id: (Date.now() + i).toString(), date_id: pick.id, title: pick.title, budget: pick.budget, category: pick.category, scheduled_for: dateStr };
       setSched(p => [...p, entry].sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for)));
     }
-    flash(`✓ ${ct} dates scheduled!`);
+    flash(`✓ ${ct} date${ct > 1 ? "s" : ""} scheduled!`);
   };
 
   const dismissNotif = (id) => setDismissedNotifKeys(p => [...p, id]);
@@ -1685,9 +1934,12 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
           </div>}
 
           {(() => { const list = calSelectedDay ? sched.filter(s => s.scheduled_for === calSelectedDay) : sched; return list.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>{calSelectedDay ? "Free night. For now." : 'Nothing on deck yet. Hit Generate to fill your month, or go hunting in the library.'}</p></div>
-            : list.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer" }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
+            : list.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); const dotColor = CAT_ACCENT[s.category] || T.primary; return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer", borderLeft: `3px solid ${dotColor}` }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1, minWidth: 0 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 4, background: dotColor, marginTop: 6, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
+                </div>
                 <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                   <button onClick={(e) => { e.stopPropagation(); complete(s); }} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓</button>
                   <button onClick={(e) => { e.stopPropagation(); setSched(p => p.filter(x => x.id !== s.id)); }} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
