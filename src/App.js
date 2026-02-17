@@ -276,8 +276,6 @@ const MATERIAL_LINKS={
 };
 // Smart URL: Amazon for products (with affiliate tag), Google for local/experiences
 const materialUrl=(name)=>{const m=MATERIAL_LINKS[name];if(!m)return{url:`https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=${AMAZON_TAG}`,type:"a"};if(m.t==="a")return{url:`https://www.amazon.com/s?k=${encodeURIComponent(m.q)}&tag=${AMAZON_TAG}`,type:"a"};return{url:`https://www.google.com/search?q=${encodeURIComponent(m.q)}`,type:"g"};};
-// Legacy wrapper for backward compat
-const amazonUrl=(name)=>materialUrl(name).url;
 
 const GRADS={
   outdoor:[
