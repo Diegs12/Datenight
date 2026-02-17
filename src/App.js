@@ -619,18 +619,20 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
   const buildDesc = (t) => `We have a ${getTimeWord(t)} surprise planned.\n\n${dressHint}\n\n${teaser}\n\nThat's all you get. See you there 😏\n\nSent with Vela`;
   const [desc, setDesc] = useState(buildDesc(time));
 
-  const send = () => {
+  const send = async () => {
     const ics = generateICS("Surprise Date ✨", desc, scheduledFor, time);
-    const blob = new Blob([ics], { type: "text/calendar" });
-    const url = URL.createObjectURL(blob);
-    const subject = encodeURIComponent("You've got a surprise date planned 😏");
-    const body = encodeURIComponent(desc + "\n\n(Calendar invite attached, check your downloads!)");
-    const a = document.createElement("a");
-    a.href = url; a.download = "vela.ics"; a.click();
-    URL.revokeObjectURL(url);
-    setTimeout(() => {
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    }, 800);
+    const file = new File([ics], "vela-date.ics", { type: "text/calendar" });
+    const subjectText = "You've got a surprise date planned \u{1F60F}";
+    const bodyText = desc;
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ title: subjectText, text: bodyText, files: [file] }); } catch (e) { if (e.name !== "AbortError") console.warn(e); }
+    } else {
+      const blob = new Blob([ics], { type: "text/calendar" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "vela-date.ics"; a.click();
+      URL.revokeObjectURL(url);
+      setTimeout(() => { window.location.href = `mailto:${email}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText + "\n\n(Calendar invite attached, check your downloads!")}`; }, 800);
+    }
     onSend(email);
   };
 
@@ -670,7 +672,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
           <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Cancel</button>
           <button onClick={send} disabled={!ready} style={ready ? btnHero({ flex: 1, padding: "11px 22px", fontSize: 14 }) : btn(T.border, T.textFaint, { flex: 1 })}>📧 Send Invite</button>
         </div>
-        <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Downloads a .ics file + opens your email app to send it</p>
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Opens share sheet with calendar invite attached</p>
       </div>
     </div>
   );
@@ -911,18 +913,20 @@ function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerG
   const [time, setTime] = useState("19:00");
   const [desc] = useState(() => getRomanticInvite(date));
 
-  const send = () => {
+  const send = async () => {
     const ics = generateICS(date.title, desc, scheduledFor, time);
-    const blob = new Blob([ics], { type: "text/calendar" });
-    const url = URL.createObjectURL(blob);
-    const subject = encodeURIComponent(`Date Night: ${date.title}`);
-    const body = encodeURIComponent(desc + "\n\n(Calendar invite attached, check your downloads!)");
-    const a = document.createElement("a");
-    a.href = url; a.download = "vela.ics"; a.click();
-    URL.revokeObjectURL(url);
-    setTimeout(() => {
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    }, 800);
+    const file = new File([ics], "vela-date.ics", { type: "text/calendar" });
+    const subjectText = `Date Night: ${date.title}`;
+    const bodyText = desc;
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ title: subjectText, text: bodyText, files: [file] }); } catch (e) { if (e.name !== "AbortError") console.warn(e); }
+    } else {
+      const blob = new Blob([ics], { type: "text/calendar" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "vela-date.ics"; a.click();
+      URL.revokeObjectURL(url);
+      setTimeout(() => { window.location.href = `mailto:${email}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText + "\n\n(Calendar invite attached, check your downloads!")}`; }, 800);
+    }
     onSend();
   };
 
@@ -955,7 +959,7 @@ function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerG
           <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Cancel</button>
           <button onClick={send} disabled={!ready} style={ready ? btnHero({ flex: 1, padding: "11px 22px", fontSize: 14 }) : btn(T.border, T.textFaint, { flex: 1 })}>📧 Send Invite</button>
         </div>
-        <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Downloads a .ics file + opens your email app to send it</p>
+        <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Opens share sheet with calendar invite attached</p>
       </div>
     </div>
   );
