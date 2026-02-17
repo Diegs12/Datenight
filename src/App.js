@@ -423,7 +423,7 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
 
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Cancel</button>
-          <button onClick={send} disabled={!ready} style={btn(ready ? T.pink : T.border, ready ? "#fff" : T.textFaint, { flex: 1 })}>📧 Send Invite</button>
+          <button onClick={send} disabled={!ready} style={ready ? btnHero({ flex: 1, padding: "11px 22px", fontSize: 14 }) : btn(T.border, T.textFaint, { flex: 1 })}>📧 Send Invite</button>
         </div>
         <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Downloads a .ics file + opens your email app to send it</p>
       </div>
@@ -708,7 +708,7 @@ function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerG
 
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={onClose} style={btn("transparent", T.textDim, { border: `1px solid ${T.border}`, flex: 1 })}>Cancel</button>
-          <button onClick={send} disabled={!ready} style={btn(ready ? T.primary : T.border, ready ? "#fff" : T.textFaint, { flex: 1 })}>📧 Send Invite</button>
+          <button onClick={send} disabled={!ready} style={ready ? btnHero({ flex: 1, padding: "11px 22px", fontSize: 14 }) : btn(T.border, T.textFaint, { flex: 1 })}>📧 Send Invite</button>
         </div>
         <p style={{ color: T.textFaint, fontSize: 11, margin: "12px 0 0", textAlign: "center" }}>Downloads a .ics file + opens your email app to send it</p>
       </div>
@@ -1068,6 +1068,20 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   const dragStart = useRef(null);
   const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2500); };
 
+  // Calendar view state
+  const now = new Date();
+  const [calMonth, setCalMonth] = useState({ year: now.getFullYear(), month: now.getMonth() });
+  const [calSelectedDay, setCalSelectedDay] = useState(null);
+  const schedByDay = useMemo(() => {
+    const m = {};
+    sched.forEach(s => { const k = s.scheduled_for; if (!m[k]) m[k] = []; m[k].push(s); });
+    return m;
+  }, [sched]);
+  const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+  const firstDayOfMonth = (y, m) => new Date(y, m, 1).getDay();
+  const fmtDayKey = (y, m, d) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  const todayKey = fmtDayKey(now.getFullYear(), now.getMonth(), now.getDate());
+
   // Contextual first-time feature tips
   const [seenTips, setSeenTips] = useState(() => { try { const s = localStorage.getItem("vela_seen_tips"); return s ? JSON.parse(s) : []; } catch { return []; } });
   const [featureTip, setFeatureTip] = useState(null);
@@ -1178,10 +1192,20 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
       if (keywords.some(k => k && t.includes(k))) score += 2;
     });
 
+    // Free-text matching: q10 (best date so far) and q11 (things they want to try)
+    const stopWords = new Set(["the","a","an","and","or","but","in","on","at","to","for","of","with","is","was","we","it","my","her","his","our","she","he","they","i","me","us","do","did","had","has","have","be","been","just","so","if","up","out","go","went","like","really","very","some","that","this","its","about","from","would","could","each","other","one","two","all","were","are","not","no","what","when","where","how","much","more","also","than","then","got","get","too","lot","lots","always","never","thing","things","something","stuff","good","great","best","nice","fun","love","loved","time","try","tried","want","wanted","together","date","night","day"]);
+    const tokenize = (text) => (text || "").toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+    const dateText = (d.title + " " + d.description + " " + (d.variations || []).join(" ") + " " + d.vibe.join(" ") + " " + d.category).toLowerCase();
+    const q10tokens = tokenize(quiz.q10);
+    const q11tokens = tokenize(quiz.q11);
+    if (q10tokens.some(t => dateText.includes(t))) score += 3;
+    if (q11tokens.some(t => dateText.includes(t))) score += 4;
+
     return { score, flags };
   };
 
   const seasonal = DATES.filter(d => isInSeason(d.id));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const scored = useMemo(() => quiz ? seasonal.map(d => { const { score, flags } = scoreDate(d); return { ...d, _score: score, _flags: flags }; }) : seasonal.map(d => ({ ...d, _score: 0, _flags: [] })), [quiz, seasonal.length]);
 
   // For You: high score AND no deal-breaker flags
@@ -1547,8 +1571,42 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
             <h2 style={{ color: T.text, fontSize: 20, margin: 0, fontWeight: 700, fontFamily: T.display }}>Upcoming Dates</h2>
             <button onClick={genMonth} style={btn(T.primary, "#fff", { padding: "8px 14px", fontSize: 12 })}>+ Generate</button>
           </div>
-          {sched.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>Nothing scheduled yet. Hit "Generate" or browse the library!</p></div>
-            : sched.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer" }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
+
+          {/* Monthly Calendar */}
+          <div style={crd({ padding: 16, marginBottom: 18 })}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <button onClick={() => setCalMonth(p => { const m = p.month - 1; return m < 0 ? { year: p.year - 1, month: 11 } : { ...p, month: m }; })} style={{ background: "none", border: "none", color: T.text, fontSize: 22, cursor: "pointer", padding: "4px 10px", fontFamily: T.font }}>{"\u2039"}</button>
+              <span style={{ color: T.text, fontSize: 17, fontWeight: 700, fontFamily: T.display }}>{new Date(calMonth.year, calMonth.month).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+              <button onClick={() => setCalMonth(p => { const m = p.month + 1; return m > 11 ? { year: p.year + 1, month: 0 } : { ...p, month: m }; })} style={{ background: "none", border: "none", color: T.text, fontSize: 22, cursor: "pointer", padding: "4px 10px", fontFamily: T.font }}>{"\u203A"}</button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", textAlign: "center", marginBottom: 6 }}>
+              {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => <div key={d} style={{ color: T.textFaint, fontSize: 11, fontWeight: 600, padding: "4px 0" }}>{d}</div>)}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", textAlign: "center", gap: 2 }}>
+              {Array.from({ length: firstDayOfMonth(calMonth.year, calMonth.month) }).map((_, i) => <div key={"e" + i} />)}
+              {Array.from({ length: daysInMonth(calMonth.year, calMonth.month) }, (_, i) => {
+                const day = i + 1;
+                const key = fmtDayKey(calMonth.year, calMonth.month, day);
+                const entries = schedByDay[key] || [];
+                const isToday = key === todayKey;
+                const isSel = key === calSelectedDay;
+                return <div key={day} onClick={() => { if (entries.length) setCalSelectedDay(prev => prev === key ? null : key); }} style={{ padding: "6px 0", borderRadius: 10, cursor: entries.length ? "pointer" : "default", background: isSel ? T.primary + "22" : isToday ? T.text + "08" : "transparent", boxShadow: isToday && !isSel ? `inset 0 0 0 1.5px ${T.text}22` : "none", transition: "background .15s" }}>
+                  <div style={{ fontSize: 13, fontWeight: isToday || isSel ? 700 : 400, color: isSel ? T.primary : isToday ? T.text : entries.length ? T.text : T.textFaint, lineHeight: 1 }}>{day}</div>
+                  {entries.length > 0 && <div style={{ display: "flex", justifyContent: "center", gap: 3, marginTop: 4 }}>
+                    {entries.slice(0, 3).map((s, j) => <div key={j} style={{ width: 6, height: 6, borderRadius: 3, background: CAT_ACCENT[s.category] || T.primary }} />)}
+                  </div>}
+                </div>;
+              })}
+            </div>
+          </div>
+
+          {calSelectedDay && <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, padding: "8px 14px", borderRadius: 10, background: T.primary + "14" }}>
+            <span style={{ color: T.primary, fontSize: 13, fontWeight: 600 }}>Showing dates for {new Date(calSelectedDay + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+            <button onClick={() => setCalSelectedDay(null)} style={{ background: "none", border: "none", color: T.primary, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: T.font }}>Show All</button>
+          </div>}
+
+          {(() => { const list = calSelectedDay ? sched.filter(s => s.scheduled_for === calSelectedDay) : sched; return list.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>{calSelectedDay ? "No dates on this day." : 'Nothing scheduled yet. Hit "Generate" or browse the library!'}</p></div>
+            : list.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer" }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
                 <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
@@ -1560,7 +1618,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
                 <button onClick={(e) => { e.stopPropagation(); if (fullDate) setInvitePicker({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.pink + "12", T.pink, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.pink}33`, borderRadius: 10 })}>📧 Send Invite</button>
                 <button onClick={(e) => { e.stopPropagation(); if (fullDate) setPlanPrompt({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.purple + "12", T.purple, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.purple}33`, borderRadius: 10 })}>🧠 Plan This Date</button>
               </div>
-            </div>; })}
+            </div>; }); })()}
         </>}
 
         {tab === "library" && <>
@@ -1669,7 +1727,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           <div style={{ fontSize: 36, marginBottom: 10 }}>{featureTip.icon}</div>
           <h3 style={{ color: T.text, fontSize: 18, margin: "0 0 8px", fontWeight: 700, fontFamily: T.display }}>{featureTip.title}</h3>
           <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>{featureTip.desc}</p>
-          <button onClick={() => dismissFeatureTip()} style={btn(T.primary, "#141414", { padding: "10px 24px", fontSize: 14, fontWeight: 700 })}>Got it</button>
+          <button onClick={() => dismissFeatureTip()} style={btnHero({ padding: "10px 24px", fontSize: 14 })}>Got it</button>
         </div>
       </div>}
 

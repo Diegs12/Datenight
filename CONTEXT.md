@@ -216,32 +216,11 @@ git add -A && git commit -m "message" && git push
 
 ## PENDING TASKS (in priority order)
 
-### 1. Button Styling — IN PROGRESS
-`btnHero()` has been created and applied to several buttons but NOT all main CTAs yet. Need to audit every `btn(T.primary, ...)` and `btn(T.accent, ...)` call to decide which should use `btnHero()`. The metallic gradient + glow was specifically requested for "the big buttons throughout the app" to match the logo effect.
+### 1. Button Styling — DONE
+All primary CTAs now use `btnHero()` metallic gradient. Full list: Surprise Me, Generate This Month's Dates, Schedule This Date, Schedule It, Shuffle & Restart, Let's Find Her Dates, Quiz Next/Finish, PartnerScreen Continue, Unlock My Dates, Debrief Save, Send Invite (both mystery + real modals), Got It (tooltip dismiss). Secondary/small buttons intentionally left as `btn()`.
 
-Buttons already using `btnHero()`:
-- Surprise Me (home tab)
-- Schedule This Date (detail view)
-- Schedule It (schedule modal)
-- Shuffle & Restart (swipe end state)
-- Let's Find Her Dates (VibeReveal)
-
-Buttons that likely should get `btnHero()` or at least sharper edges:
-- Get Started (Welcome screen)
-- Unlock My Dates (UnlockScreen)
-- Finish (Quiz last step)
-- Generate This Month's Dates (home)
-- Send Invite buttons
-- Any other prominent CTAs
-
-### 2. q10/q11 Text Matching in scoreDate()
-The quiz collects:
-- q10: "Best date together so far?" (free text)
-- q11: "Anything they've mentioned wanting to try?" (free text)
-
-These are currently **completely ignored** by `scoreDate()`. Diego wants fuzzy matching: if someone writes "pottery" in q11 and there's a pottery date in the library, that date should get a score boost. Same for q10 — if their best date was "sushi making," sushi-related dates should score higher.
-
-Approach: Tokenize q10/q11 text, compare against each date's title + description + category + vibe tags. Boost +3 to +5 for matches.
+### 2. q10/q11 Text Matching in scoreDate() — DONE
+Free-text quiz answers are now fuzzy-matched against each date's title, description, variations, vibes, and category. Tokenizer strips punctuation, removes 80+ stop words, and filters short words. q10 (best date so far) gives +3 on match, q11 (want to try) gives +4 on match (higher weight = explicit intent).
 
 ### 3. Remaining Brand Guidelines
 - **UI texture/warmth**: Subtle grain overlays, more depth in cards, warm glow effects
