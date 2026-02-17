@@ -5,6 +5,9 @@ const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border
 const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 10px rgba(214,136,83,0.2), 0 4px 10px rgba(139,74,40,0.15), inset 0 1px 0 rgba(255,208,161,0.3)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
+// ——— GRAIN OVERLAY ———
+const GrainOverlay=()=><style>{`#root::after{content:"";position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:0.035;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}`}</style>;
+
 // ——— PARTNER PRONOUN HELPER ———
 const P=(g)=>g==="guy"?{they:"he",them:"him",their:"his",theyre:"he's",theyll:"he'll",They:"He",Their:"His",Theyre:"He's",Theyll:"He'll"}:{they:"she",them:"her",their:"her",theyre:"she's",theyll:"she'll",They:"She",Their:"Her",Theyre:"She's",Theyll:"She'll"};
 const sub=(str,name,gender)=>{if(!name||!str)return str;const p=P(gender);return str.replace(/\{partner\}/g,name).replace(/\{they\}/g,p.they).replace(/\{them\}/g,p.them).replace(/\{their\}/g,p.their).replace(/\{theyre\}/g,p.theyre).replace(/\{theyll\}/g,p.theyll).replace(/\{They\}/g,p.They).replace(/\{Their\}/g,p.Their).replace(/\{Theyre\}/g,p.Theyre).replace(/\{Theyll\}/g,p.Theyll);};
@@ -28,7 +31,7 @@ const isInSeason = (dateId) => {
   if (!seasons) return true; // no tag = year-round
   return seasons.includes(getCurrentSeason());
 };
-const crd=(x={})=>({background:T.surface,borderRadius:14,padding:24,border:`1px solid ${T.border}`,...x});
+const crd=(x={})=>({background:T.surface,borderRadius:14,padding:24,border:`1px solid ${T.border}`,boxShadow:"0 2px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,208,161,0.04)",...x});
 const AMAZON_TAG="vallotaventur-20";
 const amazonUrl=(name)=>`https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=${AMAZON_TAG}`;
 
@@ -928,8 +931,14 @@ function Debrief({ entry, onSave, onClose, partnerName }) {
   );
 }
 
+// ——— SEARCH LINKS ———
+const buildSearchLinks = (date, city) => ({
+  maps: `https://www.google.com/maps/search/${encodeURIComponent(date.title + " " + city)}`,
+  yelp: `https://www.yelp.com/search?find_desc=${encodeURIComponent(date.title)}&find_loc=${encodeURIComponent(city)}`,
+});
+
 // ——— DETAIL MODAL ———
-function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, ownedMats, onToggleMat }) {
+function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, ownedMats, onToggleMat, ratings, onRate, city }) {
   if (!d) return null;
   const tier = getTier(d.budget); const grad = getGrad(d); const emoji = EMOJI[d.category] || "📌"; const accent = CAT_ACCENT[d.category] || "#fff";
   const mood = getMood(d);
@@ -959,6 +968,22 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
         </div>
         <div style={{ padding: "24px 24px 32px" }}>
           <p style={{ color: T.text, fontSize: 15, lineHeight: 1.65, margin: "0 0 24px", fontFamily: T.font }}>{d.description}</p>
+          {/* Rating pills */}
+          {onRate && <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+            <button onClick={() => onRate(d.id, "love")} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "12px 16px", borderRadius: 12, cursor: "pointer", fontSize: 14, fontWeight: 700, fontFamily: T.font, border: `1.5px solid ${ratings && ratings[d.id] === "love" ? T.green : T.border}`, background: ratings && ratings[d.id] === "love" ? T.green + "22" : "rgba(255,255,255,0.04)", color: ratings && ratings[d.id] === "love" ? T.green : T.textDim, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", transition: "all 0.15s" }}>❤️ Love this</button>
+            <button onClick={() => onRate(d.id, "nope")} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "12px 16px", borderRadius: 12, cursor: "pointer", fontSize: 14, fontWeight: 700, fontFamily: T.font, border: `1.5px solid ${ratings && ratings[d.id] === "nope" ? T.accent : T.border}`, background: ratings && ratings[d.id] === "nope" ? T.accent + "22" : "rgba(255,255,255,0.04)", color: ratings && ratings[d.id] === "nope" ? T.accent : T.textDim, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", transition: "all 0.15s" }}>👎 Not for us</button>
+          </div>}
+          {/* Find Spots */}
+          {city && (() => { const links = buildSearchLinks(d, city); return (
+            <div style={{ ...crd({ padding: 16, marginBottom: 24 }), background: T.surface }}>
+              <p style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700 }}>📍 Find Spots in {city}</p>
+              <div style={{ display: "flex", gap: 10 }}>
+                <a href={links.maps} target="_blank" rel="noopener noreferrer" style={{ flex: 1, ...btn("rgba(255,255,255,0.06)", T.text, { textAlign: "center", textDecoration: "none", border: `1px solid ${T.border}`, borderRadius: 10, fontSize: 13 }) }}>🗺️ Search on Maps</a>
+                <a href={links.yelp} target="_blank" rel="noopener noreferrer" style={{ flex: 1, ...btn("rgba(255,255,255,0.06)", T.text, { textAlign: "center", textDecoration: "none", border: `1px solid ${T.border}`, borderRadius: 10, fontSize: 13 }) }}>⭐ Search on Yelp</a>
+              </div>
+              <p style={{ color: T.textFaint, fontSize: 11, margin: "8px 0 0", textAlign: "center" }}>Opens in a new tab with venues near you</p>
+            </div>
+          ); })()}
           {scheduledInfo ? (
             <div style={{ marginBottom: 24 }}>
               <div style={{ background: T.primary + "12", border: `1px solid ${T.primary}33`, borderRadius: 12, padding: "12px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
@@ -1008,14 +1033,15 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
 }
 
 // ——— GRADIENT CARD ———
-function Card({ date, onClick, grid }) {
+function Card({ date, onClick, grid, rating }) {
   const grad = getGrad(date); const emoji = EMOJI[date.category] || "📌";
   const tier = getTier(date.budget); const accent = CAT_ACCENT[date.category] || "#fff";
   const mood = getMood(date);
   return (
-    <div onClick={onClick} style={{ flex: grid ? undefined : "0 0 155px", minWidth: grid ? undefined : 155, height: grid ? 175 : 190, borderRadius: 14, padding: 0, background: grad, cursor: "pointer", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", scrollSnapAlign: "start", boxShadow: "0 4px 24px rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}>
+    <div onClick={onClick} style={{ flex: grid ? undefined : "0 0 155px", minWidth: grid ? undefined : 155, height: grid ? 175 : 190, borderRadius: 14, padding: 0, background: grad, cursor: "pointer", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", scrollSnapAlign: "start", boxShadow: rating === "love" ? `0 4px 24px rgba(0,0,0,0.35), 0 0 12px ${T.green}30` : "0 4px 24px rgba(0,0,0,0.35)", border: rating === "love" ? `1px solid ${T.green}44` : "1px solid rgba(255,255,255,0.08)", opacity: rating === "nope" ? 0.5 : 1, transition: "opacity 0.2s" }}>
       {/* Right accent bar */}
       <div style={{ position: "absolute", top: 0, right: 0, width: 3, height: "100%", background: `linear-gradient(180deg, ${accent}00 0%, ${accent} 30%, ${accent} 70%, ${accent}00 100%)`, borderRadius: "0 14px 14px 0" }} />
+      {rating === "love" && <div style={{ position: "absolute", top: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: T.green + "33", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, zIndex: 5, border: `1px solid ${T.green}44` }}>❤️</div>}
       {/* Decorative glow orbs */}
       <div style={{ position: "absolute", top: -30, right: -30, width: grid ? 80 : 100, height: grid ? 80 : 100, borderRadius: "50%", background: `radial-gradient(circle, ${accent}12 0%, transparent 70%)` }} />
       <div style={{ position: "absolute", bottom: -20, left: -20, width: 70, height: 70, borderRadius: "50%", background: `radial-gradient(circle, ${mood.color}08 0%, transparent 70%)` }} />
@@ -1042,8 +1068,40 @@ function Card({ date, onClick, grid }) {
   );
 }
 
+// ——— CITY EDITOR ———
+function CityEditor({ city, setCity, flash }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(city || "");
+  const save = () => {
+    const trimmed = draft.trim();
+    if (trimmed) {
+      setCity(trimmed);
+      try { localStorage.setItem("vela_city", trimmed); } catch {}
+      flash("City updated!");
+    }
+    setEditing(false);
+  };
+  return (
+    <div style={{ ...crd({ padding: 16, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14 }}>
+      <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: T.accent + "18", fontSize: 20 }}>📍</span>
+      {editing ? (
+        <div style={{ flex: 1, display: "flex", gap: 8, alignItems: "center" }}>
+          <input value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={e => e.key === "Enter" && save()} placeholder="Enter your city" style={inp({ fontSize: 14, padding: "8px 12px" })} autoFocus />
+          <button onClick={save} style={btn(T.primary, "#fff", { padding: "8px 14px", fontSize: 12, whiteSpace: "nowrap" })}>Save</button>
+          <button onClick={() => { setEditing(false); setDraft(city || ""); }} style={btn("transparent", T.textDim, { padding: "8px 10px", fontSize: 12 })}>Cancel</button>
+        </div>
+      ) : (
+        <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>City</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{city || "Not set"}</p></div>
+          <button onClick={() => { setDraft(city || ""); setEditing(true); }} style={{ background: "none", border: "none", color: T.primary, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: T.font }}>Edit</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ——— DASHBOARD ———
-function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
+function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGender }) {
   const [tab, setTab] = useState("home");
   const [sched, setSched] = useState(() => { try { const s = localStorage.getItem("vela_sched"); return s ? JSON.parse(s) : []; } catch { return []; } });
   const [hist, setHist] = useState(() => { try { const h = localStorage.getItem("vela_hist"); return h ? JSON.parse(h) : []; } catch { return []; } });
@@ -1090,15 +1148,26 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
   useEffect(() => { try { localStorage.setItem("vela_owned_mats", JSON.stringify(ownedMats)); } catch {} }, [ownedMats]);
   const toggleMat = (dateId, matName) => setOwnedMats(p => { const k = dateId + "_" + matName; const next = { ...p }; if (next[k]) delete next[k]; else next[k] = true; return next; });
 
-  const pn = partnerName || "your partner";
+  const [ratings, setRatings] = useState(() => { try { const r = localStorage.getItem("vela_ratings"); return r ? JSON.parse(r) : {}; } catch { return {}; } });
+  useEffect(() => { try { localStorage.setItem("vela_ratings", JSON.stringify(ratings)); } catch {} }, [ratings]);
+  const rateDate = (dateId, rating) => {
+    setRatings(prev => {
+      const next = { ...prev };
+      if (next[dateId] === rating) delete next[dateId];
+      else next[dateId] = rating;
+      return next;
+    });
+    flash(rating === "love" ? "Noted — more like this!" : "Got it — we'll dial these back.");
+  };
+
   const pp = P(partnerGender || "girl");
   const FEATURE_TIPS = {
-    home: { icon: "🕯️", title: "Your Home Base", desc: `Welcome to Vela. We pick dates based on what ${partnerName || pp.they} actually like${partnerName ? "s" : ""}. Scroll through your personalized picks, or hit Surprise Me to go full random.` },
-    library: { icon: "📚", title: "The Date Library", desc: "Every date we've got — over 90 ideas across 8 categories. Filter by budget, category, or search for something specific. Tap any card to see the full plan." },
-    calendar: { icon: "📅", title: "Your Upcoming Dates", desc: "Everything you've scheduled lives here. Send mystery or full-detail invites, and use the AI planner to get a step-by-step game plan for each one." },
-    memories: { icon: "💾", title: "Date Memories", desc: `After each date, debrief it here — rate ${pn}'s reaction, note what ${pp.they} said, and track whether it's a repeater. This gets smarter the more you use it.` },
-    profile: { icon: "👤", title: "Your Profile", desc: `${partnerName ? partnerName + "'s" : pp.Their} vibe type, your quiz answers, budget preferences, and stats all live here. Retake the quiz anytime things change.` },
-    surprise: { icon: "🎲", title: "Surprise Me", desc: `Swipe right to schedule a date, left to skip. Tap the info button in the middle to read the full details before deciding. We'll serve them up based on what ${partnerName || pp.they} like${partnerName ? "s" : ""}.` },
+    home: { icon: "🕯️", title: "Home Base", desc: `This is your command center. Every date here is picked because ${partnerName || pp.they} would actually be into it. Scroll the lineup or hit Surprise Me if you're feeling dangerous.` },
+    library: { icon: "📚", title: "The Arsenal", desc: "90+ date ideas, zero bad ones. Filter by budget or category, or just browse. Every card has the full game plan inside." },
+    calendar: { icon: "📅", title: "The Lineup", desc: "Everything you've locked in lives here. Send a mystery invite to build the hype, or use the AI planner to get your step-by-step sorted." },
+    memories: { icon: "💾", title: "The Vault", desc: `This is where the receipts live. After every date, drop the reaction, what was said, and whether it's a repeater. The more you log, the better your picks get.` },
+    profile: { icon: "👤", title: "Your Setup", desc: `Vibe profile, budget sweet spot, and all quiz answers live here. Things change? Retake the quiz.` },
+    surprise: { icon: "🎲", title: "Surprise Me", desc: `Right to lock it in, left to pass. Tap the info button to peek at the full plan first. We're only showing stuff ${partnerName || pp.they} would be into.` },
   };
 
   const showTipIfNew = (key) => {
@@ -1144,6 +1213,10 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
     if (!quiz) return { score: 0, flags: [] };
     let score = 0;
     const flags = [];
+
+    // User ratings
+    if (ratings[d.id] === "love") score += 6;
+    if (ratings[d.id] === "nope") score -= 10;
 
     // Vibe match (q3): strongest signal, +4 per match
     const vibeMap = { "Romantic / intimate": ["romantic", "intimate"], "Playful / competitive": ["playful", "competitive"], "Creative / artsy": ["creative", "hands-on"], "Athletic / outdoorsy": ["athletic", "adventurous"], "Intellectual / curious": ["intellectual"], "Chill / low-key": ["chill", "cozy"], "Bougie / sophisticated": ["sophisticated"], "Spontaneous / adventurous": ["spontaneous", "adventurous"] };
@@ -1206,7 +1279,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
 
   const seasonal = DATES.filter(d => isInSeason(d.id));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const scored = useMemo(() => quiz ? seasonal.map(d => { const { score, flags } = scoreDate(d); return { ...d, _score: score, _flags: flags }; }) : seasonal.map(d => ({ ...d, _score: 0, _flags: [] })), [quiz, seasonal.length]);
+  const scored = useMemo(() => quiz ? seasonal.map(d => { const { score, flags } = scoreDate(d); return { ...d, _score: score, _flags: flags }; }) : seasonal.map(d => ({ ...d, _score: 0, _flags: [] })), [quiz, seasonal.length, ratings]);
 
   // For You: high score AND no deal-breaker flags
   const forYouDates = quiz
@@ -1456,8 +1529,8 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           </div>;
         })() : <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 40px", textAlign: "center" }}>
           <p style={{ fontSize: 48, margin: "0 0 16px" }}>🎉</p>
-          <h2 style={{ color: T.text, fontSize: 22, fontWeight: 700, margin: "0 0 8px", fontFamily: T.display }}>You've seen them all!</h2>
-          <p style={{ color: T.textDim, fontSize: 15, margin: "0 0 24px" }}>You swiped through {swipeDeck.length} date ideas</p>
+          <h2 style={{ color: T.text, fontSize: 22, fontWeight: 700, margin: "0 0 8px", fontFamily: T.display }}>That's the whole deck.</h2>
+          <p style={{ color: T.textDim, fontSize: 15, margin: "0 0 24px" }}>{swipeDeck.length} ideas reviewed. Not bad.</p>
           <button onClick={() => { setSwipeIdx(0); setSwipeDeck([...swipeDeck].sort(() => Math.random() - 0.5)); }} style={btnHero({ padding: "14px 28px", fontSize: 15 })}>🔄 Shuffle & Restart</button>
           <button onClick={() => setSwipeMode(false)} style={btn("transparent", T.textDim, { padding: "14px 28px", fontSize: 14, marginTop: 12 })}>Back to Home</button>
         </div>}
@@ -1472,7 +1545,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
       `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} partnerName={partnerName} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} bookedDates={sched.map(s => s.scheduled_for)} />}
-      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} ownedMats={ownedMats} onToggleMat={toggleMat} />}
+      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} ownedMats={ownedMats} onToggleMat={toggleMat} ratings={ratings} onRate={rateDate} city={city} />}
       {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} partnerName={partnerName} partnerGender={partnerGender} />}
       {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} partnerName={partnerName} partnerGender={partnerGender} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
@@ -1510,26 +1583,31 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
         {tab === "home" && <>
           {!missionDone && <div style={{ ...crd({ padding: 24, marginBottom: 20 }), border: `1px solid ${T.primary}33`, background: T.primary + "08", position: "relative" }}>
             <button onClick={() => { setMissionDone(true); try { localStorage.setItem("vela_mission_done", "1"); } catch {} }} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", color: T.textFaint, fontSize: 16, cursor: "pointer", padding: 4 }}>✕</button>
-            <p style={{ color: T.primary, fontSize: 13, margin: "0 0 6px", fontWeight: 700, fontFamily: T.display }}>🕯️ Here's the deal.</p>
-            <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>Vela exists so you never have to Google "date ideas" again. We already know what {partnerName || pp.they} like{partnerName ? "s" : ""} — now we're giving you the plans to match. Browse, schedule, send the invite, and show up like you've been planning it for weeks.</p>
+            <p style={{ color: T.primary, fontSize: 13, margin: "0 0 6px", fontWeight: 700, fontFamily: T.display }}>🕯️ Here's the play.</p>
+            <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>No more doom-scrolling Pinterest or texting the group chat for ideas. We built your playbook based on what {partnerName || pp.they} actually vibe{partnerName ? "s" : ""} with. Pick a date, lock it in, send the invite — and look like a genius.</p>
           </div>}
-          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-            {[{ l: "Upcoming", v: sched.length, c: T.primary }, { l: "Completed", v: hist.length, c: T.green }, { l: "Library", v: DATES.length, c: T.yellow }].map(s =>
-              <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p><p style={{ color: s.c, fontSize: 26, margin: 0, fontWeight: 800 }}>{s.v}</p></div>
-            )}
+          <div style={{ position: "relative", marginBottom: 20 }}>
+            <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: 200, height: 100, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+            <div style={{ display: "flex", gap: 10, position: "relative" }}>
+              {[{ l: "Upcoming", v: sched.length, c: T.primary }, { l: "Completed", v: hist.length, c: T.green }, { l: "Library", v: DATES.length, c: T.yellow }].map(s =>
+                <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p><p style={{ color: s.c, fontSize: 26, margin: 0, fontWeight: 800 }}>{s.v}</p></div>
+              )}
+            </div>
           </div>
+          {city && <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 14px", textAlign: "center" }}>📍 {city} · <span onClick={() => setTab("profile")} style={{ color: T.primary, cursor: "pointer", fontWeight: 600 }}>Change</span></p>}
           <button onClick={surprise} style={{ ...btnHero({ width: "100%", marginBottom: 12 }) }}>🎲 Surprise Me</button>
-          <button onClick={genMonth} style={btnHero({ width: "100%", marginBottom: 22 })}>📅 Generate This Month's Dates</button>
+          <button onClick={genMonth} style={btnHero({ width: "100%", marginBottom: 22 })}>📅 Fill My Month</button>
 
           {notifs.length > 0 && <div style={{ ...crd({ padding: 16, marginBottom: 20 }), border: `1.5px solid ${T.yellow}33`, background: T.yellow + "08", cursor: "pointer" }} onClick={() => setShowHype(true)}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <p style={{ color: T.yellow, fontSize: 13, margin: 0, fontWeight: 700 }}>💡 Want to build the excitement?</p>
+              <p style={{ color: T.yellow, fontSize: 13, margin: 0, fontWeight: 700 }}>💡 Time to build the hype</p>
               <button onClick={(e) => { e.stopPropagation(); setShowHype(true); }} style={btn("transparent", T.yellow, { padding: "4px 10px", fontSize: 12 })}>See How →</button>
             </div>
-            <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>You've got {notifs.length} tip{notifs.length > 1 ? "s" : ""} to build anticipation before your next date</p>
+            <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{notifs.length} move{notifs.length > 1 ? "s" : ""} to get {partnerName || pp.them} hyped before your next date</p>
           </div>}
 
-          {sched.length > 0 && <div style={{ marginBottom: 22 }}>
+          {sched.length > 0 && <div style={{ marginBottom: 22, position: "relative" }}>
+            <div style={{ position: "absolute", top: "-15%", left: "-5%", width: 160, height: 160, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>Next Up</h3>
             {sched.slice(0, 3).map(s => <div key={s.id} style={{ ...crd({ padding: 14, marginBottom: 8 }), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${s.budget}</p></div>
@@ -1541,27 +1619,28 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
             {(() => { const r = hist[Math.floor(Math.random() * hist.length)]; return <div style={crd({ padding: 16 })}><p style={{ color: T.text, fontSize: 16, margin: "0 0 5px", fontWeight: 600 }}>{r.title}</p>{r.debrief_reaction && <p style={{ color: T.textDim, fontSize: 14, margin: 0 }}>{r.debrief_reaction}{r.debrief_notes && ` . "${r.debrief_notes}"`}</p>}</div>; })()}
           </div>}
 
-          <div style={{ marginTop: 4 }}>
+          <div style={{ marginTop: 4, position: "relative" }}>
+            <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 180, height: 180, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>For You ✨</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>{`Picked based on what ${partnerName || pp.they} like${partnerName ? "s" : ""}`}</p>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>{`Handpicked for ${partnerName || pp.them}`}</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {forYouDates.slice(0, 8).map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
             </div>
           </div>
 
           {outsideBoxDates.length > 0 && <div style={{ marginTop: 22 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Outside the Box 🧭</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>A little different from the usual, but could be worth a shot</p>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Not the obvious pick, but trust us on these</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {outsideBoxDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {outsideBoxDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
             </div>
           </div>}
 
           {stretchDates.length > 0 && <div style={{ marginTop: 22 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Stretch the Budget 💸</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Worth it if you want to go all out</p>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Above budget, but worth the flex</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {stretchDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {stretchDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
             </div>
           </div>}
         </>}
@@ -1605,7 +1684,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
             <button onClick={() => setCalSelectedDay(null)} style={{ background: "none", border: "none", color: T.primary, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: T.font }}>Show All</button>
           </div>}
 
-          {(() => { const list = calSelectedDay ? sched.filter(s => s.scheduled_for === calSelectedDay) : sched; return list.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>{calSelectedDay ? "No dates on this day." : 'Nothing scheduled yet. Hit "Generate" or browse the library!'}</p></div>
+          {(() => { const list = calSelectedDay ? sched.filter(s => s.scheduled_for === calSelectedDay) : sched; return list.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>{calSelectedDay ? "Free night. For now." : 'Nothing on deck yet. Hit Generate to fill your month, or go hunting in the library.'}</p></div>
             : list.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer" }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
@@ -1641,9 +1720,9 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           {/* Recommended For You */}
           {filteredForYou.length > 0 && <div style={{ marginBottom: 28 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Recommended For You ✨</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 14px" }}>Based on your partner's preferences</p>
+            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 14px" }}>{`These hit all of ${partnerName || "your partner"}'s buttons`}</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {filteredForYou.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {filteredForYou.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
             </div>
           </div>}
 
@@ -1651,7 +1730,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           {filteredRows.map(row => <div key={row.label} style={{ marginBottom: 24 }}>
             <h3 style={{ color: T.text, fontSize: 17, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>{row.label}</h3>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {row.dates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} />)}
+              {row.dates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
             </div>
           </div>)}
 
@@ -1661,14 +1740,14 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
             <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 14px" }}>{filtered.length} dates</p>
             {filtered.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>No matches.</p></div>
               : <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 14 }}>
-                {filtered.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} grid />)}
+                {filtered.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} grid rating={ratings[d.id]} />)}
               </div>}
           </div>
         </>}
 
         {tab === "memories" && <>
           <h2 style={{ color: T.text, fontSize: 20, margin: "0 0 18px", fontWeight: 700, fontFamily: T.display }}>Date Memories</h2>
-          {hist.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>No dates completed yet. Schedule one and mark it done!</p></div>
+          {hist.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>No dates in the books yet. Schedule one, crush it, and come back to debrief.</p></div>
             : hist.map(h => (
               <div key={h.id} style={{ ...crd({ padding: 18, marginBottom: 14 }) }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -1687,7 +1766,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
           <div style={{ ...crd({ padding: 28, marginBottom: 20 }), textAlign: "center" }}>
             <div style={{ width: 80, height: 80, borderRadius: "50%", margin: "0 auto 14px", background: `linear-gradient(135deg,${T.primary},${T.accent})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, fontWeight: 800, color: "#fff" }}>{(name || "U").charAt(0).toUpperCase()}</div>
             <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 4px", fontWeight: 800, fontFamily: T.display }}>{name}</h2>
-            <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>Vela Member</p>
+            <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>Vela Planner</p>
           </div>
           {(() => { const v = getPartnerVibe(quiz, partnerName, partnerGender); return (
             <div style={{ ...crd({ padding: 20, marginBottom: 20 }), borderLeft: `3px solid ${T.primary}` }}>
@@ -1701,6 +1780,7 @@ function Dashboard({ name, quiz, city, onRetake, partnerName, partnerGender }) {
               <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ fontSize: 20, margin: "0 0 4px" }}>{s.i}</p><p style={{ color: s.c, fontSize: 22, margin: "0 0 2px", fontWeight: 800 }}>{s.v}</p><p style={{ color: T.textFaint, fontSize: 10, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p></div>
             )}
           </div>
+          <CityEditor city={city} setCity={setCity} flash={flash} />
           <button onClick={onRetake} style={{ width: "100%", ...crd({ padding: 16, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: `1px solid ${T.border}` }}>
             <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: T.accent + "18", fontSize: 20 }}>🔄</span>
             <div style={{ textAlign: "left" }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>Retake Partner Quiz</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>Update partner preferences and vibes</p></div>
@@ -1741,24 +1821,31 @@ function PartnerScreen({ onComplete }) {
   const [gender, setGender] = useState(null);
   const ready = partnerName.trim() && gender;
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
-      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40 }}>
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20, position: "relative", overflow: "hidden" }}>
+      {/* Ambient glow orbs */}
+      <div style={{ position: "absolute", top: "30%", left: "50%", transform: "translate(-50%, -50%)", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "10%", right: "-5%", width: 250, height: 250, borderRadius: "50%", background: "radial-gradient(circle, rgba(196,144,128,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40, position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>💕</div>
+          <p style={{ fontSize: 18, margin: "0 0 8px", fontFamily: "'Playfair Display', serif", fontWeight: 600, background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>vela</p>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>🕯️</div>
           <h2 style={{ color: T.text, fontSize: 26, margin: 0, fontWeight: 700, fontFamily: T.display, lineHeight: 1.2 }}>
-            Who are you planning for?
+            Who's the lucky one?
           </h2>
           <p style={{ color: T.textDim, margin: "12px 0 0", fontSize: 14, lineHeight: 1.6 }}>
-            We'll personalize everything around them.
+            Tell us about them and we'll do the rest.
+          </p>
+          <p style={{ color: T.textFaint, margin: "8px 0 0", fontSize: 13, fontStyle: "italic" }}>
+            Takes 2 minutes. Zero commitment.
           </p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>What's your partner's name?</label>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Their first name</label>
             <input placeholder="Their first name" value={partnerName} onChange={e => setPartnerName(e.target.value)} onKeyDown={e => e.key === "Enter" && ready && onComplete(partnerName.trim(), gender)} style={inp({ fontSize: 16, padding: "14px 18px", textAlign: "center" })} />
           </div>
           <div>
-            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8, display: "block" }}>They are...</label>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8, display: "block" }}>They go by...</label>
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => setGender("girl")} style={btn(gender === "girl" ? T.primary + "22" : T.bg, gender === "girl" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "girl" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👩 Girl</button>
               <button onClick={() => setGender("guy")} style={btn(gender === "guy" ? T.primary + "22" : T.bg, gender === "guy" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "guy" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👨 Guy</button>
@@ -1883,15 +1970,18 @@ function UnlockScreen({ onComplete }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20 }}>
-      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40 }}>
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.font, padding: 20, position: "relative", overflow: "hidden" }}>
+      {/* Ambient glow orbs */}
+      <div style={{ position: "absolute", top: "30%", left: "50%", transform: "translate(-50%, -50%)", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "10%", right: "-5%", width: 250, height: 250, borderRadius: "50%", background: "radial-gradient(circle, rgba(196,144,128,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ ...crd(), maxWidth: 420, width: "100%", padding: 40, position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>🔓</div>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>🎯</div>
           <h2 style={{ color: T.text, fontSize: 26, margin: 0, fontWeight: 700, fontFamily: T.display, lineHeight: 1.2 }}>
-            Your dates are ready.
+            You're all set.
           </h2>
           <p style={{ color: T.textDim, margin: "12px 0 0", fontSize: 14, lineHeight: 1.6 }}>
-            Drop your info below so we can send you date reminders, new ideas, and the occasional nudge when it's been too long.
+            Drop your info and we'll send reminders before each date, fresh ideas when we add them, and a nudge if you go quiet.
           </p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -1916,7 +2006,7 @@ function UnlockScreen({ onComplete }) {
           </button>
         </div>
         <p style={{ color: T.textFaint, fontSize: 11, textAlign: "center", marginTop: 16, lineHeight: 1.5 }}>
-          No spam. No selling your info. Just dates.
+          No spam. No nonsense. Just better date nights.
         </p>
       </div>
     </div>
@@ -1986,10 +2076,10 @@ export default function App() {
   useEffect(() => { try { if (partnerGender) localStorage.setItem("vela_partner_gender", partnerGender); } catch {} }, [partnerGender]);
   useEffect(() => { try { if (quiz) localStorage.setItem("vela_quiz", JSON.stringify(quiz)); } catch {} }, [quiz]);
 
-  if (screen === "splash") return <Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : partnerName ? (quiz ? "unlock" : "quiz") : "partner")} />;
-  if (screen === "partner") return <PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} />;
-  if (screen === "quiz") return <QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} />;
-  if (screen === "unlock") return <UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} />;
-  if (screen === "vibe_reveal") return <VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} />;
-  return <Dashboard name={name} quiz={quiz} city={city} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} />;
+  if (screen === "splash") return <><GrainOverlay /><Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : partnerName ? (quiz ? "unlock" : "quiz") : "partner")} /></>;
+  if (screen === "partner") return <><GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} /></>;
+  if (screen === "quiz") return <><GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  if (screen === "unlock") return <><GrainOverlay /><UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} /></>;
+  if (screen === "vibe_reveal") return <><GrainOverlay /><VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  return <><GrainOverlay /><Dashboard name={name} quiz={quiz} city={city} setCity={setCity} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} /></>;
 }
