@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 
-const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#4ade80",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
+const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
 const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 10px rgba(214,136,83,0.2), 0 4px 10px rgba(139,74,40,0.15), inset 0 1px 0 rgba(255,208,161,0.3)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
@@ -279,9 +279,9 @@ const materialUrl=(name)=>{const m=MATERIAL_LINKS[name];if(!m)return{url:`https:
 
 const GRADS={
   outdoor:[
-    "linear-gradient(135deg,#1a1e1c 0%,#2a3d35 40%,#3d5a4e 80%,#4a7060 100%)",
-    "linear-gradient(135deg,#181e1a 0%,#263828 40%,#385540 80%,#4a6e58 100%)",
-    "linear-gradient(135deg,#1c2018 0%,#2e4030 40%,#426050 80%,#507868 100%)",
+    "linear-gradient(135deg,#1c1a18 0%,#342e26 40%,#504838 80%,#685e4a 100%)",
+    "linear-gradient(135deg,#1a1816 0%,#302a22 40%,#4a4234 80%,#605646 100%)",
+    "linear-gradient(135deg,#1e1c18 0%,#383028 40%,#544a3c 80%,#6e624e 100%)",
   ],
   food:[
     "linear-gradient(135deg,#1C1710 0%,#3a2a18 40%,#6a4a28 80%,#8a6438 100%)",
@@ -314,9 +314,9 @@ const GRADS={
     "linear-gradient(135deg,#1a1610 0%,#382418 40%,#5a3a24 80%,#7a5030 100%)",
   ],
   meaningful:[
-    "linear-gradient(135deg,#141618 0%,#1e2a28 40%,#2a4038 80%,#385848 100%)",
-    "linear-gradient(135deg,#12181a 0%,#1a2e2a 40%,#284840 80%,#386058 100%)",
-    "linear-gradient(135deg,#161818 0%,#222e2a 40%,#304440 80%,#3e5c50 100%)",
+    "linear-gradient(135deg,#181818 0%,#282824 40%,#3e3e34 80%,#565648 100%)",
+    "linear-gradient(135deg,#161816 0%,#262a22 40%,#3a4032 80%,#505846 100%)",
+    "linear-gradient(135deg,#1a1a18 0%,#2a2e26 40%,#404438 80%,#585e4c 100%)",
   ],
 };
 const getGrad = (date) => {
@@ -325,7 +325,7 @@ const getGrad = (date) => {
   return gs[hash % gs.length];
 };
 const EMOJI={outdoor:"🌄",food:"🍽️",adventure:"⚡",creative:"🎨",nightlife:"🌙",chill:"☁️",romantic:"❤️",meaningful:"🤝"};
-const CAT_ACCENT={outdoor:"#6a9a7a",food:"#D4A574",adventure:"#6888aa",creative:"#9A8AAA",nightlife:"#C49080",chill:"#7aaabb",romantic:"#D4A574",meaningful:"#6a9a88"};
+const CAT_ACCENT={outdoor:"#A89078",food:"#D4A574",adventure:"#6888aa",creative:"#9A8AAA",nightlife:"#C49080",chill:"#7aaabb",romantic:"#D4A574",meaningful:"#8A9080"};
 
 // ——— MOOD TAG SYSTEM ———
 const MOOD_MAP = {
@@ -589,6 +589,16 @@ const QUIZ=[
   {id:"q13",sec:"Budget",q:"How often do you want date nights?",type:"single",opts:["1x per month","2x per month","3x per month","Every week"]},
 ];
 
+// ——— SMART DEFAULT TIME ———
+const getDefaultTime = (date) => {
+  const t = (date.title || "").toLowerCase();
+  if (t.includes("sunrise")) return "06:00";
+  if (t.includes("breakfast") || t.includes("brunch")) return "09:00";
+  if (t.includes("farmers market") || t.includes("morning")) return "09:00";
+  if (t.includes("sunset")) return "17:30";
+  return "19:00";
+};
+
 // ——— ICS CALENDAR GENERATION ———
 function generateICS(title, description, dateStr, timeStr) {
   const dt = new Date(dateStr + "T" + (timeStr || "19:00") + ":00");
@@ -610,7 +620,7 @@ END:VCALENDAR`;
 // ——— MYSTERY BOX INVITE MODAL ———
 function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
   const [email, setEmail] = useState("");
-  const [time, setTime] = useState("19:00");
+  const [time, setTime] = useState(() => getDefaultTime(date));
   const [editing, setEditing] = useState(false);
   const dressHint = DRESS_HINTS[date.category] || "Dress comfortably.";
   const teasers = MYSTERY_TEASERS[date.category] || MYSTERY_TEASERS.chill;
@@ -749,9 +759,21 @@ function ScheduleModal({ date, onClose, onSchedule, bookedDates }) {
     const d = new Date(Date.now() + (Math.floor(Math.random() * 14) + 1) * 86400000);
     return d.toISOString().split("T")[0];
   });
+  const [startTime, setStartTime] = useState("19:00");
 
   if (!date) return null;
   const tier = getTier(date.budget);
+
+  const timeOptions = [];
+  for (let h = 9; h <= 23; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const val = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      const hr = h > 12 ? h - 12 : h === 0 ? 12 : h;
+      const ampm = h >= 12 ? "PM" : "AM";
+      const label = `${hr}:${String(m).padStart(2, "0")} ${ampm}`;
+      timeOptions.push({ val, label });
+    }
+  }
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20, overflowY: "auto" }}>
@@ -761,7 +783,14 @@ function ScheduleModal({ date, onClose, onSchedule, bookedDates }) {
 
         <MiniCalendar selected={dateStr} onSelect={setDateStr} bookedDates={bookedDates} />
 
-        <button onClick={() => { onSchedule(date, dateStr); onClose(); }} style={{ ...btnHero({ width: "100%", marginBottom: 12, fontSize: 15 }) }}>✓ Schedule It</button>
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ color: T.textDim, fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Start Time</label>
+          <select value={startTime} onChange={e => setStartTime(e.target.value)} style={{ ...inp(), width: "100%", padding: "10px 14px", fontSize: 15, cursor: "pointer", appearance: "none", WebkitAppearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}>
+            {timeOptions.map(t => <option key={t.val} value={t.val}>{t.label}</option>)}
+          </select>
+        </div>
+
+        <button onClick={() => { onSchedule(date, dateStr, startTime); onClose(); }} style={{ ...btnHero({ width: "100%", marginBottom: 12, fontSize: 15 }) }}>✓ Schedule It</button>
 
         <button onClick={onClose} style={{ ...btn("transparent", T.textDim), width: "100%", fontSize: 13 }}>Cancel</button>
       </div>
@@ -910,7 +939,7 @@ function getRomanticInvite(date) {
 // ——— REAL (FULL DETAILS) INVITE ———
 function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerGender }) {
   const [email, setEmail] = useState("");
-  const [time, setTime] = useState("19:00");
+  const [time, setTime] = useState(() => getDefaultTime(date));
   const [desc] = useState(() => getRomanticInvite(date));
 
   const send = async () => {
@@ -966,12 +995,21 @@ function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerG
 }
 
 // ——— PLAN PROMPT MODAL ———
-function PlanPromptModal({ date, scheduledFor, quiz, city, onClose, partnerName, partnerGender }) {
+function PlanPromptModal({ date, scheduledFor, startTime, quiz, city, onClose, partnerName, partnerGender, previousDebrief }) {
   const [copied, setCopied] = useState(false);
   const p = P(partnerGender || "girl");
   const pn = partnerName || "my partner";
 
   const dateDisplay = new Date(scheduledFor + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const st = startTime || "19:00";
+  const [stH, stM] = st.split(":").map(Number);
+  const stHr = stH > 12 ? stH - 12 : stH === 0 ? 12 : stH;
+  const stAmPm = stH >= 12 ? "PM" : "AM";
+  const startTimeDisplay = `${stHr}:${String(stM).padStart(2, "0")} ${stAmPm}`;
+  const durationHrs = Math.round(date.duration / 60);
+  const endDate = new Date(2000, 0, 1, stH + durationHrs, stM);
+  const eH = endDate.getHours();
+  const endTimeDisplay = `${eH > 12 ? eH - 12 : eH === 0 ? 12 : eH}:${String(endDate.getMinutes()).padStart(2, "0")} ${eH >= 12 ? "PM" : "AM"}`;
 
   const s = (v) => sub(v, partnerName, partnerGender);
   const quizContext = quiz ? [
@@ -989,34 +1027,59 @@ function PlanPromptModal({ date, scheduledFor, quiz, city, onClose, partnerName,
     quiz.q12 ? `Typical budget: ${s(quiz.q12)}` : "",
   ].filter(Boolean).join("\n") : "";
 
-  const prompt = `I need you to be my date night planner. Plan every single detail for this date so all I have to do is follow your instructions step by step.
+  const prompt = `You are an elite date planner — the kind couples pay serious money to hire. Your job is to take this date idea and turn it into a fully personalized, effortless experience. Think concierge-level planning, not a spreadsheet.
 
-DATE: ${date.title}
-SCHEDULED FOR: ${dateDisplay}${city ? `\nCITY/LOCATION: ${city}` : ""}
-BUDGET: $${date.budget}
-DURATION: ~${Math.round(date.duration / 60)} hours
-CATEGORY: ${date.category}
-DESCRIPTION: ${date.description}
+THE DATE
+Title: ${date.title}
+When: ${dateDisplay}, starting at ${startTimeDisplay}
+Duration: ~${durationHrs} hour${durationHrs !== 1 ? "s" : ""} (wrapping up around ${endTimeDisplay})${city ? `\nCity: ${city}` : ""}
+Budget: $${date.budget}
+Category: ${date.category}
+Description: ${date.description}
 
-STEPS FROM THE APP:
+THE APP'S TEMPLATE:
 ${date.instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}
-${date.materials.length > 0 ? `\nMATERIALS NEEDED:\n${date.materials.map(m => `- ${m.name} (~$${m.price})`).join("\n")}` : ""}
-${quizContext ? `\nABOUT ${pn.toUpperCase()} (these are ${p.their} actual preferences from a quiz I filled out — use them to personalize every detail):\n${quizContext}` : ""}
+${date.materials.length > 0 ? `\nMaterials: ${date.materials.map(m => `${m.name} (~$${m.price})`).join(", ")}` : ""}
+${quizContext ? `\nABOUT ${pn.toUpperCase()} (real preferences from a quiz — use these to personalize everything):\n${quizContext}` : ""}${previousDebrief ? `\n\nPREVIOUS EXPERIENCE\nThey've done this date before. Here's what happened:\n- Reaction: ${previousDebrief.debrief_reaction || "N/A"}\n- Notes: "${previousDebrief.debrief_notes || "None"}"\n- Would do again: ${previousDebrief.debrief_want_again ? "Yes" : "No"}\nUse this feedback to improve the plan. Address any issues mentioned and build on what worked.` : ""}
 
-NOW PLAN THIS OUT COMPLETELY${city ? ` for ${city}` : ""}. I need:
+HERE'S WHAT I NEED FROM YOU:
 
-1. TIMELINE: Hour-by-hour schedule from start to finish, including prep time before the date starts
-2. SHOPPING LIST: Exactly what to buy, where to buy it${city ? ` in ${city}` : ""}, and estimated cost for each item
-3. RESERVATIONS/BOOKINGS: What needs to be booked ahead of time — give me specific real venue/restaurant recommendations${city ? ` in ${city}` : ""}
-4. OUTFIT SUGGESTION: What I should wear based on the vibe
-5. PLAYLIST: Suggest a mood-appropriate playlist or genre for background music
-6. BACKUP PLAN: What to do if something goes wrong (weather, closed venue, etc.)
-7. PRO TIPS: 3-5 small details that will take this from good to unforgettable
-8. DAY-OF CHECKLIST: A final checklist I can run through the day of to make sure nothing is forgotten
+1. THE GAME PLAN
+Give me a natural flow for the evening — not a minute-by-minute itinerary. Break it into phases (prep, the date itself, wind-down) with loose timeframes. People don't live on a stopwatch, so keep it relaxed but structured enough that I know what's happening and when. Start time is ${startTimeDisplay} — work backwards for any prep I need to do beforehand.
 
-IMPORTANT: Use ALL the partner preferences listed above to personalize this plan. ${p.Their} food preferences, allergies, cuisine favorites, activity comfort level, and vibes should directly influence your recommendations.${city ? ` All venue and restaurant suggestions must be real places in ${city}.` : ""}
+2. WHERE TO GO — OPTIONS, NOT ORDERS${city ? ` (real places in ${city} only)` : ""}
+For any restaurant, bar, venue, or activity spot: give me 2-3 options ranked by your recommendation. For each option include:
+- Why it's a great fit for this specific date and ${pn}'s preferences
+- The vibe (atmosphere, crowd, noise level)
+- Price range and what to expect to spend
+- Any heads up (reservation needed, dress code, parking situation, wait times)
+- Your honest take — pros and cons
+Pick a clear winner but explain why the others are solid backups.
 
-Make it specific. No generic advice. Plan it like you're a professional date planner being paid $500 for this.`;
+3. WHAT TO BUY / BRING
+A clean shopping list — what I need, where to get it${city ? ` in ${city}` : ""}, and estimated cost. Group it so I can knock it out in one trip if possible.
+
+4. RESERVATIONS & BOOKINGS
+What needs to be booked in advance and how far ahead. Include direct booking info where possible.
+
+5. STYLE & MUSIC
+- What to wear that matches the vibe (keep it practical, not a fashion show)
+- A playlist vibe or specific playlist recommendations for the mood
+
+6. BACKUP PLAN
+If something falls through — weather, closed venue, long wait — what's the pivot? Give me a ready-to-go Plan B, not just "try somewhere else."
+
+7. PRO MOVES
+3-5 small, thoughtful details that turn a good date into one ${p.they} won't stop talking about. These should feel personal to ${pn}, not generic "bring flowers" advice.
+
+8. DAY-OF CHECKLIST
+A quick-hit checklist I can scan the day of to make sure everything's handled.
+
+GROUND RULES:
+- Use ${pn}'s actual preferences above to shape every recommendation. ${p.Their} food tastes, energy level, vibe preferences, and allergies should directly drive your picks.${city ? ` Every venue must be a real, currently operating place in ${city}.` : ""}
+- Be opinionated. Tell me what YOU would pick and why. I'm paying for your taste, not a list of options with no direction.
+- Keep it natural and conversational. This is a date, not a military operation.
+- No filler, no generic advice. Every line should be specific to THIS date and THIS person.`;
 
   const copyPrompt = () => {
     navigator.clipboard.writeText(prompt).then(() => {
@@ -1186,8 +1249,54 @@ const buildSearchLinks = (date, city) => ({
   yelp: `https://www.yelp.com/search?find_desc=${encodeURIComponent(date.title)}&find_loc=${encodeURIComponent(city)}`,
 });
 
+// ——— SWIPEABLE ROW ———
+function SwipeableRow({ children, onSwipe }) {
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [swiped, setSwiped] = useState(false);
+  const startX = useRef(0);
+  const hasMoved = useRef(false);
+
+  const onStart = (x) => { startX.current = x; hasMoved.current = false; setDragging(true); };
+  const onMove = (x) => { if (!dragging) return; const dx = Math.max(0, x - startX.current); if (dx > 4) hasMoved.current = true; setDragX(dx); };
+  const onEnd = () => {
+    if (!dragging) return;
+    setDragging(false);
+    if (dragX > 100) { setSwiped(true); setTimeout(() => onSwipe(), 250); }
+    else setDragX(0);
+  };
+
+  return (
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: 14 }}>
+      <div style={{ position: "absolute", inset: 0, background: "#16a34a", display: "flex", alignItems: "center", paddingLeft: 24, borderRadius: 14 }}>
+        <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, opacity: Math.min(1, dragX / 80) }}>Done ✓</span>
+      </div>
+      <div
+        onTouchStart={e => onStart(e.touches[0].clientX)}
+        onTouchMove={e => onMove(e.touches[0].clientX)}
+        onTouchEnd={onEnd}
+        onMouseDown={e => onStart(e.clientX)}
+        onMouseMove={e => { if (dragging) onMove(e.clientX); }}
+        onMouseUp={onEnd}
+        onMouseLeave={() => { if (dragging) onEnd(); }}
+        onClick={e => { if (hasMoved.current) e.stopPropagation(); }}
+        style={{
+          transform: swiped ? "translateX(110%)" : `translateX(${dragX}px)`,
+          transition: dragging ? "none" : "transform 0.25s ease",
+          position: "relative",
+          zIndex: 1,
+          cursor: dragging ? "grabbing" : "grab",
+          userSelect: "none",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // ——— DETAIL MODAL ———
-function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, ownedMats, onToggleMat, ratings, onRate, city }) {
+function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, onPlanDate, ownedMats, onToggleMat, ratings, onRate, city }) {
   if (!d) return null;
   const tier = getTier(d.budget); const grad = getGrad(d); const emoji = EMOJI[d.category] || "📌"; const accent = CAT_ACCENT[d.category] || "#fff";
   const mood = getMood(d);
@@ -1206,13 +1315,7 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
               <span style={{ color: tier.color, fontSize: 9, fontWeight: 700, fontFamily: T.font, letterSpacing: 0.8, opacity: 0.8, textTransform: "uppercase" }}>{tier.tag}</span>
             </div>
           </div>
-          <div style={{ marginBottom: 10 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: `${mood.color}18`, border: `1px solid ${mood.color}25`, borderRadius: 8, padding: "5px 12px", fontSize: 11, fontWeight: 700, color: mood.color, fontFamily: T.font, letterSpacing: 0.5, textTransform: "uppercase" }}>{mood.emoji} {mood.label}</span>
-          </div>
           <h2 style={{ color: "#fff", fontSize: 26, margin: "0 0 10px", fontWeight: 800, fontFamily: T.display, textShadow: "0 2px 8px rgba(0,0,0,0.3)", lineHeight: 1.2 }}>{d.title}</h2>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-            {d.vibe.map(v => <span key={v} style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 6, fontFamily: T.font, border: "1px solid rgba(255,255,255,0.08)" }}>{v}</span>)}
-          </div>
           <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, fontFamily: T.font, textTransform: "capitalize" }}>{d.category} · {d.difficulty} · {Math.round(d.duration / 60)}h</span>
         </div>
         <div style={{ padding: "24px 24px 32px" }}>
@@ -1224,14 +1327,7 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
           </div>}
           {/* Find Spots */}
           {city && (() => { const links = buildSearchLinks(d, city); return (
-            <div style={{ ...crd({ padding: 16, marginBottom: 24 }), background: T.surface }}>
-              <p style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700 }}>📍 Find Spots in {city}</p>
-              <div style={{ display: "flex", gap: 10 }}>
-                <a href={links.maps} target="_blank" rel="noopener noreferrer" style={{ flex: 1, ...btn("rgba(255,255,255,0.06)", T.text, { textAlign: "center", textDecoration: "none", border: `1px solid ${T.border}`, borderRadius: 10, fontSize: 13 }) }}>🗺️ Search on Maps</a>
-                <a href={links.yelp} target="_blank" rel="noopener noreferrer" style={{ flex: 1, ...btn("rgba(255,255,255,0.06)", T.text, { textAlign: "center", textDecoration: "none", border: `1px solid ${T.border}`, borderRadius: 10, fontSize: 13 }) }}>⭐ Search on Yelp</a>
-              </div>
-              <p style={{ color: T.textFaint, fontSize: 11, margin: "8px 0 0", textAlign: "center" }}>Opens in a new tab with venues near you</p>
-            </div>
+            <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 24px" }}>📍 Find spots near {city}: <a href={links.maps} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontWeight: 600, textDecoration: "none" }}>Maps</a> · <a href={links.yelp} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontWeight: 600, textDecoration: "none" }}>Yelp</a></p>
           ); })()}
           {scheduledInfo ? (
             <div style={{ marginBottom: 24 }}>
@@ -1239,10 +1335,13 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
                 <span style={{ fontSize: 18 }}>📅</span>
                 <div>
                   <p style={{ color: T.primary, fontSize: 13, fontWeight: 700, margin: 0 }}>Scheduled</p>
-                  <p style={{ color: T.text, fontSize: 14, margin: 0 }}>{new Date(scheduledInfo.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+                  <p style={{ color: T.text, fontSize: 14, margin: 0 }}>{new Date(scheduledInfo.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}{scheduledInfo.start_time ? ` at ${(() => { const [h,m] = scheduledInfo.start_time.split(":").map(Number); return `${h > 12 ? h-12 : h===0 ? 12 : h}:${String(m).padStart(2,"0")} ${h >= 12 ? "PM" : "AM"}`; })()}` : ""}</p>
                 </div>
               </div>
-              <button onClick={() => onSendInvite({ date: d, scheduledFor: scheduledInfo.scheduled_for })} style={{ ...btn(T.pink + "12", T.pink), width: "100%", padding: "14px 24px", fontSize: 15, fontWeight: 600, border: `1.5px solid ${T.pink}44`, borderRadius: 14 }}>📧 Send Invite</button>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => onSendInvite({ date: d, scheduledFor: scheduledInfo.scheduled_for })} style={{ ...btn(T.pink + "12", T.pink), flex: 1, padding: "14px 24px", fontSize: 15, fontWeight: 600, border: `1.5px solid ${T.pink}44`, borderRadius: 14 }}>📧 Send Invite</button>
+                <button onClick={() => onPlanDate({ date: d, scheduledFor: scheduledInfo.scheduled_for, startTime: scheduledInfo.start_time })} style={{ ...btn(T.purple + "12", T.purple), flex: 1, padding: "14px 24px", fontSize: 15, fontWeight: 600, border: `1.5px solid ${T.purple}44`, borderRadius: 14 }}>🧠 Plan This Date</button>
+              </div>
             </div>
           ) : (
             <button onClick={() => { onSchedule(d); }} style={{ ...btnHero({ width: "100%", marginBottom: 24 }) }}>📅 Schedule This Date</button>
@@ -1267,13 +1366,6 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, own
               </div>
               {!owned && m.price > 0 && MATERIAL_LINKS[m.name]!==null ? (()=>{const ml=materialUrl(m.name);return <a href={ml.url} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none" }} onClick={e => e.stopPropagation()}>{ml.type==="a"?"Shop →":"Find →"}</a>;})() : null}
             </div>; })}
-          </div>}
-          {d.variations.length > 0 && <div style={{ marginBottom: 16 }}>
-            <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>Variations</h4>
-            {d.variations.map((v, i) => <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8 }}>
-              <span style={{ color: T.yellow, fontSize: 14, marginTop: 1 }}>◆</span>
-              <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.5 }}>{v}</p>
-            </div>)}
           </div>}
         </div>
       </div>
@@ -1389,10 +1481,6 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
   const fmtDayKey = (y, m, d) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
   const todayKey = fmtDayKey(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // Contextual first-time feature tips
-  const [seenTips, setSeenTips] = useState(() => { try { const s = localStorage.getItem("vela_seen_tips"); return s ? JSON.parse(s) : []; } catch { return []; } });
-  const [featureTip, setFeatureTip] = useState(null);
-  const [missionDone, setMissionDone] = useState(() => { try { return !!localStorage.getItem("vela_mission_done"); } catch { return false; } });
   const [ownedMats, setOwnedMats] = useState(() => { try { const s = localStorage.getItem("vela_owned_mats"); return s ? JSON.parse(s) : {}; } catch { return {}; } });
   useEffect(() => { try { localStorage.setItem("vela_owned_mats", JSON.stringify(ownedMats)); } catch {} }, [ownedMats]);
   const toggleMat = (dateId, matName) => setOwnedMats(p => { const k = dateId + "_" + matName; const next = { ...p }; if (next[k]) delete next[k]; else next[k] = true; return next; });
@@ -1410,28 +1498,19 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
   };
 
   const pp = P(partnerGender || "girl");
-  const FEATURE_TIPS = {
-    home: { icon: "🕯️", title: "Home Base", desc: `This is your command center. Every date here is picked because ${partnerName || pp.they} would actually be into it. Scroll the lineup or hit Surprise Me if you're feeling dangerous.` },
-    library: { icon: "📚", title: "The Arsenal", desc: "90+ date ideas, zero bad ones. Filter by budget or category, or just browse. Every card has the full game plan inside." },
-    calendar: { icon: "📅", title: "The Lineup", desc: "Everything you've locked in lives here. Send a mystery invite to build the hype, or use the AI planner to get your step-by-step sorted." },
-    memories: { icon: "💾", title: "The Vault", desc: `This is where the receipts live. After every date, drop the reaction, what was said, and whether it's a repeater. The more you log, the better your picks get.` },
-    profile: { icon: "👤", title: "Your Setup", desc: `Vibe profile, budget sweet spot, and all quiz answers live here. Things change? Retake the quiz.` },
-    surprise: { icon: "🎲", title: "Surprise Me", desc: `Right to lock it in, left to pass. Tap the info button to peek at the full plan first. We're only showing stuff ${partnerName || pp.they} would be into.` },
-  };
-
-  const showTipIfNew = (key) => {
-    if (!seenTips.includes(key) && FEATURE_TIPS[key]) {
-      setFeatureTip(FEATURE_TIPS[key]);
-      const updated = [...seenTips, key];
-      setSeenTips(updated);
-      try { localStorage.setItem("vela_seen_tips", JSON.stringify(updated)); } catch {}
-    }
-  };
-
-  const dismissFeatureTip = () => setFeatureTip(null);
 
   useEffect(() => { try { localStorage.setItem("vela_sched", JSON.stringify(sched)); } catch {} }, [sched]);
   useEffect(() => { try { localStorage.setItem("vela_hist", JSON.stringify(hist)); } catch {} }, [hist]);
+
+  // Auto-expire past dates
+  const autoExpiredRef = useRef(new Set());
+  useEffect(() => {
+    const todayStr = new Date().toISOString().split("T")[0];
+    const past = sched.filter(s => s.scheduled_for < todayStr && !autoExpiredRef.current.has(s.id));
+    if (past.length > 0) {
+      past.forEach(s => { autoExpiredRef.current.add(s.id); complete(s); });
+    }
+  }, [sched]);
 
   const cats = [...new Set(DATES.map(d => d.category))];
   const [searchQ, setSearchQ] = useState("");
@@ -1535,16 +1614,6 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
     ? scored.filter(d => d._score >= 4 && !d._flags.includes("alcohol") && !d._flags.includes("budget")).sort((a, b) => b._score - a._score).slice(0, 12)
     : seasonal.slice(0, 12);
 
-  // Outside the Box: dates that have a mismatch flag but are still interesting
-  const outsideBoxDates = quiz
-    ? scored.filter(d => d._score > 0 && (d._flags.includes("alcohol") || d._flags.includes("energy") || d._flags.includes("activity") || d._flags.includes("vibe"))).filter(d => !forYouDates.some(f => f.id === d.id)).sort((a, b) => b._score - a._score).slice(0, 8)
-    : [];
-
-  // Stretch the Budget: over budget but otherwise a decent match
-  const stretchDates = quiz
-    ? scored.filter(d => d._flags.includes("budget") && !d._flags.includes("alcohol")).sort((a, b) => b._score - a._score).slice(0, 8)
-    : [];
-
   const bcFilter = (arr) => arr.filter(d => { if (bf !== null && d.budget > bf) return false; if (cf && d.category !== cf) return false; return true; });
   const filteredForYou = bcFilter(forYouDates);
   const filteredRows = rows.map(r => ({ ...r, dates: bcFilter(r.dates) })).filter(r => r.dates.length > 0);
@@ -1599,10 +1668,10 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
     return () => clearInterval(interval);
   }, [sched, dismissedNotifKeys, partnerName, partnerGender, ownedMats]);
 
-  const schedule = (d, dateStr) => {
+  const schedule = (d, dateStr, startTime) => {
     const isDupe = sched.some(s => s.date_id === d.id && s.scheduled_for === dateStr);
     if (isDupe) { flash(`"${d.title}" is already scheduled for that day`); return; }
-    const entry = { id: Date.now().toString(), date_id: d.id, title: d.title, budget: d.budget, category: d.category, scheduled_for: dateStr };
+    const entry = { id: Date.now().toString(), date_id: d.id, title: d.title, budget: d.budget, category: d.category, scheduled_for: dateStr, start_time: startTime || "19:00" };
     setSched(p => [...p, entry].sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for)));
     flash(`✓ "${d.title}" scheduled!`);
   };
@@ -1636,7 +1705,6 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
     setSwipeIdx(0);
     setDragX(0);
     setSwipeMode(true);
-    showTipIfNew("surprise");
   };
 
   const swipeCard = (dir) => {
@@ -1690,7 +1758,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
       const off = Math.floor((28 / ct) * i) + Math.floor(Math.random() * 5) + 1;
       const when = new Date(now.getFullYear(), now.getMonth(), now.getDate() + off);
       const dateStr = when.toISOString().split("T")[0];
-      const entry = { id: (Date.now() + i).toString(), date_id: pick.id, title: pick.title, budget: pick.budget, category: pick.category, scheduled_for: dateStr };
+      const entry = { id: (Date.now() + i).toString(), date_id: pick.id, title: pick.title, budget: pick.budget, category: pick.category, scheduled_for: dateStr, start_time: "19:00" };
       setSched(p => [...p, entry].sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for)));
     }
     flash(`✓ ${ct} date${ct > 1 ? "s" : ""} scheduled!`);
@@ -1698,7 +1766,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
 
   const dismissNotif = (id) => setDismissedNotifKeys(p => [...p, id]);
 
-  const TABS = [{ k: "home", l: "Home", i: "🏠" }, { k: "calendar", l: "Upcoming", i: "📅" }, { k: "library", l: "Library", i: "📚" }, { k: "memories", l: "Memories", i: "💾" }, { k: "profile", l: "Profile", i: "👤" }];
+  const TABS = [{ k: "home", l: "Home", i: "🏠" }, { k: "calendar", l: "Upcoming", i: "📅" }, { k: "library", l: "Library", i: "📚" }, { k: "profile", l: "Profile", i: "👤" }];
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, fontFamily: T.font }}>
@@ -1796,9 +1864,9 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
       `}</style>
       {debrief && <Debrief entry={debrief} onSave={saveDebrief} onClose={() => setDebrief(null)} partnerName={partnerName} />}
       {schedModal && <ScheduleModal date={schedModal} onClose={() => { setSchedModal(null); setDetail(null); }} onSchedule={schedule} bookedDates={sched.map(s => s.scheduled_for)} />}
-      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} ownedMats={ownedMats} onToggleMat={toggleMat} ratings={ratings} onRate={rateDate} city={city} />}
+      {!schedModal && !invitePicker && <Detail date={detail} onClose={() => { setDetail(null); setDetailSched(null); }} onSchedule={(d) => { setSchedModal(d); }} scheduledInfo={detailSched} onSendInvite={(info) => setInvitePicker(info)} onPlanDate={(info) => setPlanPrompt(info)} ownedMats={ownedMats} onToggleMat={toggleMat} ratings={ratings} onRate={rateDate} city={city} />}
       {invitePicker && <InvitePicker date={invitePicker.date} scheduledFor={invitePicker.scheduledFor} onClose={() => setInvitePicker(null)} partnerName={partnerName} partnerGender={partnerGender} />}
-      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} partnerName={partnerName} partnerGender={partnerGender} />}
+      {planPrompt && <PlanPromptModal date={planPrompt.date} scheduledFor={planPrompt.scheduledFor} startTime={planPrompt.startTime} quiz={quiz} city={city} onClose={() => setPlanPrompt(null)} partnerName={partnerName} partnerGender={partnerGender} previousDebrief={planPrompt.previousDebrief} />}
       {showHype && <HypePanel notifications={notifs} onDismiss={dismissNotif} onClose={() => setShowHype(false)} />}
       {toast && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.surface, color: T.text, padding: "12px 24px", borderRadius: 12, border: `1px solid ${T.border}`, zIndex: 1000, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>{toast}</div>}
 
@@ -1819,7 +1887,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
       {/* Fixed bottom nav */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: T.surface, borderTop: `1px solid ${T.border}`, display: "flex", justifyContent: "space-around", alignItems: "center", zIndex: 100, paddingBottom: "env(safe-area-inset-bottom, 8px)", paddingTop: 6 }}>
         {TABS.map(t => (
-          <button key={t.k} onClick={() => { setTab(t.k); showTipIfNew(t.k); }} style={{
+          <button key={t.k} onClick={() => setTab(t.k)} style={{
             background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column",
             alignItems: "center", gap: 3, padding: "6px 12px", minWidth: 56, minHeight: 48,
             transition: "all 0.15s",
@@ -1832,46 +1900,36 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px 16px 100px" }}>
         {tab === "home" && <>
-          {!missionDone && <div style={{ ...crd({ padding: 24, marginBottom: 20 }), border: `1px solid ${T.primary}33`, background: T.primary + "08", position: "relative" }}>
-            <button onClick={() => { setMissionDone(true); try { localStorage.setItem("vela_mission_done", "1"); } catch {} }} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", color: T.textFaint, fontSize: 16, cursor: "pointer", padding: 4 }}>✕</button>
-            <p style={{ color: T.primary, fontSize: 13, margin: "0 0 6px", fontWeight: 700, fontFamily: T.display }}>🕯️ Here's the play.</p>
-            <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>No more doom-scrolling Pinterest or texting the group chat for ideas. We built your playbook based on what {partnerName || pp.they} actually vibe{partnerName ? "s" : ""} with. Pick a date, lock it in, send the invite — and look like a genius.</p>
-          </div>}
-          <div style={{ position: "relative", marginBottom: 20 }}>
-            <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: 200, height: 100, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
-            <div style={{ display: "flex", gap: 10, position: "relative" }}>
-              {[{ l: "Upcoming", v: sched.length, c: T.primary }, { l: "Completed", v: hist.length, c: T.green }, { l: "Library", v: DATES.length, c: T.yellow }].map(s =>
-                <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ color: T.textFaint, fontSize: 10, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p><p style={{ color: s.c, fontSize: 26, margin: 0, fontWeight: 800 }}>{s.v}</p></div>
-              )}
-            </div>
-          </div>
+          {sched.length > 0 && (() => {
+            const next = sched[0];
+            const now = new Date();
+            const dateTime = new Date(next.scheduled_for + "T19:00:00");
+            const diff = dateTime - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const isToday = days === 0 && diff > 0;
+            const isPast = diff <= 0;
+            const countdownText = isPast ? "Date night!" : isToday ? `${hours}h to go` : days === 1 ? "Tomorrow" : `${days} days away`;
+            return <div style={{ marginBottom: 22 }}>
+              <SwipeableRow onSwipe={() => complete(next)}>
+              <div onClick={() => { const full = DATES.find(dd => dd.id === next.date_id); if (full) { setDetail(full); setDetailSched(next); } }} style={{ ...crd({ padding: 20, marginBottom: 10 }), border: `1px solid ${T.primary}22`, background: "linear-gradient(135deg, #1C1C1E 0%, #2a2420 40%, #3a302a 70%, #4a3e34 100%)", cursor: "pointer" }}>
+                <p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: 0.8, fontWeight: 600 }}>Next Date</p>
+                <p style={{ color: T.text, fontSize: 18, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>{next.title}</p>
+                <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 10px" }}>{new Date(next.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}{next.start_time ? ` at ${(() => { const [h,m] = next.start_time.split(":").map(Number); return `${h > 12 ? h-12 : h===0 ? 12 : h}:${String(m).padStart(2,"0")} ${h >= 12 ? "PM" : "AM"}`; })()}` : ""} · ${next.budget}</p>
+                <span style={{ color: isToday || isPast ? T.primary : T.text, fontSize: 15, fontWeight: 700 }}>{countdownText}</span>
+              </div>
+              </SwipeableRow>
+              {sched.length > 1 && sched.slice(1, 3).map(s => <SwipeableRow key={s.id} onSwipe={() => complete(s)}>
+                <div style={{ ...crd({ padding: 14, marginBottom: 8 }), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${s.budget}</p></div>
+              </div></SwipeableRow>)}
+            </div>;
+          })()}
+
           {city && <p style={{ color: T.textDim, fontSize: 13, margin: "0 0 14px", textAlign: "center" }}>📍 {city} · <span onClick={() => setTab("profile")} style={{ color: T.primary, cursor: "pointer", fontWeight: 600 }}>Change</span></p>}
-          <button onClick={surprise} style={{ ...btnHero({ width: "100%", marginBottom: 12 }) }}>🎲 Surprise Me</button>
-          <button onClick={genMonth} style={btnHero({ width: "100%", marginBottom: 22 })}>📅 Fill My Month</button>
+          <button onClick={surprise} style={{ ...btnHero({ width: "100%", marginBottom: 22 }) }}>🎲 Surprise Me</button>
 
-          {notifs.length > 0 && <div style={{ ...crd({ padding: 16, marginBottom: 20 }), border: `1.5px solid ${T.yellow}33`, background: T.yellow + "08", cursor: "pointer" }} onClick={() => setShowHype(true)}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <p style={{ color: T.yellow, fontSize: 13, margin: 0, fontWeight: 700 }}>💡 Time to build the hype</p>
-              <button onClick={(e) => { e.stopPropagation(); setShowHype(true); }} style={btn("transparent", T.yellow, { padding: "4px 10px", fontSize: 12 })}>See How →</button>
-            </div>
-            <p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{notifs.length} move{notifs.length > 1 ? "s" : ""} to get {partnerName || pp.them} hyped before your next date</p>
-          </div>}
-
-          {sched.length > 0 && <div style={{ marginBottom: 22, position: "relative" }}>
-            <div style={{ position: "absolute", top: "-15%", left: "-5%", width: 160, height: 160, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
-            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>Next Up</h3>
-            {sched.slice(0, 3).map(s => <div key={s.id} style={{ ...crd({ padding: 14, marginBottom: 8 }), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${s.budget}</p></div>
-              <button onClick={() => complete(s)} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓ Done</button>
-            </div>)}
-          </div>}
-
-          {hist.length > 0 && <div style={{ marginBottom: 22 }}><h3 style={{ color: T.text, fontSize: 16, margin: "0 0 12px", fontWeight: 700, fontFamily: T.display }}>💭 Remember This?</h3>
-            {(() => { const r = hist[Math.floor(Math.random() * hist.length)]; return <div style={crd({ padding: 16 })}><p style={{ color: T.text, fontSize: 16, margin: "0 0 5px", fontWeight: 600 }}>{r.title}</p>{r.debrief_reaction && <p style={{ color: T.textDim, fontSize: 14, margin: 0 }}>{r.debrief_reaction}{r.debrief_notes && ` . "${r.debrief_notes}"`}</p>}</div>; })()}
-          </div>}
-
-          <div style={{ marginTop: 4, position: "relative" }}>
-            <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 180, height: 180, borderRadius: "50%", background: "radial-gradient(circle, rgba(214,136,83,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <div style={{ marginTop: 4 }}>
             <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>For You ✨</h3>
             <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>{`Handpicked for ${partnerName || pp.them}`}</p>
             <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
@@ -1879,21 +1937,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
             </div>
           </div>
 
-          {outsideBoxDates.length > 0 && <div style={{ marginTop: 22 }}>
-            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Outside the Box 🧭</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Not the obvious pick, but trust us on these</p>
-            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {outsideBoxDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
-            </div>
-          </div>}
-
-          {stretchDates.length > 0 && <div style={{ marginTop: 22 }}>
-            <h3 style={{ color: T.text, fontSize: 16, margin: "0 0 4px", fontWeight: 700, fontFamily: T.display }}>Stretch the Budget 💸</h3>
-            <p style={{ color: T.textDim, fontSize: 12, margin: "0 0 12px" }}>Above budget, but worth the flex</p>
-            <div className="vela-scroll" style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 8, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
-              {stretchDates.map(d => <Card key={d.id} date={d} onClick={() => setDetail(d)} rating={ratings[d.id]} />)}
-            </div>
-          </div>}
+          <p style={{ color: T.textFaint, fontSize: 12, textAlign: "center", margin: "24px 0 0", letterSpacing: 0.3 }}>{sched.length} upcoming · {hist.length} completed · {DATES.length}+ ideas</p>
         </>}
 
         {tab === "calendar" && <>
@@ -1936,22 +1980,17 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
           </div>}
 
           {(() => { const list = calSelectedDay ? sched.filter(s => s.scheduled_for === calSelectedDay) : sched; return list.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>{calSelectedDay ? "Free night. For now." : 'Nothing on deck yet. Hit Generate to fill your month, or go hunting in the library.'}</p></div>
-            : list.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); const dotColor = CAT_ACCENT[s.category] || T.primary; return <div key={s.id} style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer", borderLeft: `3px solid ${dotColor}` }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1, minWidth: 0 }}>
+            : list.map(s => { const fullDate = DATES.find(d => d.id === s.date_id); const dotColor = CAT_ACCENT[s.category] || T.primary; return <SwipeableRow key={s.id} onSwipe={() => complete(s)}>
+              <div style={{ ...crd({ padding: 16, marginBottom: 10 }), cursor: "pointer", borderLeft: `3px solid ${dotColor}` }} onClick={() => { if (fullDate) { setDetail(fullDate); setDetailSched(s); } }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
                   <div style={{ width: 8, height: 8, borderRadius: 4, background: dotColor, marginTop: 6, flexShrink: 0 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
-                </div>
-                <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                  <button onClick={(e) => { e.stopPropagation(); complete(s); }} style={btn(T.green + "18", T.green, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.green}33` })}>✓</button>
-                  <button onClick={(e) => { e.stopPropagation(); setSched(p => p.filter(x => x.id !== s.id)); }} style={btn(T.accent + "18", T.accent, { padding: "6px 12px", fontSize: 12, border: `1px solid ${T.accent}33` })}>✕</button>
-                </div>
+                  <div style={{ flex: 1, minWidth: 0 }}><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 600 }}>{s.title}</p><p style={{ color: T.textDim, fontSize: 13, margin: 0 }}>{new Date(s.scheduled_for + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}{s.start_time ? ` at ${(() => { const [h,m] = s.start_time.split(":").map(Number); return `${h > 12 ? h-12 : h===0 ? 12 : h}:${String(m).padStart(2,"0")} ${h >= 12 ? "PM" : "AM"}`; })()}` : ""}<span style={{ color: getTier(s.budget).color, marginLeft: 10, fontWeight: 600 }}>${s.budget}</span></p></div>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={(e) => { e.stopPropagation(); if (fullDate) setInvitePicker({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.pink + "12", T.pink, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.pink}33`, borderRadius: 10 })}>📧 Send Invite</button>
-                <button onClick={(e) => { e.stopPropagation(); if (fullDate) setPlanPrompt({ date: fullDate, scheduledFor: s.scheduled_for }); }} style={btn(T.purple + "12", T.purple, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.purple}33`, borderRadius: 10 })}>🧠 Plan This Date</button>
+                <button onClick={(e) => { e.stopPropagation(); if (fullDate) setPlanPrompt({ date: fullDate, scheduledFor: s.scheduled_for, startTime: s.start_time, previousDebrief: hist.find(h => h.date_id === s.date_id && h.debrief_notes) }); }} style={btn(T.purple + "12", T.purple, { flex: 1, padding: "9px 16px", fontSize: 13, fontWeight: 600, border: `1px solid ${T.purple}33`, borderRadius: 10 })}>🧠 Plan This Date</button>
               </div>
-            </div>; }); })()}
+            </div></SwipeableRow>; }); })()}
         </>}
 
         {tab === "library" && <>
@@ -1999,23 +2038,6 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
           </div>
         </>}
 
-        {tab === "memories" && <>
-          <h2 style={{ color: T.text, fontSize: 20, margin: "0 0 18px", fontWeight: 700, fontFamily: T.display }}>Date Memories</h2>
-          {hist.length === 0 ? <div style={{ ...crd({ padding: 36, textAlign: "center" }) }}><p style={{ color: T.textDim, fontSize: 15, margin: 0 }}>No dates in the books yet. Schedule one, crush it, and come back to debrief.</p></div>
-            : hist.map(h => (
-              <div key={h.id} style={{ ...crd({ padding: 18, marginBottom: 14 }) }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div><p style={{ color: T.text, fontSize: 16, margin: "0 0 3px", fontWeight: 700 }}>{h.title}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{new Date(h.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p></div>
-                  <span style={{ background: getTier(h.budget).color + "18", color: getTier(h.budget).color, fontSize: 12, fontWeight: 700, padding: "4px 10px", borderRadius: 6 }}>${h.budget}</span>
-                </div>
-                {h.debrief_reaction ? <div style={{ marginTop: 12, padding: 12, background: T.bg, borderRadius: 10, border: `1px solid ${T.border}` }}>
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: h.debrief_notes ? 6 : 0 }}><span style={{ fontSize: 14 }}>{h.debrief_reaction}</span>{h.debrief_want_again !== null && h.debrief_want_again !== undefined && <span style={{ color: h.debrief_want_again ? T.green : T.accent, fontSize: 13 }}>{h.debrief_want_again ? "👍 Would repeat" : "👎 One and done"}</span>}</div>
-                  {h.debrief_notes && <p style={{ color: T.textDim, fontSize: 14, margin: 0, fontStyle: "italic" }}>"{h.debrief_notes}"</p>}
-                </div> : <button onClick={() => setDebrief(h)} style={btn(T.primary + "15", T.primary, { padding: "6px 12px", fontSize: 12, marginTop: 10, border: `1px solid ${T.primary}33` })}>Add Debrief</button>}
-              </div>
-            ))}
-        </>}
-
         {tab === "profile" && <>
           <div style={{ ...crd({ padding: 28, marginBottom: 20 }), textAlign: "center" }}>
             <div style={{ width: 80, height: 80, borderRadius: "50%", margin: "0 auto 14px", background: `linear-gradient(135deg,${T.primary},${T.accent})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, fontWeight: 800, color: "#fff" }}>{(name || "U").charAt(0).toUpperCase()}</div>
@@ -2034,6 +2056,22 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
               <div key={s.l} style={{ flex: 1, ...crd({ padding: 14, textAlign: "center" }) }}><p style={{ fontSize: 20, margin: "0 0 4px" }}>{s.i}</p><p style={{ color: s.c, fontSize: 22, margin: "0 0 2px", fontWeight: 800 }}>{s.v}</p><p style={{ color: T.textFaint, fontSize: 10, margin: 0, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</p></div>
             )}
           </div>
+          {hist.length > 0 && <>
+            <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700, fontFamily: T.display }}>Date History</h3>
+            {hist.map(h => (
+              <div key={h.id} style={{ ...crd({ padding: 18, marginBottom: 10 }) }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div><p style={{ color: T.text, fontSize: 15, margin: "0 0 3px", fontWeight: 700 }}>{h.title}</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>{new Date(h.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p></div>
+                  <span style={{ background: getTier(h.budget).color + "18", color: getTier(h.budget).color, fontSize: 12, fontWeight: 700, padding: "4px 10px", borderRadius: 6 }}>${h.budget}</span>
+                </div>
+                {h.debrief_reaction ? <div style={{ marginTop: 10, padding: 10, background: T.bg, borderRadius: 8, border: `1px solid ${T.border}` }}>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: h.debrief_notes ? 6 : 0 }}><span style={{ fontSize: 13 }}>{h.debrief_reaction}</span>{h.debrief_want_again !== null && h.debrief_want_again !== undefined && <span style={{ color: h.debrief_want_again ? T.green : T.accent, fontSize: 12 }}>{h.debrief_want_again ? "👍 Would repeat" : "👎 One and done"}</span>}</div>
+                  {h.debrief_notes && <p style={{ color: T.textDim, fontSize: 13, margin: 0, fontStyle: "italic" }}>"{h.debrief_notes}"</p>}
+                </div> : <button onClick={() => setDebrief(h)} style={btn(T.primary + "15", T.primary, { padding: "6px 10px", fontSize: 12, marginTop: 8, border: `1px solid ${T.primary}33` })}>Add Debrief</button>}
+                <button onClick={() => { const full = DATES.find(dd => dd.id === h.date_id); if (full) setSchedModal(full); }} style={btn(T.text + "10", T.textDim, { padding: "6px 10px", fontSize: 12, marginTop: 8, border: `1px solid ${T.border}` })}>🔄 Do It Again</button>
+              </div>
+            ))}
+          </>}
           <CityEditor city={city} setCity={setCity} flash={flash} />
           <button onClick={onRetake} style={{ width: "100%", ...crd({ padding: 16, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: `1px solid ${T.border}` }}>
             <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: T.accent + "18", fontSize: 20 }}>🔄</span>
@@ -2053,17 +2091,6 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
           <div style={{ textAlign: "center", padding: "16px 0 40px" }}><p style={{ fontSize: 12, margin: "0 0 4px", fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-2px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>Vela v2.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Date night. Figured out.</p></div>
         </>}
       </div>
-
-      {/* Contextual first-time tooltip */}
-      {featureTip && <div style={{ position: "fixed", inset: 0, zIndex: 9998, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => dismissFeatureTip()}>
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)" }} />
-        <div onClick={e => e.stopPropagation()} style={{ position: "relative", zIndex: 1, background: T.surface, borderRadius: 18, padding: "28px 24px", maxWidth: 320, width: "90%", textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 16px 48px rgba(0,0,0,0.5)" }}>
-          <div style={{ fontSize: 36, marginBottom: 10 }}>{featureTip.icon}</div>
-          <h3 style={{ color: T.text, fontSize: 18, margin: "0 0 8px", fontWeight: 700, fontFamily: T.display }}>{featureTip.title}</h3>
-          <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>{featureTip.desc}</p>
-          <button onClick={() => dismissFeatureTip()} style={btnHero({ padding: "10px 24px", fontSize: 14 })}>Got it</button>
-        </div>
-      </div>}
 
     </div>
   );
@@ -2099,7 +2126,7 @@ function PartnerScreen({ onComplete }) {
             <input placeholder="Their first name" value={partnerName} onChange={e => setPartnerName(e.target.value)} onKeyDown={e => e.key === "Enter" && ready && onComplete(partnerName.trim(), gender)} style={inp({ fontSize: 16, padding: "14px 18px", textAlign: "center" })} />
           </div>
           <div>
-            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8, display: "block" }}>They go by...</label>
+            <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8, display: "block" }}>They are a...</label>
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => setGender("girl")} style={btn(gender === "girl" ? T.primary + "22" : T.bg, gender === "girl" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "girl" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👩 Girl</button>
               <button onClick={() => setGender("guy")} style={btn(gender === "guy" ? T.primary + "22" : T.bg, gender === "guy" ? T.primary : T.textDim, { flex: 1, border: `1.5px solid ${gender === "guy" ? T.primary : T.border}`, padding: "14px 16px", fontSize: 15, fontWeight: 700 })}>👨 Guy</button>
