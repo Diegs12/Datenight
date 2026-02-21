@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { Routes, Route, Link } from "react-router-dom";
+import LandingPage from "./LandingPage";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
@@ -1268,7 +1270,7 @@ function SwipeableRow({ children, onSwipe }) {
 
   return (
     <div style={{ position: "relative", overflow: "hidden", borderRadius: 14 }}>
-      <div style={{ position: "absolute", inset: 0, background: "#16a34a", display: "flex", alignItems: "center", paddingLeft: 24, borderRadius: 14 }}>
+      <div style={{ position: "absolute", inset: 0, background: T.primary, display: "flex", alignItems: "center", paddingLeft: 24, borderRadius: 14 }}>
         <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, opacity: Math.min(1, dragX / 80) }}>Done ✓</span>
       </div>
       <div
@@ -2342,8 +2344,8 @@ function VibeReveal({ quiz, onContinue, partnerName, partnerGender }) {
   );
 }
 
-// ——— APP ROOT ———
-export default function App() {
+// ——— VELA APP ———
+function VelaApp() {
   const [screen, setScreen] = useState("splash");
   const [name, setName] = useState(() => { try { return localStorage.getItem("vela_name") || ""; } catch { return ""; } });
   const [partnerName, setPartnerName] = useState(() => { try { return localStorage.getItem("vela_partner_name") || ""; } catch { return ""; } });
@@ -2357,10 +2359,22 @@ export default function App() {
   useEffect(() => { try { if (partnerGender) localStorage.setItem("vela_partner_gender", partnerGender); } catch {} }, [partnerGender]);
   useEffect(() => { try { if (quiz) localStorage.setItem("vela_quiz", JSON.stringify(quiz)); } catch {} }, [quiz]);
 
+  const backLink = screen !== "splash" ? <Link to="/" style={{position:"fixed",top:12,left:12,zIndex:9999,fontFamily:T.font,fontSize:12,fontWeight:500,color:T.textFaint,textDecoration:"none",padding:"6px 10px",borderRadius:6,background:"rgba(20,20,20,0.7)",backdropFilter:"blur(6px)"}}>&#8592; vallotaventures.com</Link> : null;
+
   if (screen === "splash") return <><GrainOverlay /><Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : partnerName ? (quiz ? "unlock" : "quiz") : "partner")} /></>;
-  if (screen === "partner") return <><GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} /></>;
-  if (screen === "quiz") return <><GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
-  if (screen === "unlock") return <><GrainOverlay /><UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} /></>;
-  if (screen === "vibe_reveal") return <><GrainOverlay /><VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} /></>;
-  return <><GrainOverlay /><Dashboard name={name} quiz={quiz} city={city} setCity={setCity} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  if (screen === "partner") return <>{backLink}<GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} /></>;
+  if (screen === "quiz") return <>{backLink}<GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  if (screen === "unlock") return <>{backLink}<GrainOverlay /><UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} /></>;
+  if (screen === "vibe_reveal") return <>{backLink}<GrainOverlay /><VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  return <>{backLink}<GrainOverlay /><Dashboard name={name} quiz={quiz} city={city} setCity={setCity} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} /></>;
+}
+
+// ——— APP ROOT (ROUTING) ———
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/vela/*" element={<VelaApp />} />
+    </Routes>
+  );
 }
