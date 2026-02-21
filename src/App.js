@@ -1536,8 +1536,12 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
     : seasonal.slice(0, 12);
 
   // Outside the Box: dates that have a mismatch flag but are still interesting
+  // Never show alcohol dates to non-drinkers — not even here
   const outsideBoxDates = quiz
-    ? scored.filter(d => d._score > 0 && (d._flags.includes("alcohol") || d._flags.includes("energy") || d._flags.includes("activity") || d._flags.includes("vibe"))).filter(d => !forYouDates.some(f => f.id === d.id)).sort((a, b) => b._score - a._score).slice(0, 8)
+    ? scored.filter(d => {
+        if (quiz.q7 === "Doesn't drink at all" && d._flags.includes("alcohol")) return false;
+        return d._score > 0 && (d._flags.includes("alcohol") || d._flags.includes("energy") || d._flags.includes("activity") || d._flags.includes("vibe"));
+      }).filter(d => !forYouDates.some(f => f.id === d.id)).sort((a, b) => b._score - a._score).slice(0, 8)
     : [];
 
   // Stretch the Budget: over budget but otherwise a decent match
@@ -2277,7 +2281,7 @@ function getPartnerVibe(quiz, partnerName, partnerGender) {
   if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: `${p.They} notice${partnerGender === "girl" ? "s" : "s"} when you pull out ${p.their} chair. Candles, flowers, a handwritten note tucked into ${p.their} bag — the whole nine. ${p.They} don't need expensive, ${p.they} need${partnerGender === "girl" ? "s" : "s"} intentional. Put in the effort most people skip and watch ${p.them} light up.` };
   if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: `Give ${p.them} a paintbrush, a kitchen, a pottery wheel — anything where ${p.they} can make something with ${p.their} hands and ${p.theyre} in ${p.their} element. ${p.They}'d pick a messy DIY night over a fancy dinner every time. Plan dates that let ${p.them} create, not just consume.` };
   if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: `${p.They} turn${partnerGender === "girl" ? "s" : "s"} everything into a competition — and honestly, ${p.they} probably win${partnerGender === "girl" ? "s" : "s"}. Bowling, mini golf, card games, bar trivia — if there's a scoreboard, ${p.theyre} locked in. Keep it high-energy, keep it playful, and don't be afraid to talk a little trash.` };
-  if (q3.includes("Intellectual / curious")) return { emoji: "📚", title: "The Deep Thinker", description: `${p.They}'d rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, wine bars with good lighting — ${p.they} want${partnerGender === "girl" ? "s" : "s"} dates that feed the mind. Bring your curiosity, not just your credit card.` };
+  if (q3.includes("Intellectual / curious")) { const deepVenue = quiz?.q7 === "Doesn't drink at all" ? "coffee shops with good lighting" : "wine bars with good lighting"; return { emoji: "📚", title: "The Deep Thinker", description: `${p.They}'d rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, ${deepVenue} — ${p.they} want${partnerGender === "girl" ? "s" : "s"} dates that feed the mind. Bring your curiosity, not just your credit card.` }; }
   if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: `${p.Their} happy place has fresh air and a view. Sunrise hikes, beach days, kayaking, farmers markets — if it gets ${p.them} outside and moving, ${p.theyre} already excited. ${p.They} don't need fancy. ${p.They} need${partnerGender === "girl" ? "s" : "s"} you, sunlight, and something to explore.` };
   return { emoji: "💫", title: "The Vibe", description: `${p.They} don't fit in one box — and that's what makes ${p.them} fun to plan for. One week it's a cozy night in, the next ${p.they} want${partnerGender === "girl" ? "s" : "s"} to try something completely new. Keep ${p.them} guessing, mix up the energy, and ${p.theyll} never get bored.` };
 }
