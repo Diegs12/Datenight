@@ -152,6 +152,21 @@ export default function LandingPage() {
         )}
       </section>
 
+      {/* ─── GIRLFRIEND CTA ─── */}
+      <div style={{ background: T.surface, borderTop: `1px solid ${T.border}`, padding: "16px 24px", textAlign: "center" }}>
+        <p style={{ fontFamily: T.font, fontSize: 14, color: T.textDim, margin: "0 0 10px" }}>
+          Is his date planning stuck on repeat?{" "}
+          <button onClick={() => {
+            const url = "https://vallotaventures.com/vela";
+            const text = "My boyfriend needs this 😂 — it plans the whole date based on what I actually like. Send him this: " + url;
+            if (navigator.share) { navigator.share({ title: "Vela — Date Night Planner", text }); }
+            else { navigator.clipboard && navigator.clipboard.writeText(url); alert("Link copied!"); }
+          }} style={{ background: "none", border: "none", color: T.primary, fontFamily: T.font, fontSize: 14, fontWeight: 700, cursor: "pointer", padding: 0, textDecoration: "underline" }}>
+            Send him this →
+          </button>
+        </p>
+      </div>
+
       {/* ─── SOCIAL PROOF BAR ─── */}
       <div style={{
         borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`,

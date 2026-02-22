@@ -8,6 +8,22 @@ const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border
 const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 10px rgba(214,136,83,0.2), 0 4px 10px rgba(139,74,40,0.15), inset 0 1px 0 rgba(255,208,161,0.3)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
 
+// ——— REFERRAL HELPERS ———
+function getReferralCode() {
+  try {
+    let code = localStorage.getItem("vela_ref_code");
+    if (!code) {
+      code = Math.random().toString(36).slice(2, 10).toUpperCase();
+      localStorage.setItem("vela_ref_code", code);
+    }
+    return code;
+  } catch { return "VELA"; }
+}
+function getReferralLink() {
+  const code = getReferralCode();
+  return `https://vallotaventures.com/vela?ref=${code}`;
+}
+
 // ——— GRAIN OVERLAY ———
 const GrainOverlay=()=><style>{`#root::after{content:"";position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:0.035;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}`}</style>;
 
@@ -1370,6 +1386,27 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, onP
               {!owned && m.price > 0 && MATERIAL_LINKS[m.name]!==null ? (()=>{const ml=materialUrl(m.name);return <a href={ml.url} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none" }} onClick={e => e.stopPropagation()}>{ml.type==="a"?"Shop →":"Find →"}</a>;})() : null}
             </div>; })}
           </div>}
+          {/* Variations */}
+          {d.variations && d.variations.length > 0 && <div style={{ marginBottom: 24 }}>
+            <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>Mix It Up</h4>
+            {d.variations.map((v, i) => <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8 }}>
+              <span style={{ flex: "0 0 6px", height: 6, width: 6, borderRadius: "50%", background: T.primary, marginTop: 7, flexShrink: 0 }} />
+              <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>{v}</p>
+            </div>)}
+          </div>}
+          {/* Share this date */}
+          <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 20, marginTop: 4 }}>
+            <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 0.8, fontWeight: 600 }}>Know someone who'd love this?</p>
+            <button onClick={() => {
+              const link = getReferralLink();
+              const text = `Found the perfect date idea on Vela — you should try this one: "${d.title}"\n\n${link}`;
+              if (navigator.share) { navigator.share({ title: d.title, text }); }
+              else { navigator.clipboard && navigator.clipboard.writeText(link); alert("Link copied! Send it to someone."); }
+            }} style={{ ...btn(T.surface, T.textDim, { border: `1px solid ${T.border}`, width: "100%", padding: "12px 20px", fontSize: 14, fontWeight: 600 }) }}>
+              🔗 Share this date
+            </button>
+            <p style={{ color: T.textFaint, fontSize: 11, margin: "8px 0 0", textAlign: "center" }}>Your friend gets 5 free date plans. You unlock 1 bonus.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -2277,6 +2314,7 @@ function UnlockScreen({ onComplete }) {
     try {
       identify(email.trim(), { name: userName.trim(), city: city.trim(), phone: phone.trim() });
       track("email_captured", { name: userName.trim(), city: city.trim() });
+      const referredBy = (() => { try { return localStorage.getItem("vela_referred_by"); } catch { return null; } })();
       await fetch("/api/capture-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -2285,8 +2323,13 @@ function UnlockScreen({ onComplete }) {
           partner_name: null,
           quiz_answers: null,
           personality_type: null,
+          ref_code: referredBy || null,
+          source: referredBy ? "referral" : "unlock_screen",
         }),
       });
+      if (referredBy) {
+        try { localStorage.setItem("vela_bonus_unlocks", "1"); } catch {}
+      }
     } catch {}
     setTimeout(() => onComplete(userName.trim(), city.trim()), 600);
   };
@@ -2433,6 +2476,17 @@ export default function App() {
   const [exitEmail, setExitEmail] = useState("");
   const [exitDone, setExitDone] = useState(false);
   const enterTimeRef = useRef(Date.now());
+
+  // ——— Referral detection ———
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+      if (ref && !localStorage.getItem("vela_referred_by")) {
+        localStorage.setItem("vela_referred_by", ref);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const handleMouseLeave = (e) => {
