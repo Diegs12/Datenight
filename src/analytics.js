@@ -4,8 +4,8 @@ let initialized = false;
 
 export function initAnalytics() {
   try {
-    if (process.env.REACT_APP_POSTHOG_KEY && !initialized) {
-      posthog.init(process.env.REACT_APP_POSTHOG_KEY, {
+    if (process.env.REACT_APP_POSTHOG && !initialized) {
+      posthog.init(process.env.REACT_APP_POSTHOG, {
         api_host: 'https://app.posthog.com',
         autocapture: true,
         capture_pageview: true,
