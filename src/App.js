@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import LandingPage from "./LandingPage";
+import { track, identify } from "./analytics";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
@@ -2244,13 +2245,28 @@ function UnlockScreen({ onComplete }) {
   const [loading, setLoading] = useState(false);
   const valid = userName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!valid) return;
     setLoading(true);
     try { localStorage.setItem("vela_name", userName.trim()); } catch {}
     try { localStorage.setItem("vela_email", email.trim()); } catch {}
     try { localStorage.setItem("vela_phone", phone.trim()); } catch {}
     try { localStorage.setItem("vela_city", city.trim()); } catch {}
+    // Save lead to Supabase + fire analytics
+    try {
+      identify(email.trim(), { name: userName.trim(), city: city.trim(), phone: phone.trim() });
+      track("email_captured", { name: userName.trim(), city: city.trim() });
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          partner_name: null,
+          quiz_answers: null,
+          personality_type: null,
+        }),
+      });
+    } catch {}
     setTimeout(() => onComplete(userName.trim(), city.trim()), 600);
   };
 
@@ -2364,8 +2380,8 @@ function VelaApp() {
   const backLink = screen !== "splash" ? <Link to="/" style={{position:"fixed",top:12,left:12,zIndex:9999,fontFamily:T.font,fontSize:12,fontWeight:500,color:T.textFaint,textDecoration:"none",padding:"6px 10px",borderRadius:6,background:"rgba(20,20,20,0.7)",backdropFilter:"blur(6px)"}}>&#8592; vallotaventures.com</Link> : null;
 
   if (screen === "splash") return <><GrainOverlay /><Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : partnerName ? (quiz ? "unlock" : "quiz") : "partner")} /></>;
-  if (screen === "partner") return <>{backLink}<GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} /></>;
-  if (screen === "quiz") return <>{backLink}<GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  if (screen === "partner") return <>{backLink}<GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); track("quiz_started", { partner_gender: pg }); setScreen("quiz"); }} /></>;
+  if (screen === "quiz") return <>{backLink}<GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); track("quiz_completed", { partner_name: partnerName }); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
   if (screen === "unlock") return <>{backLink}<GrainOverlay /><UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} /></>;
   if (screen === "vibe_reveal") return <>{backLink}<GrainOverlay /><VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} /></>;
   return <>{backLink}<GrainOverlay /><Dashboard name={name} quiz={quiz} city={city} setCity={setCity} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} /></>;
