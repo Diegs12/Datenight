@@ -2245,6 +2245,27 @@ function UnlockScreen({ onComplete }) {
   const [loading, setLoading] = useState(false);
   const valid = userName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
+  const [showEmailResults, setShowEmailResults] = useState(false);
+  const [emailResults, setEmailResults] = useState("");
+  const [emailResultsLoading, setEmailResultsLoading] = useState(false);
+  const [emailResultsDone, setEmailResultsDone] = useState(false);
+
+  const handleEmailResults = async () => {
+    const trimmed = emailResults.trim();
+    if (!trimmed || emailResultsLoading) return;
+    setEmailResultsLoading(true);
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "email_results" }),
+      });
+      try { localStorage.setItem("vela_email", trimmed); } catch {}
+    } catch {}
+    setEmailResultsDone(true);
+    setEmailResultsLoading(false);
+  };
+
   const handleSubmit = async () => {
     if (!valid) return;
     setLoading(true);
@@ -2305,6 +2326,25 @@ function UnlockScreen({ onComplete }) {
           <button onClick={handleSubmit} disabled={!valid || loading} style={valid ? btnHero({ marginTop: 6, opacity: loading ? 0.6 : 1 }) : btn(T.border, T.textFaint, { padding: "16px 24px", fontSize: 16, fontWeight: 700, marginTop: 6 })}>
             {loading ? "Unlocking..." : "Unlock My Dates →"}
           </button>
+        </div>
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          {!showEmailResults ? (
+            <button onClick={() => setShowEmailResults(true)} style={{ background: "none", border: "none", color: T.textDim, fontSize: 13, cursor: "pointer", textDecoration: "underline", fontFamily: T.font, padding: 0 }}>
+              Just email me my results instead
+            </button>
+          ) : emailResultsDone ? (
+            <p style={{ color: T.primary, fontSize: 14, margin: 0, fontWeight: 600 }}>Check your inbox!</p>
+          ) : (
+            <div style={{ marginTop: 8, textAlign: "left" }}>
+              <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Send my full date list to:</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input type="email" placeholder="you@email.com" value={emailResults} onChange={e => setEmailResults(e.target.value)} onKeyDown={e => e.key === "Enter" && handleEmailResults()} style={inp({ fontSize: 14, padding: "11px 14px" })} />
+                <button onClick={handleEmailResults} disabled={emailResultsLoading} style={btn(T.primary, "#141414", { whiteSpace: "nowrap", opacity: emailResultsLoading ? 0.6 : 1 })}>
+                  {emailResultsLoading ? "Sending..." : "Send My Results"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
         <p style={{ color: T.textFaint, fontSize: 11, textAlign: "center", marginTop: 16, lineHeight: 1.5 }}>
           No spam. No nonsense. Just better date nights.
@@ -2389,10 +2429,67 @@ function VelaApp() {
 
 // ——— APP ROOT (ROUTING) ———
 export default function App() {
+  const [exitOpen, setExitOpen] = useState(false);
+  const [exitEmail, setExitEmail] = useState("");
+  const [exitDone, setExitDone] = useState(false);
+  const enterTimeRef = useRef(Date.now());
+
+  useEffect(() => {
+    const handleMouseLeave = (e) => {
+      if (e.clientY > 0) return;
+      if (sessionStorage.getItem("vela_exit_shown")) return;
+      if (Date.now() - enterTimeRef.current < 30000) return;
+      sessionStorage.setItem("vela_exit_shown", "true");
+      setExitOpen(true);
+    };
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, []);
+
+  const handleExitSubmit = async () => {
+    const trimmed = exitEmail.trim();
+    if (!trimmed) return;
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "exit_intent" }),
+      });
+    } catch {}
+    setExitDone(true);
+    setTimeout(() => setExitOpen(false), 2000);
+  };
+
+  const handleExitDismiss = () => {
+    sessionStorage.setItem("vela_exit_shown", "true");
+    setExitOpen(false);
+  };
+
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/vela/*" element={<VelaApp />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/vela/*" element={<VelaApp />} />
+      </Routes>
+      {exitOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", padding: 24 }}>
+          <div style={{ background: T.surface, borderRadius: 14, padding: "40px 32px", maxWidth: 400, width: "100%", border: `1px solid ${T.border}`, boxShadow: "0 8px 40px rgba(0,0,0,0.5)", fontFamily: T.font }}>
+            <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 12px", fontFamily: T.display, fontWeight: 700 }}>Don't lose your matches.</h2>
+            <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>Enter your email and we'll save your personalized date plan.</p>
+            {exitDone ? (
+              <p style={{ color: T.primary, fontSize: 15, fontWeight: 600, textAlign: "center", margin: 0 }}>Saved! Check your inbox.</p>
+            ) : (
+              <>
+                <input type="email" placeholder="you@email.com" value={exitEmail} onChange={e => setExitEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleExitSubmit()} style={inp({ marginBottom: 12 })} />
+                <button onClick={handleExitSubmit} style={btn(T.primary, "#141414", { width: "100%", fontSize: 15, padding: "13px 22px", fontWeight: 700 })}>Save My Matches</button>
+              </>
+            )}
+            <div style={{ textAlign: "center", marginTop: 14 }}>
+              <button onClick={handleExitDismiss} style={{ background: "none", border: "none", color: T.textFaint, fontSize: 13, cursor: "pointer", fontFamily: T.font }}>No thanks</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

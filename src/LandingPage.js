@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const T = {
@@ -12,6 +13,27 @@ const heading = {
 };
 
 export default function LandingPage() {
+  const [landingEmail, setLandingEmail] = useState("");
+  const [landingEmailLoading, setLandingEmailLoading] = useState(false);
+  const [landingEmailSuccess, setLandingEmailSuccess] = useState(false);
+  const [landingEmailDone] = useState(() => { try { return !!localStorage.getItem("vela_landing_email"); } catch { return false; } });
+
+  const handleLandingEmail = async () => {
+    const trimmed = landingEmail.trim();
+    if (!trimmed || landingEmailLoading || landingEmailDone) return;
+    setLandingEmailLoading(true);
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "landing_page" }),
+      });
+      try { localStorage.setItem("vela_landing_email", trimmed); } catch {}
+    } catch {}
+    setLandingEmailSuccess(true);
+    setLandingEmailLoading(false);
+  };
+
   return (
     <div style={{ background: T.bg, color: T.text, fontFamily: T.font, minHeight: "100vh" }}>
 
@@ -83,6 +105,51 @@ export default function LandingPage() {
             See How It Works
           </a>
         </div>
+
+        {/* ─── EMAIL CAPTURE ─── */}
+        {!landingEmailDone && (
+          <div style={{ marginTop: 40, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
+            <p style={{ fontFamily: T.font, fontSize: 15, fontWeight: 700, color: T.text, margin: "0 0 4px" }}>
+              Get your first 5 date plans free
+            </p>
+            <p style={{ fontFamily: T.font, fontSize: 13, color: T.textDim, margin: "0 0 14px", lineHeight: 1.5 }}>
+              Enter your email and we'll save your personalized matches.
+            </p>
+            {landingEmailSuccess ? (
+              <p style={{ color: T.primary, fontSize: 14, fontWeight: 600, margin: 0 }}>
+                You're in — start your quiz to see your matches.
+              </p>
+            ) : (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <input
+                  type="email"
+                  placeholder="you@email.com"
+                  value={landingEmail}
+                  onChange={e => setLandingEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLandingEmail()}
+                  style={{
+                    fontFamily: T.font, fontSize: 14, padding: "12px 16px",
+                    borderRadius: 8, border: `1px solid ${T.border}`,
+                    background: T.surface, color: T.text, outline: "none",
+                    flex: 1, minWidth: 200, boxSizing: "border-box",
+                  }}
+                />
+                <button
+                  onClick={handleLandingEmail}
+                  disabled={landingEmailLoading}
+                  style={{
+                    fontFamily: T.font, fontSize: 14, fontWeight: 700,
+                    border: "none", borderRadius: 8, cursor: "pointer",
+                    padding: "12px 20px", background: T.primary, color: "#141414",
+                    opacity: landingEmailLoading ? 0.6 : 1, whiteSpace: "nowrap",
+                  }}
+                >
+                  {landingEmailLoading ? "Saving..." : "Get Free Dates"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* ─── SOCIAL PROOF BAR ─── */}
