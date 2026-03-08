@@ -44,7 +44,13 @@ export default function TradingSignup() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/trading-signup", {
+      // Save locally first — backend is optional
+      const userId = "local_" + Date.now();
+      localStorage.setItem("vt_session", JSON.stringify({ email, id: userId }));
+      try { localStorage.setItem("vt_quiz_answers", localStorage.getItem("vt_quiz_answers") || "null"); } catch {}
+
+      // Try API signup if available (non-blocking)
+      fetch("/api/trading-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,15 +59,11 @@ export default function TradingSignup() {
           risk_profile: riskProfile || null,
           quiz_answers: (() => { try { return JSON.parse(localStorage.getItem("vt_quiz_answers")); } catch { return null; } })(),
         }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Signup failed");
-      localStorage.setItem("vt_session", JSON.stringify({ email, id: data.user_id || email }));
+      }).catch(() => {}); // Silently ignore API errors
+
       setStep("setup");
     } catch {
-      // API not available or Supabase not configured — save locally and continue
-      localStorage.setItem("vt_session", JSON.stringify({ email, id: "local_" + Date.now() }));
-      setStep("setup");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
