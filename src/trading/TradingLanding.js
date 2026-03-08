@@ -219,6 +219,7 @@ function StatsBar() {
 
 export default function TradingLanding() {
   const [openFaq, setOpenFaq] = useState(null);
+  const hasSession = (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })();
 
   return (
     <div style={{ background: TT.bg, color: TT.text, fontFamily: TT.font, minHeight: "100vh" }}>
@@ -242,12 +243,21 @@ export default function TradingLanding() {
           <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
           <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Pricing</button>
           <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
+          {hasSession && (
+            <Link to="/trading/dashboard" style={{
+              fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
+              padding: "8px 20px", borderRadius: 6,
+              background: TT.primary, color: "#fff",
+            }}>
+              Dashboard
+            </Link>
+          )}
           <Link to="/trading/signup" style={{
             fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
             padding: "8px 20px", borderRadius: 6,
             border: `1px solid ${TT.primary}`, color: TT.primary,
           }}>
-            Get Started
+            {hasSession ? "Account" : "Get Started"}
           </Link>
         </div>
       </nav>
