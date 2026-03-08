@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import LandingPage from "./LandingPage";
+import Portfolio from "./Portfolio";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
@@ -606,17 +606,8 @@ function generateICS(title, description, dateStr, timeStr) {
   const dt = new Date(dateStr + "T" + (timeStr || "19:00") + ":00");
   const end = new Date(dt.getTime() + 3 * 3600000);
   const fmt = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  return `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Vela//EN
-BEGIN:VEVENT
-DTSTART:${fmt(dt)}
-DTEND:${fmt(end)}
-SUMMARY:${title.replace(/[;,\\]/g, c => "\\" + c)}
-DESCRIPTION:${description.replace(/[;,\\]/g, c => "\\" + c).replace(/\n/g, "\\n")}
-STATUS:CONFIRMED
-END:VEVENT
-END:VCALENDAR`;
+  const esc = (s) => s.replace(/\r\n|\r/g, "\n").replace(/[;,\\]/g, c => "\\" + c).replace(/\n/g, "\\n");
+  return `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Vela//EN\r\nBEGIN:VEVENT\r\nDTSTART:${fmt(dt)}\r\nDTEND:${fmt(end)}\r\nSUMMARY:${esc(title)}\r\nDESCRIPTION:${esc(description)}\r\nSTATUS:CONFIRMED\r\nEND:VEVENT\r\nEND:VCALENDAR`;
 }
 
 // ——— MYSTERY BOX INVITE MODAL ———
@@ -643,12 +634,12 @@ function MysteryInvite({ date, scheduledFor, onClose, onSend, partnerName }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = url; a.download = "vela-date.ics"; a.click();
       URL.revokeObjectURL(url);
-      setTimeout(() => { window.location.href = `mailto:${email}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText + "\n\n(Calendar invite attached, check your downloads!")}`; }, 800);
+      setTimeout(() => { window.location.href = `mailto:${encodeURIComponent(email.trim())}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText + "\n\n(Calendar invite attached, check your downloads!")}`; }, 800);
     }
     onSend(email);
   };
 
-  const ready = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const ready = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email.trim());
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
@@ -956,12 +947,12 @@ function RealInvite({ date, scheduledFor, onClose, onSend, partnerName, partnerG
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = url; a.download = "vela-date.ics"; a.click();
       URL.revokeObjectURL(url);
-      setTimeout(() => { window.location.href = `mailto:${email}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText + "\n\n(Calendar invite attached, check your downloads!")}`; }, 800);
+      setTimeout(() => { window.location.href = `mailto:${encodeURIComponent(email.trim())}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText + "\n\n(Calendar invite attached, check your downloads!")}`; }, 800);
     }
     onSend();
   };
 
-  const ready = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const ready = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email.trim());
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
@@ -2091,6 +2082,10 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
             <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700, fontFamily: T.display }}>{partnerName ? `${partnerName}'s Preferences` : "Partner Preferences"}</h3>
             {QUIZ.filter(q => !["q12", "q13"].includes(q.id)).map(q => { const a = quiz[q.id]; if (!a || (Array.isArray(a) && !a.length)) return null; return <div key={q.id} style={{ ...crd({ padding: 14, marginBottom: 8 }) }}><p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: 0.5 }}>{sub(q.q, partnerName, partnerGender)}</p><p style={{ color: T.text, fontSize: 14, margin: 0 }}>{Array.isArray(a) ? a.map(x => sub(x, partnerName, partnerGender)).join(", ") : sub(a, partnerName, partnerGender)}</p></div>; })}
           </>}
+          <button onClick={() => { if (window.confirm("This will erase all your data — quiz answers, scheduled dates, history, and contact info. Are you sure?")) { ["vela_name","vela_partner_name","vela_partner_gender","vela_quiz","vela_email","vela_phone","vela_city","vela_sched","vela_hist","vela_ratings","vela_owned_mats","vela_dismissed_notifs"].forEach(k => { try { localStorage.removeItem(k); } catch {} }); window.location.reload(); } }} style={{ width: "100%", ...crd({ padding: 16, marginTop: 20, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: `1px solid #e74c3c33` }}>
+            <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "#e74c3c18", fontSize: 20 }}>🗑️</span>
+            <div style={{ textAlign: "left" }}><p style={{ color: "#e74c3c", fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>Clear All My Data</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>Erase everything and start fresh</p></div>
+          </button>
           <p style={{ color: T.textFaint, fontSize: 10, textAlign: "center", margin: "20px 0 0", lineHeight: 1.5 }}>As an Amazon Associate, I earn from qualifying purchases.</p>
           <div style={{ textAlign: "center", padding: "16px 0 40px" }}><p style={{ fontSize: 12, margin: "0 0 4px", fontFamily: "'Playfair Display', serif", fontWeight: 600, letterSpacing: "-2px", background: "linear-gradient(180deg, #FFD0A1 10%, #D68853 50%, #8B4A28 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", filter: "drop-shadow(0px 0px 20px rgba(232, 117, 50, 0.5))" }}>Vela v2.0</p><p style={{ color: T.textFaint, fontSize: 11, margin: 0 }}>Date night. Figured out.</p></div>
         </>}
@@ -2242,7 +2237,7 @@ function UnlockScreen({ onComplete }) {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
-  const valid = userName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const valid = userName.trim() && /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email.trim());
 
   const handleSubmit = () => {
     if (!valid) return;
@@ -2375,7 +2370,7 @@ function VelaApp() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<Portfolio />} />
       <Route path="/vela/*" element={<VelaApp />} />
     </Routes>
   );
