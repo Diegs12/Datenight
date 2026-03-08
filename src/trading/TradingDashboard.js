@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { TT, btnPrimary, btnOutline, card } from "./theme";
+import { TT, btnOutline, card } from "./theme";
 
 // Bot API base — uses env var in production (Railway), falls back to localhost for dev
 const BOT_API = process.env.REACT_APP_BOT_API || "http://localhost:3333";
