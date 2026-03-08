@@ -287,16 +287,15 @@ export default function TradingLanding() {
             margin: "0 0 24px",
             color: TT.text,
           }}>
-            Your Money.{" "}
+            I Built Two AIs.{" "}
+            <br />
             <span style={{
               background: "linear-gradient(135deg, #00d4ff, #00ff88)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}>
-              Two AIs.
+              Then I Let Them Trade.
             </span>
-            <br />
-            Zero Guesswork.
           </h1>
 
           <p style={{
@@ -307,8 +306,8 @@ export default function TradingLanding() {
             margin: "0 0 36px",
             maxWidth: 480,
           }}>
-            Vallota Trading pairs Claude's decision-making with Grok's real-time sentiment analysis.
-            Computed technical indicators. Self-improving AI. Hard stop-losses on every trade.
+            One AI reads the charts. The other reads the room. Together they
+            find trades most humans miss — and they get smarter after every single one.
           </p>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>

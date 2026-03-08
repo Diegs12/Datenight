@@ -124,7 +124,7 @@ export default function Portfolio() {
             fontFamily: T.font, fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
             color: T.primary, textTransform: "uppercase",
           }}>
-            Developer &middot; Builder
+            Builder &middot; Strategist
           </div>
 
           <h1 style={{
