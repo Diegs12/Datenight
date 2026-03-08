@@ -56,13 +56,13 @@ export default function Portfolio() {
     {
       id: "trading",
       title: "Vallota Trading",
-      tagline: "Crypto Trading Bot",
+      tagline: "AI-Powered Crypto Trading",
       description:
-        "Algorithmic trading bot for cryptocurrency markets. Automated strategy execution, real-time market analysis, and portfolio management.",
-      tags: ["Python", "APIs", "Crypto"],
-      status: "Coming Soon",
-      statusColor: "#FBBF24",
-      link: null,
+        "Dual-AI trading bot powered by Claude + Grok. Computed technical analysis, self-improving AI, and multi-timeframe signals — all on Coinbase Base L2.",
+      tags: ["Node.js", "Claude AI", "Grok", "Crypto"],
+      status: "Live",
+      statusColor: "#4ADE80",
+      link: "/trading",
       external: false,
       gradient: "linear-gradient(135deg, #6366F1 0%, #4338CA 100%)",
       icon: (
@@ -168,6 +168,17 @@ export default function Portfolio() {
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
               GitHub
+            </a>
+            <a href="https://substack.com/@diegovallota" target="_blank" rel="noopener noreferrer" style={{
+              fontFamily: T.font, fontSize: 15, fontWeight: 600, textDecoration: "none",
+              padding: "14px 32px", borderRadius: 8,
+              border: `1px solid ${T.border}`, color: T.textDim, background: "transparent",
+              display: "flex", alignItems: "center", gap: 8,
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+              </svg>
+              Substack
             </a>
           </div>
         </div>
@@ -405,6 +416,16 @@ export default function Portfolio() {
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
                 </svg>
                 GitHub
+              </a>
+              <a href="https://substack.com/@diegovallota" target="_blank" rel="noopener noreferrer" style={{
+                fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                color: T.primary, textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+                </svg>
+                Substack
               </a>
             </div>
           </div>
