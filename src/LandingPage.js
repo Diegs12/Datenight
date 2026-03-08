@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const T = {
@@ -12,6 +13,27 @@ const heading = {
 };
 
 export default function LandingPage() {
+  const [landingEmail, setLandingEmail] = useState("");
+  const [landingEmailLoading, setLandingEmailLoading] = useState(false);
+  const [landingEmailSuccess, setLandingEmailSuccess] = useState(false);
+  const [landingEmailDone] = useState(() => { try { return !!localStorage.getItem("vela_landing_email"); } catch { return false; } });
+
+  const handleLandingEmail = async () => {
+    const trimmed = landingEmail.trim();
+    if (!trimmed || landingEmailLoading || landingEmailDone) return;
+    setLandingEmailLoading(true);
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "landing_page" }),
+      });
+      try { localStorage.setItem("vela_landing_email", trimmed); } catch {}
+    } catch {}
+    setLandingEmailSuccess(true);
+    setLandingEmailLoading(false);
+  };
+
   return (
     <div style={{ background: T.bg, color: T.text, fontFamily: T.font, minHeight: "100vh" }}>
 
@@ -21,7 +43,7 @@ export default function LandingPage() {
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{ fontFamily: T.display, fontSize: 20, fontWeight: 700, color: T.text, letterSpacing: 0.5 }}>
-          Vallota Ventures
+          Vela
         </span>
         <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
           <a href="#features" style={{ fontFamily: T.font, fontSize: 14, fontWeight: 500, color: T.textDim, textDecoration: "none" }}>Features</a>
@@ -49,20 +71,20 @@ export default function LandingPage() {
         </div>
 
         <h1 style={{ ...heading, fontSize: "clamp(36px, 7vw, 64px)", maxWidth: 720, margin: "0 auto 20px" }}>
-          Date Night,{" "}
+          She has no idea{" "}
           <span style={{
             background: "linear-gradient(90deg, #FFD0A1, #D68853)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          }}>Figured Out</span>
+          }}>what you planned.</span>
         </h1>
 
         <p style={{
           fontFamily: T.font, fontSize: 18, color: T.textDim, lineHeight: 1.7,
           maxWidth: 560, margin: "0 auto 40px",
         }}>
-          Take a 2-minute quiz about your partner. Vela scores 154+ date ideas
-          to their personality, plans every detail, and sends a beautiful invite
-          — all for free.
+          Answer 13 questions about her. Vela scores 154+ date night ideas to her personality
+          and builds the whole plan — shopping list, steps, budget, everything.
+          You show up looking like you thought of it yourself.
         </p>
 
         <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
@@ -73,7 +95,7 @@ export default function LandingPage() {
             color: "#141414",
             boxShadow: "0 4px 12px rgba(139,74,40,0.25), inset 0 1px 0 rgba(255,208,161,0.3)",
           }}>
-            Get Started — It's Free
+            Plan Her Perfect Date — It's Free
           </Link>
           <a href="#how-it-works" style={{
             fontFamily: T.font, fontSize: 16, fontWeight: 600, textDecoration: "none",
@@ -83,7 +105,67 @@ export default function LandingPage() {
             See How It Works
           </a>
         </div>
+
+        {/* ─── EMAIL CAPTURE ─── */}
+        {!landingEmailDone && (
+          <div style={{ marginTop: 40, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
+            <p style={{ fontFamily: T.font, fontSize: 15, fontWeight: 700, color: T.text, margin: "0 0 4px" }}>
+              Get your first 5 date plans free
+            </p>
+            <p style={{ fontFamily: T.font, fontSize: 13, color: T.textDim, margin: "0 0 14px", lineHeight: 1.5 }}>
+              Enter your email and we'll save your personalized matches.
+            </p>
+            {landingEmailSuccess ? (
+              <p style={{ color: T.primary, fontSize: 14, fontWeight: 600, margin: 0 }}>
+                You're in — start your quiz to see your matches.
+              </p>
+            ) : (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <input
+                  type="email"
+                  placeholder="you@email.com"
+                  value={landingEmail}
+                  onChange={e => setLandingEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLandingEmail()}
+                  style={{
+                    fontFamily: T.font, fontSize: 14, padding: "12px 16px",
+                    borderRadius: 8, border: `1px solid ${T.border}`,
+                    background: T.surface, color: T.text, outline: "none",
+                    flex: 1, minWidth: 200, boxSizing: "border-box",
+                  }}
+                />
+                <button
+                  onClick={handleLandingEmail}
+                  disabled={landingEmailLoading}
+                  style={{
+                    fontFamily: T.font, fontSize: 14, fontWeight: 700,
+                    border: "none", borderRadius: 8, cursor: "pointer",
+                    padding: "12px 20px", background: T.primary, color: "#141414",
+                    opacity: landingEmailLoading ? 0.6 : 1, whiteSpace: "nowrap",
+                  }}
+                >
+                  {landingEmailLoading ? "Saving..." : "Get Free Dates"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </section>
+
+      {/* ─── GIRLFRIEND CTA ─── */}
+      <div style={{ background: T.surface, borderTop: `1px solid ${T.border}`, padding: "16px 24px", textAlign: "center" }}>
+        <p style={{ fontFamily: T.font, fontSize: 14, color: T.textDim, margin: "0 0 10px" }}>
+          Is his date planning stuck on repeat?{" "}
+          <button onClick={() => {
+            const url = "https://vallotaventures.com/vela";
+            const text = "My boyfriend needs this 😂 — it plans the whole date based on what I actually like. Send him this: " + url;
+            if (navigator.share) { navigator.share({ title: "Vela — Date Night Planner", text }); }
+            else { navigator.clipboard && navigator.clipboard.writeText(url); alert("Link copied!"); }
+          }} style={{ background: "none", border: "none", color: T.primary, fontFamily: T.font, fontSize: 14, fontWeight: 700, cursor: "pointer", padding: 0, textDecoration: "underline" }}>
+            Send him this →
+          </button>
+        </p>
+      </div>
 
       {/* ─── SOCIAL PROOF BAR ─── */}
       <div style={{
@@ -95,9 +177,9 @@ export default function LandingPage() {
           display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap",
         }}>
           {[
-            { val: "154+", label: "Date Ideas" },
-            { val: "2 min", label: "Quiz" },
-            { val: "$0", label: "Cost" },
+            { val: "154+", label: "Date Night Ideas" },
+            { val: "13", label: "Questions" },
+            { val: "$0", label: "To Start" },
           ].map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{ fontFamily: T.display, fontSize: 24, fontWeight: 700, color: T.primary }}>{s.val}</div>
@@ -111,38 +193,38 @@ export default function LandingPage() {
       <section id="features" style={{ ...section, paddingTop: 100 }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
           <h2 style={{ ...heading, fontSize: "clamp(28px, 5vw, 40px)" }}>
-            Everything You Need for the Perfect Date
+            Everything figured out before you leave the house.
           </h2>
           <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>
-            Vela handles the planning so you can focus on the moment.
+            No more "I don't know, you pick." You already know.
           </p>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
           {[
             {
-              icon: "🎯", title: "Personalized Matches",
-              desc: "A quick quiz about your partner's vibe — adventurous or cozy, foodie or outdoorsy — and Vela scores every date to fit them.",
+              icon: "🎯", title: "Scored to Her Personality",
+              desc: "She's more outdoorsy than fancy-restaurant. Or the opposite. The quiz figures that out — and every date idea gets ranked accordingly. You're not guessing anymore.",
             },
             {
-              icon: "📋", title: "Full Date Plans",
-              desc: "Materials list, step-by-step instructions, estimated budget, and smart shopping links. Everything figured out before you start.",
+              icon: "📋", title: "The Whole Plan, Built",
+              desc: "Materials list. Step-by-step instructions. Budget estimate. Shopping links. Everything you need is in one place before you even start.",
             },
             {
-              icon: "💌", title: "Beautiful Invites",
-              desc: "Pick a date and time, add a personal note, and send your partner a gorgeous invite — complete with calendar attachment.",
+              icon: "💌", title: "Send a Real Invite",
+              desc: "Pick a time, add a note, and send her an invite that looks like you put real effort in. Calendar attachment included.",
             },
             {
-              icon: "📅", title: "Calendar & History",
-              desc: "See upcoming dates on a calendar view and track past dates. Rate them to improve future recommendations.",
+              icon: "📅", title: "Track What's Worked",
+              desc: "See upcoming dates and look back at what landed. Rate them and the next suggestions get sharper.",
             },
             {
-              icon: "🔀", title: "Swipe Discovery",
-              desc: "Not sure what you want? Swipe through your top matches to discover new ideas. Love it or skip it, Tinder-style.",
+              icon: "🔀", title: "Not Sure? Just Swipe",
+              desc: "Browse your top date ideas Tinder-style until something clicks. Takes 30 seconds.",
             },
             {
-              icon: "⚡", title: "Quick Setup",
-              desc: "Create an account in seconds and jump straight into personalized date planning. Your preferences save across sessions.",
+              icon: "⚡", title: "Set Up in 2 Minutes",
+              desc: "Take the quiz once. Your results save. Next time you need a date idea, it's already there.",
             },
           ].map((f, i) => (
             <div key={i} style={{
@@ -168,16 +250,16 @@ export default function LandingPage() {
             How It Works
           </h2>
           <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>
-            From quiz to invite in under five minutes.
+            Quiz to invite in under 5 minutes.
           </p>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
           {[
-            { step: "1", title: "Take the Quiz", desc: "Answer a few quick questions about your partner's personality and preferences." },
-            { step: "2", title: "Get Your Matches", desc: "Vela scores 154+ dates and shows you the best ones, ranked by compatibility." },
-            { step: "3", title: "Plan the Date", desc: "See everything you need — materials, cost, steps — with links to buy or find it all." },
-            { step: "4", title: "Send the Invite", desc: "Pick a time, write a note, and send your partner a beautiful date invite." },
+            { step: "1", title: "Answer the Quiz", desc: "13 questions about her — adventure level, budget, food, energy. Takes 2 minutes." },
+            { step: "2", title: "See Your Matches", desc: "154+ date night ideas ranked by how well they fit her. The best ones are at the top." },
+            { step: "3", title: "Get the Full Plan", desc: "Tap any date — you get the shopping list, steps, cost estimate, and links. Nothing left to figure out." },
+            { step: "4", title: "Send the Invite", desc: "Add a time and a note. Send it. She finds out when you want her to." },
           ].map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{
@@ -206,12 +288,12 @@ export default function LandingPage() {
           padding: "48px 32px", maxWidth: 720, margin: "0 auto",
         }}>
           <h2 style={{ ...heading, fontSize: "clamp(24px, 4vw, 32px)", textAlign: "center", marginBottom: 24 }}>
-            154+ Dates. Scored to Your Partner.
+            154+ date night ideas. Scored to her.
           </h2>
           <p style={{ fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, textAlign: "center", margin: "0 0 32px", maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
-            Not random suggestions from a blog. Every date in Vela is scored against
-            your partner's quiz answers — adventure level, budget comfort, food preferences,
-            creativity, and more. The best matches rise to the top.
+            Not a list some blogger wrote. Every date in Vela is scored against her quiz results —
+            how adventurous she is, what kind of food she likes, whether she wants to stay in or go out,
+            how much to spend. The ones that fit her best come up first.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
             {[
@@ -233,10 +315,10 @@ export default function LandingPage() {
       {/* ─── FINAL CTA ─── */}
       <section style={{ ...section, paddingTop: 100, paddingBottom: 100, textAlign: "center" }}>
         <h2 style={{ ...heading, fontSize: "clamp(28px, 5vw, 40px)", marginBottom: 16 }}>
-          Ready to Plan Date Night?
+          Stop ending up on the couch.
         </h2>
         <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, maxWidth: 440, margin: "0 auto 36px", lineHeight: 1.7 }}>
-          Free to use. Takes 2 minutes to get your first personalized date plan.
+          Free to use. 5 dates on us. Takes 2 minutes to get your first personalized date plan.
         </p>
         <Link to="/vela" style={{
           display: "inline-block", textDecoration: "none",
@@ -246,7 +328,7 @@ export default function LandingPage() {
           color: "#141414",
           boxShadow: "0 4px 12px rgba(139,74,40,0.25), inset 0 1px 0 rgba(255,208,161,0.3)",
         }}>
-          Get Started — It's Free
+          Find Her Perfect Date — It's Free
         </Link>
       </section>
 

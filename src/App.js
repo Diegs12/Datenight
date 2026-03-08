@@ -1,11 +1,28 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Portfolio from "./Portfolio";
+import { track, identify } from "./analytics";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
 const btn=(bg,color,x={})=>({fontFamily:T.font,fontSize:14,fontWeight:600,border:"none",borderRadius:8,cursor:"pointer",padding:"11px 22px",transition:"all 0.15s",background:bg,color,...x});
 const btnHero=(x={})=>({fontFamily:T.font,fontSize:16,fontWeight:800,border:"none",borderRadius:8,cursor:"pointer",padding:"16px 24px",transition:"all 0.2s",background:"linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",color:"#141414",boxShadow:"0 0 10px rgba(214,136,83,0.2), 0 4px 10px rgba(139,74,40,0.15), inset 0 1px 0 rgba(255,208,161,0.3)",letterSpacing:0.3,textShadow:"0 1px 0 rgba(255,208,161,0.3)",...x});
 const inp=(x={})=>({fontFamily:T.font,fontSize:15,padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:T.bg,color:T.text,outline:"none",width:"100%",boxSizing:"border-box",...x});
+
+// ——— REFERRAL HELPERS ———
+function getReferralCode() {
+  try {
+    let code = localStorage.getItem("vela_ref_code");
+    if (!code) {
+      code = Math.random().toString(36).slice(2, 10).toUpperCase();
+      localStorage.setItem("vela_ref_code", code);
+    }
+    return code;
+  } catch { return "VELA"; }
+}
+function getReferralLink() {
+  const code = getReferralCode();
+  return `https://vallotaventures.com/vela?ref=${code}`;
+}
 
 // ——— GRAIN OVERLAY ———
 const GrainOverlay=()=><style>{`#root::after{content:"";position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:0.035;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}`}</style>;
@@ -1360,6 +1377,27 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, onP
               {!owned && m.price > 0 && MATERIAL_LINKS[m.name]!==null ? (()=>{const ml=materialUrl(m.name);return <a href={ml.url} target="_blank" rel="noopener noreferrer" style={{ color: T.primary, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none" }} onClick={e => e.stopPropagation()}>{ml.type==="a"?"Shop →":"Find →"}</a>;})() : null}
             </div>; })}
           </div>}
+          {/* Variations */}
+          {d.variations && d.variations.length > 0 && <div style={{ marginBottom: 24 }}>
+            <h4 style={{ color: T.text, fontSize: 14, margin: "0 0 12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8 }}>Mix It Up</h4>
+            {d.variations.map((v, i) => <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8 }}>
+              <span style={{ flex: "0 0 6px", height: 6, width: 6, borderRadius: "50%", background: T.primary, marginTop: 7, flexShrink: 0 }} />
+              <p style={{ color: T.textDim, fontSize: 14, margin: 0, lineHeight: 1.6 }}>{v}</p>
+            </div>)}
+          </div>}
+          {/* Share this date */}
+          <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 20, marginTop: 4 }}>
+            <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 0.8, fontWeight: 600 }}>Know someone who'd love this?</p>
+            <button onClick={() => {
+              const link = getReferralLink();
+              const text = `Found the perfect date idea on Vela — you should try this one: "${d.title}"\n\n${link}`;
+              if (navigator.share) { navigator.share({ title: d.title, text }); }
+              else { navigator.clipboard && navigator.clipboard.writeText(link); alert("Link copied! Send it to someone."); }
+            }} style={{ ...btn(T.surface, T.textDim, { border: `1px solid ${T.border}`, width: "100%", padding: "12px 20px", fontSize: 14, fontWeight: 600 }) }}>
+              🔗 Share this date
+            </button>
+            <p style={{ color: T.textFaint, fontSize: 11, margin: "8px 0 0", textAlign: "center" }}>Your friend gets 5 free date plans. You unlock 1 bonus.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -2239,13 +2277,55 @@ function UnlockScreen({ onComplete }) {
   const [loading, setLoading] = useState(false);
   const valid = userName.trim() && /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email.trim());
 
-  const handleSubmit = () => {
+  const [showEmailResults, setShowEmailResults] = useState(false);
+  const [emailResults, setEmailResults] = useState("");
+  const [emailResultsLoading, setEmailResultsLoading] = useState(false);
+  const [emailResultsDone, setEmailResultsDone] = useState(false);
+
+  const handleEmailResults = async () => {
+    const trimmed = emailResults.trim();
+    if (!trimmed || emailResultsLoading) return;
+    setEmailResultsLoading(true);
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "email_results" }),
+      });
+      try { localStorage.setItem("vela_email", trimmed); } catch {}
+    } catch {}
+    setEmailResultsDone(true);
+    setEmailResultsLoading(false);
+  };
+
+  const handleSubmit = async () => {
     if (!valid) return;
     setLoading(true);
     try { localStorage.setItem("vela_name", userName.trim()); } catch {}
     try { localStorage.setItem("vela_email", email.trim()); } catch {}
     try { localStorage.setItem("vela_phone", phone.trim()); } catch {}
     try { localStorage.setItem("vela_city", city.trim()); } catch {}
+    // Save lead to Supabase + fire analytics
+    try {
+      identify(email.trim(), { name: userName.trim(), city: city.trim(), phone: phone.trim() });
+      track("email_captured", { name: userName.trim(), city: city.trim() });
+      const referredBy = (() => { try { return localStorage.getItem("vela_referred_by"); } catch { return null; } })();
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          partner_name: null,
+          quiz_answers: null,
+          personality_type: null,
+          ref_code: referredBy || null,
+          source: referredBy ? "referral" : "unlock_screen",
+        }),
+      });
+      if (referredBy) {
+        try { localStorage.setItem("vela_bonus_unlocks", "1"); } catch {}
+      }
+    } catch {}
     setTimeout(() => onComplete(userName.trim(), city.trim()), 600);
   };
 
@@ -2284,6 +2364,25 @@ function UnlockScreen({ onComplete }) {
           <button onClick={handleSubmit} disabled={!valid || loading} style={valid ? btnHero({ marginTop: 6, opacity: loading ? 0.6 : 1 }) : btn(T.border, T.textFaint, { padding: "16px 24px", fontSize: 16, fontWeight: 700, marginTop: 6 })}>
             {loading ? "Unlocking..." : "Unlock My Dates →"}
           </button>
+        </div>
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          {!showEmailResults ? (
+            <button onClick={() => setShowEmailResults(true)} style={{ background: "none", border: "none", color: T.textDim, fontSize: 13, cursor: "pointer", textDecoration: "underline", fontFamily: T.font, padding: 0 }}>
+              Just email me my results instead
+            </button>
+          ) : emailResultsDone ? (
+            <p style={{ color: T.primary, fontSize: 14, margin: 0, fontWeight: 600 }}>Check your inbox!</p>
+          ) : (
+            <div style={{ marginTop: 8, textAlign: "left" }}>
+              <label style={{ color: T.textDim, fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, display: "block" }}>Send my full date list to:</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input type="email" placeholder="you@email.com" value={emailResults} onChange={e => setEmailResults(e.target.value)} onKeyDown={e => e.key === "Enter" && handleEmailResults()} style={inp({ fontSize: 14, padding: "11px 14px" })} />
+                <button onClick={handleEmailResults} disabled={emailResultsLoading} style={btn(T.primary, "#141414", { whiteSpace: "nowrap", opacity: emailResultsLoading ? 0.6 : 1 })}>
+                  {emailResultsLoading ? "Sending..." : "Send My Results"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
         <p style={{ color: T.textFaint, fontSize: 11, textAlign: "center", marginTop: 16, lineHeight: 1.5 }}>
           No spam. No nonsense. Just better date nights.
@@ -2359,8 +2458,8 @@ function VelaApp() {
   const backLink = screen !== "splash" ? <Link to="/" style={{position:"fixed",top:12,left:12,zIndex:9999,fontFamily:T.font,fontSize:12,fontWeight:500,color:T.textFaint,textDecoration:"none",padding:"6px 10px",borderRadius:6,background:"rgba(20,20,20,0.7)",backdropFilter:"blur(6px)"}}>&#8592; vallotaventures.com</Link> : null;
 
   if (screen === "splash") return <><GrainOverlay /><Splash onDone={() => setScreen(name && quiz && contactDone ? "dashboard" : partnerName ? (quiz ? "unlock" : "quiz") : "partner")} /></>;
-  if (screen === "partner") return <>{backLink}<GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); setScreen("quiz"); }} /></>;
-  if (screen === "quiz") return <>{backLink}<GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
+  if (screen === "partner") return <>{backLink}<GrainOverlay /><PartnerScreen onComplete={(pn, pg) => { setPartnerName(pn); setPartnerGender(pg); track("quiz_started", { partner_gender: pg }); setScreen("quiz"); }} /></>;
+  if (screen === "quiz") return <>{backLink}<GrainOverlay /><QuizFlow onComplete={(a) => { setQuiz(a); track("quiz_completed", { partner_name: partnerName }); setScreen("unlock"); }} existing={quiz} partnerName={partnerName} partnerGender={partnerGender} /></>;
   if (screen === "unlock") return <>{backLink}<GrainOverlay /><UnlockScreen onComplete={(n, c) => { if (n) setName(n); if (c) setCity(c); setContactDone(true); setScreen("vibe_reveal"); }} /></>;
   if (screen === "vibe_reveal") return <>{backLink}<GrainOverlay /><VibeReveal quiz={quiz} onContinue={() => setScreen("dashboard")} partnerName={partnerName} partnerGender={partnerGender} /></>;
   return <>{backLink}<GrainOverlay /><Dashboard name={name} quiz={quiz} city={city} setCity={setCity} onRetake={() => setScreen("quiz")} partnerName={partnerName} partnerGender={partnerGender} /></>;
@@ -2368,10 +2467,78 @@ function VelaApp() {
 
 // ——— APP ROOT (ROUTING) ———
 export default function App() {
+  const [exitOpen, setExitOpen] = useState(false);
+  const [exitEmail, setExitEmail] = useState("");
+  const [exitDone, setExitDone] = useState(false);
+  const enterTimeRef = useRef(Date.now());
+
+  // ——— Referral detection ———
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+      if (ref && !localStorage.getItem("vela_referred_by")) {
+        localStorage.setItem("vela_referred_by", ref);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    const handleMouseLeave = (e) => {
+      if (e.clientY > 0) return;
+      if (sessionStorage.getItem("vela_exit_shown")) return;
+      if (Date.now() - enterTimeRef.current < 30000) return;
+      sessionStorage.setItem("vela_exit_shown", "true");
+      setExitOpen(true);
+    };
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, []);
+
+  const handleExitSubmit = async () => {
+    const trimmed = exitEmail.trim();
+    if (!trimmed) return;
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "exit_intent" }),
+      });
+    } catch {}
+    setExitDone(true);
+    setTimeout(() => setExitOpen(false), 2000);
+  };
+
+  const handleExitDismiss = () => {
+    sessionStorage.setItem("vela_exit_shown", "true");
+    setExitOpen(false);
+  };
+
   return (
-    <Routes>
-      <Route path="/" element={<Portfolio />} />
-      <Route path="/vela/*" element={<VelaApp />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Portfolio />} />
+        <Route path="/vela/*" element={<VelaApp />} />
+      </Routes>
+      {exitOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", padding: 24 }}>
+          <div style={{ background: T.surface, borderRadius: 14, padding: "40px 32px", maxWidth: 400, width: "100%", border: `1px solid ${T.border}`, boxShadow: "0 8px 40px rgba(0,0,0,0.5)", fontFamily: T.font }}>
+            <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 12px", fontFamily: T.display, fontWeight: 700 }}>Don't lose your matches.</h2>
+            <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>Enter your email and we'll save your personalized date plan.</p>
+            {exitDone ? (
+              <p style={{ color: T.primary, fontSize: 15, fontWeight: 600, textAlign: "center", margin: 0 }}>Saved! Check your inbox.</p>
+            ) : (
+              <>
+                <input type="email" placeholder="you@email.com" value={exitEmail} onChange={e => setExitEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleExitSubmit()} style={inp({ marginBottom: 12 })} />
+                <button onClick={handleExitSubmit} style={btn(T.primary, "#141414", { width: "100%", fontSize: 15, padding: "13px 22px", fontWeight: 700 })}>Save My Matches</button>
+              </>
+            )}
+            <div style={{ textAlign: "center", marginTop: 14 }}>
+              <button onClick={handleExitDismiss} style={{ background: "none", border: "none", color: T.textFaint, fontSize: 13, cursor: "pointer", fontFamily: T.font }}>No thanks</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
