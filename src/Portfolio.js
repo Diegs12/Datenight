@@ -32,6 +32,28 @@ export default function Portfolio() {
       ),
     },
     {
+      id: "pcc",
+      title: "Life Tracker",
+      tagline: "Personal Command Center",
+      description:
+        "Full-stack personal dashboard for tracking finances, tasks, habits, workouts, and goals. AI-integrated API so any LLM can create tasks, log habits, and update progress.",
+      tags: ["React", "Express", "Prisma", "AI API"],
+      status: "Live",
+      statusColor: "#4ADE80",
+      link: null,
+      external: false,
+      gradient: "linear-gradient(135deg, #10B981 0%, #065F46 100%)",
+      icon: (
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect width="40" height="40" rx="10" fill="#10B981" fillOpacity="0.15" />
+          <rect x="12" y="12" width="7" height="7" rx="1.5" fill="#10B981" />
+          <rect x="21" y="12" width="7" height="7" rx="1.5" fill="#10B981" fillOpacity="0.6" />
+          <rect x="12" y="21" width="7" height="7" rx="1.5" fill="#10B981" fillOpacity="0.6" />
+          <rect x="21" y="21" width="7" height="7" rx="1.5" fill="#10B981" fillOpacity="0.3" />
+        </svg>
+      ),
+    },
+    {
       id: "trading",
       title: "Vallota Trading",
       tagline: "Crypto Trading Bot",
