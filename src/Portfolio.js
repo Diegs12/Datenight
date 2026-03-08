@@ -40,7 +40,7 @@ export default function Portfolio() {
       tags: ["React", "Express", "Prisma", "AI API"],
       status: "Live",
       statusColor: "#4ADE80",
-      link: "/life-tracker",
+      link: "/tracker",
       external: false,
       gradient: "linear-gradient(135deg, #10B981 0%, #065F46 100%)",
       icon: (

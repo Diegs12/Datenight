@@ -2520,7 +2520,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Portfolio />} />
-        <Route path="/life-tracker" element={<LifeTrackerLanding />} />
+        <Route path="/tracker" element={<LifeTrackerLanding />} />
         <Route path="/trading/*" element={<TradingApp />} />
         <Route path="/vela/*" element={<VelaApp />} />
       </Routes>
