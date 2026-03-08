@@ -10,6 +10,11 @@ const T = {
 export default function Portfolio() {
   const [hoveredCard, setHoveredCard] = useState(null);
 
+  const sessions = {
+    vela: (() => { try { return !!localStorage.getItem("vela_quiz"); } catch { return false; } })(),
+    trading: (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })(),
+  };
+
   const apps = [
     {
       id: "vela",
@@ -20,7 +25,9 @@ export default function Portfolio() {
       tags: ["React", "Vercel", "PWA"],
       status: "Live",
       statusColor: "#4ADE80",
-      link: "/vela",
+      link: sessions.vela ? "/vela" : "/vela",
+      dashboardLink: "/vela",
+      hasSession: sessions.vela,
       external: false,
       gradient: "linear-gradient(135deg, #D68853 0%, #8B4A28 100%)",
       icon: (
@@ -41,6 +48,8 @@ export default function Portfolio() {
       status: "Live",
       statusColor: "#4ADE80",
       link: "/tracker",
+      dashboardLink: null,
+      hasSession: false,
       external: false,
       gradient: "linear-gradient(135deg, #10B981 0%, #065F46 100%)",
       icon: (
@@ -62,7 +71,9 @@ export default function Portfolio() {
       tags: ["Node.js", "Claude AI", "Grok", "Crypto"],
       status: "Live",
       statusColor: "#4ADE80",
-      link: "/trading",
+      link: sessions.trading ? "/trading/dashboard" : "/trading",
+      dashboardLink: "/trading/dashboard",
+      hasSession: sessions.trading,
       external: false,
       gradient: "linear-gradient(135deg, #6366F1 0%, #4338CA 100%)",
       icon: (
@@ -315,10 +326,10 @@ export default function Portfolio() {
                     {isLive && (
                       <span style={{
                         fontFamily: T.font, fontSize: 13, fontWeight: 600,
-                        color: T.primary,
+                        color: app.hasSession ? "#4ADE80" : T.primary,
                         display: "flex", alignItems: "center", gap: 4,
                       }}>
-                        Launch
+                        {app.hasSession ? "Open Dashboard" : "Launch"}
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M5 12h14M12 5l7 7-7 7" />
