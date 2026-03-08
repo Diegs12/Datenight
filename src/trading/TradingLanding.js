@@ -232,20 +232,16 @@ export default function TradingLanding() {
         alignItems: "center",
         justifyContent: "space-between",
       }}>
-        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-            <rect width="40" height="40" rx="8" fill={TT.primaryDim} />
-            <path d="M12 26L17 20L21 23L28 14" stroke={TT.primary} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M24 14H28V18" stroke={TT.primary} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span style={{ fontFamily: TT.mono, fontSize: 16, fontWeight: 700, color: TT.text, letterSpacing: 0.5 }}>
-            Vallota Trading
+        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ color: TT.textDim, fontSize: 14 }}>&larr;</span>
+          <span style={{ fontFamily: TT.mono, fontSize: 16, fontWeight: 700, color: TT.textDim, letterSpacing: 0.5 }}>
+            Vallota Ventures
           </span>
         </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="#features" style={{ fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, textDecoration: "none" }}>Features</a>
-          <a href="#pricing" style={{ fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, textDecoration: "none" }}>Pricing</a>
-          <a href="#faq" style={{ fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, textDecoration: "none" }}>FAQ</a>
+          <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
+          <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Pricing</button>
+          <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
           <Link to="/trading/signup" style={{
             fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
             padding: "8px 20px", borderRadius: 6,
