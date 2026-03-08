@@ -187,7 +187,28 @@ function DashboardMockup() {
   );
 }
 
+const scrollTo = (id) => {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+};
+
 export default function LifeTrackerLanding() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || submitting) return;
+    setSubmitting(true);
+    // For now, open mailto as fallback — replace with real endpoint later
+    window.location.href = `mailto:diego@vallotaventures.com?subject=Life Tracker Early Access&body=I'd like early access to Life Tracker.%0A%0AEmail: ${encodeURIComponent(email.trim())}`;
+    setTimeout(() => {
+      setSubmitted(true);
+      setSubmitting(false);
+    }, 1000);
+  };
+
   return (
     <div style={{ background: T.bg, color: T.text, fontFamily: T.font, minHeight: "100vh" }}>
 
@@ -203,13 +224,13 @@ export default function LifeTrackerLanding() {
         }}>
           <span style={{ color: T.textFaint }}>&#8592;</span> Vallota Ventures
         </Link>
-        <a href="#get-started" style={{
-          fontFamily: T.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
-          padding: "8px 20px", borderRadius: 6,
+        <button onClick={() => scrollTo("get-started")} style={{
+          fontFamily: T.font, fontSize: 14, fontWeight: 600, cursor: "pointer",
+          padding: "8px 20px", borderRadius: 6, border: "none",
           background: T.primary, color: "#fff",
         }}>
           Get Started Free
-        </a>
+        </button>
       </nav>
 
       {/* ─── HERO ─── */}
@@ -246,22 +267,22 @@ export default function LifeTrackerLanding() {
         </p>
 
         <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 60 }}>
-          <a href="#get-started" style={{
-            fontFamily: T.font, fontSize: 16, fontWeight: 700, textDecoration: "none",
-            padding: "14px 36px", borderRadius: 8,
+          <button onClick={() => scrollTo("get-started")} style={{
+            fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
+            padding: "14px 36px", borderRadius: 8, border: "none",
             background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
             color: "#fff",
             boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
           }}>
             Start Tracking — It's Free
-          </a>
-          <a href="#features" style={{
-            fontFamily: T.font, fontSize: 16, fontWeight: 600, textDecoration: "none",
+          </button>
+          <button onClick={() => scrollTo("features")} style={{
+            fontFamily: T.font, fontSize: 16, fontWeight: 600, cursor: "pointer",
             padding: "14px 36px", borderRadius: 8,
             border: `1px solid ${T.border}`, color: T.textDim, background: "transparent",
           }}>
             See Features
-          </a>
+          </button>
         </div>
 
         {/* App Preview */}
@@ -545,16 +566,49 @@ export default function LifeTrackerLanding() {
         }}>
           Free to use. Set up in 2 minutes. Your data stays yours.
         </p>
-        <a href="mailto:diego@vallotaventures.com?subject=Life Tracker Access" style={{
-          display: "inline-block", textDecoration: "none",
-          fontFamily: T.font, fontSize: 18, fontWeight: 700,
-          padding: "16px 44px", borderRadius: 8,
-          background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
-          color: "#fff",
-          boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
-        }}>
-          Get Early Access
-        </a>
+        {submitted ? (
+          <div style={{
+            padding: "20px 32px", borderRadius: 12,
+            background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)",
+            display: "inline-block",
+          }}>
+            <p style={{ fontFamily: T.font, fontSize: 18, fontWeight: 600, color: T.primary, margin: 0 }}>
+              You're on the list!
+            </p>
+            <p style={{ fontFamily: T.font, fontSize: 14, color: T.textDim, margin: "8px 0 0" }}>
+              We'll reach out within 24 hours to get you set up.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{
+            display: "flex", gap: 12, justifyContent: "center",
+            flexWrap: "wrap", maxWidth: 480, margin: "0 auto",
+          }}>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                flex: 1, minWidth: 240, padding: "14px 20px", borderRadius: 8,
+                border: `1px solid ${T.border}`, background: T.surface,
+                color: T.text, fontFamily: T.font, fontSize: 16,
+                outline: "none",
+              }}
+            />
+            <button type="submit" disabled={submitting} style={{
+              fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
+              padding: "14px 32px", borderRadius: 8, border: "none",
+              background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
+              color: "#fff",
+              boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
+              opacity: submitting ? 0.7 : 1,
+            }}>
+              {submitting ? "Sending..." : "Get Early Access"}
+            </button>
+          </form>
+        )}
         <p style={{
           fontFamily: T.font, fontSize: 13, color: T.textFaint,
           marginTop: 16,
