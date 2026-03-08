@@ -309,13 +309,13 @@ export default function LifeTrackerLanding() {
               {link.label}
             </button>
           ))}
-          <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" style={{
+          <button onClick={() => scrollTo("get-started")} style={{
+            background: "none", border: "none", cursor: "pointer",
             fontFamily: T.font, fontSize: 14, fontWeight: 500,
-            color: T.textDim, textDecoration: "none", padding: 0,
-            transition: "color 0.2s",
+            color: T.textDim, padding: 0, transition: "color 0.2s",
           }}>
-            Dashboard
-          </a>
+            Log In
+          </button>
           <button onClick={() => scrollTo("get-started")} style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 600, cursor: "pointer",
             padding: "8px 20px", borderRadius: 6, border: "none",
