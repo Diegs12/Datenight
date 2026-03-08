@@ -9,7 +9,12 @@ const T = {
 
 const section = { padding: "80px 24px", maxWidth: 1080, margin: "0 auto" };
 
-// Animated counter
+const scrollTo = (id) => {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+};
+
+// ─── Animated Counter ───
 function Counter({ target, suffix = "", prefix = "" }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -37,8 +42,48 @@ function Counter({ target, suffix = "", prefix = "" }) {
   return <span ref={ref}>{prefix}{count}{suffix}</span>;
 }
 
-// Fake app screenshot — dashboard mockup
+// ─── FAQ Accordion Item ───
+function FaqItem({ question, answer }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      borderBottom: `1px solid ${T.border}`,
+    }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%", padding: "20px 0", background: "none", border: "none",
+          cursor: "pointer", display: "flex", justifyContent: "space-between",
+          alignItems: "center", fontFamily: T.font, fontSize: 16, fontWeight: 600,
+          color: T.text, textAlign: "left", gap: 16,
+        }}
+      >
+        {question}
+        <span style={{
+          fontSize: 20, color: T.textFaint, transition: "transform 0.2s",
+          transform: open ? "rotate(45deg)" : "rotate(0deg)", flexShrink: 0,
+        }}>+</span>
+      </button>
+      <div style={{
+        maxHeight: open ? 300 : 0, overflow: "hidden",
+        transition: "max-height 0.3s ease",
+      }}>
+        <p style={{
+          fontFamily: T.font, fontSize: 15, color: T.textDim,
+          lineHeight: 1.7, margin: 0, paddingBottom: 20,
+        }}>
+          {answer}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Dashboard Mockup with Tabs ───
 function DashboardMockup() {
+  const [activeTab, setActiveTab] = useState("Overview");
+  const tabs = ["Overview", "Tasks", "Habits", "Finances", "Workouts"];
+
   const habits = [
     { name: "Workout", done: true },
     { name: "Deep Work", done: true },
@@ -75,6 +120,28 @@ function DashboardMockup() {
         </span>
       </div>
 
+      {/* Tabs */}
+      <div style={{
+        display: "flex", gap: 0, borderBottom: "1px solid #E2E0DB",
+        background: "#fff", padding: "0 16px",
+      }}>
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            style={{
+              padding: "12px 16px", background: "none", border: "none",
+              borderBottom: activeTab === tab ? "2px solid #10B981" : "2px solid transparent",
+              cursor: "pointer", fontFamily: T.font, fontSize: 12, fontWeight: 600,
+              color: activeTab === tab ? "#1E293B" : "#94A3B8",
+              transition: "all 0.2s",
+            }}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
       {/* App content */}
       <div style={{ padding: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* The One Thing */}
@@ -101,14 +168,12 @@ function DashboardMockup() {
                 width: 20, height: 20, borderRadius: 6,
                 background: h.done ? "#10B981" : "#E2E0DB",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "all 0.2s",
               }}>
                 {h.done && <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>&#10003;</span>}
               </div>
               <span style={{
                 fontSize: 13, color: h.done ? "#94A3B8" : "#1E293B",
-                textDecoration: h.done ? "line-through" : "none",
-                fontWeight: 500,
+                textDecoration: h.done ? "line-through" : "none", fontWeight: 500,
               }}>{h.name}</span>
             </div>
           ))}
@@ -152,7 +217,7 @@ function DashboardMockup() {
             {[28, 32, 30, 35, 33, 38, 36, 40, 42, 45, 43, 47].map((h, i) => (
               <div key={i} style={{
                 flex: 1, height: `${h}px`, borderRadius: 3,
-                background: `linear-gradient(180deg, #10B981 0%, #065F46 100%)`,
+                background: "linear-gradient(180deg, #10B981 0%, #065F46 100%)",
                 opacity: 0.3 + (i / 12) * 0.7,
               }} />
             ))}
@@ -166,7 +231,7 @@ function DashboardMockup() {
           </div>
           <div style={{ display: "flex", gap: 6 }}>
             {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => {
-              const types = ["🏃", "🏋️", "🚴", "🧘", "🏃", null, null];
+              const types = ["\u{1F3C3}", "\u{1F3CB}\u{FE0F}", "\u{1F6B4}", "\u{1F9D8}", "\u{1F3C3}", null, null];
               const done = i < 4;
               return (
                 <div key={i} style={{
@@ -175,7 +240,7 @@ function DashboardMockup() {
                   border: `1px solid ${done ? "#BBF7D0" : "#E2E0DB"}`,
                 }}>
                   <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600, marginBottom: 4 }}>{d}</div>
-                  <div style={{ fontSize: 16 }}>{types[i] || "—"}</div>
+                  <div style={{ fontSize: 16 }}>{types[i] || "\u2014"}</div>
                   {done && <div style={{ fontSize: 10, color: "#10B981", marginTop: 2 }}>&#10003;</div>}
                 </div>
               );
@@ -187,11 +252,7 @@ function DashboardMockup() {
   );
 }
 
-const scrollTo = (id) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
-
+// ─── Main Landing Page ───
 export default function LifeTrackerLanding() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -201,7 +262,6 @@ export default function LifeTrackerLanding() {
     e.preventDefault();
     if (!email.trim() || submitting) return;
     setSubmitting(true);
-    // For now, open mailto as fallback — replace with real endpoint later
     window.location.href = `mailto:diego@vallotaventures.com?subject=Life Tracker Early Access&body=I'd like early access to Life Tracker.%0A%0AEmail: ${encodeURIComponent(email.trim())}`;
     setTimeout(() => {
       setSubmitted(true);
@@ -212,10 +272,12 @@ export default function LifeTrackerLanding() {
   return (
     <div style={{ background: T.bg, color: T.text, fontFamily: T.font, minHeight: "100vh" }}>
 
-      {/* ─── NAV ─── */}
+      {/* ═══════════ NAV ═══════════ */}
       <nav style={{
-        padding: "20px 24px", maxWidth: 1080, margin: "0 auto",
+        padding: "16px 24px", maxWidth: 1080, margin: "0 auto",
         display: "flex", alignItems: "center", justifyContent: "space-between",
+        position: "sticky", top: 0, zIndex: 50,
+        background: "rgba(10,10,11,0.85)", backdropFilter: "blur(12px)",
       }}>
         <Link to="/" style={{
           fontFamily: T.display, fontSize: 18, fontWeight: 700,
@@ -224,32 +286,55 @@ export default function LifeTrackerLanding() {
         }}>
           <span style={{ color: T.textFaint }}>&#8592;</span> Vallota Ventures
         </Link>
-        <button onClick={() => scrollTo("get-started")} style={{
-          fontFamily: T.font, fontSize: 14, fontWeight: 600, cursor: "pointer",
-          padding: "8px 20px", borderRadius: 6, border: "none",
-          background: T.primary, color: "#fff",
-        }}>
-          Get Started Free
-        </button>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+          {[
+            { label: "How It Works", id: "how-it-works" },
+            { label: "Features", id: "features" },
+            { label: "Pricing", id: "pricing" },
+            { label: "FAQ", id: "faq" },
+          ].map((link) => (
+            <button
+              key={link.id}
+              onClick={() => scrollTo(link.id)}
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                color: T.textDim, padding: 0,
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => e.target.style.color = T.text}
+              onMouseLeave={(e) => e.target.style.color = T.textDim}
+            >
+              {link.label}
+            </button>
+          ))}
+          <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" style={{
+            fontFamily: T.font, fontSize: 14, fontWeight: 500,
+            color: T.textDim, textDecoration: "none", padding: 0,
+            transition: "color 0.2s",
+          }}>
+            Dashboard
+          </a>
+          <button onClick={() => scrollTo("get-started")} style={{
+            fontFamily: T.font, fontSize: 14, fontWeight: 600, cursor: "pointer",
+            padding: "8px 20px", borderRadius: 6, border: "none",
+            background: T.primary, color: "#fff",
+            transition: "opacity 0.2s",
+          }}>
+            Get Started
+          </button>
+        </div>
       </nav>
 
-      {/* ─── HERO ─── */}
-      <section style={{ ...section, paddingTop: 60, paddingBottom: 40, textAlign: "center" }}>
-        <div style={{
-          display: "inline-block", marginBottom: 24,
-          padding: "6px 14px", borderRadius: 20,
-          background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.15)",
-          fontFamily: T.font, fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
-          color: T.primary, textTransform: "uppercase",
-        }}>
-          Personal Command Center
-        </div>
-
+      {/* ═══════════ HERO ═══════════ */}
+      <section style={{ ...section, paddingTop: 80, paddingBottom: 40, textAlign: "center" }}>
         <h1 style={{
-          fontFamily: T.display, fontSize: "clamp(36px, 7vw, 60px)",
-          fontWeight: 700, lineHeight: 1.1, margin: "0 0 24px", color: T.text,
+          fontFamily: T.display, fontSize: "clamp(36px, 7vw, 64px)",
+          fontWeight: 700, lineHeight: 1.08, margin: "0 0 24px", color: T.text,
         }}>
           Your Entire Life.{" "}
+          <br />
           <span style={{
             background: "linear-gradient(90deg, #6EE7B7, #10B981)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
@@ -260,36 +345,33 @@ export default function LifeTrackerLanding() {
 
         <p style={{
           fontFamily: T.font, fontSize: 18, color: T.textDim, lineHeight: 1.8,
-          maxWidth: 580, margin: "0 auto 40px",
+          maxWidth: 560, margin: "0 auto 32px",
         }}>
-          Track your finances, tasks, habits, workouts, and goals in one place.
+          Track finances, tasks, habits, workouts, and goals in one place.
           AI-integrated so your tools can talk to your life system.
         </p>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 60 }}>
-          <button onClick={() => scrollTo("get-started")} style={{
-            fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
-            padding: "14px 36px", borderRadius: 8, border: "none",
-            background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
-            color: "#fff",
-            boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
-          }}>
-            Start Tracking — It's Free
-          </button>
-          <button onClick={() => scrollTo("features")} style={{
-            fontFamily: T.font, fontSize: 16, fontWeight: 600, cursor: "pointer",
-            padding: "14px 36px", borderRadius: 8,
-            border: `1px solid ${T.border}`, color: T.textDim, background: "transparent",
-          }}>
-            See Features
-          </button>
-        </div>
+        <button onClick={() => scrollTo("get-started")} style={{
+          fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          padding: "14px 40px", borderRadius: 8, border: "none",
+          background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
+          color: "#fff",
+          boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
+          marginBottom: 12,
+        }}>
+          Deploy Your Dashboard
+        </button>
+        <p style={{
+          fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 60px",
+        }}>
+          Free to set up &middot; Your data stays yours &middot; AI-ready from day one
+        </p>
 
-        {/* App Preview */}
+        {/* Dashboard Preview */}
         <DashboardMockup />
       </section>
 
-      {/* ─── STATS BAR ─── */}
+      {/* ═══════════ STATS BAR ═══════════ */}
       <div style={{
         borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`,
         padding: "28px 24px", background: T.surface,
@@ -316,7 +398,82 @@ export default function LifeTrackerLanding() {
         </div>
       </div>
 
-      {/* ─── FEATURES ─── */}
+      {/* ═══════════ HOW IT WORKS ═══════════ */}
+      <section id="how-it-works" style={{ ...section, paddingTop: 100 }}>
+        <div style={{ textAlign: "center", marginBottom: 56 }}>
+          <h2 style={{
+            fontFamily: T.display, fontSize: "clamp(28px, 5vw, 40px)",
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 16px", color: T.text,
+          }}>
+            Up and Running in Minutes
+          </h2>
+          <p style={{
+            fontFamily: T.font, fontSize: 16, color: T.textDim,
+            maxWidth: 500, margin: "0 auto", lineHeight: 1.7,
+          }}>
+            Three things to set up. Then you're tracking everything.
+          </p>
+        </div>
+
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 24, maxWidth: 960, margin: "0 auto",
+        }}>
+          {[
+            {
+              step: "1", title: "Create Your Account",
+              desc: "Pick a username and password. No email verification, no friction. You're in within 30 seconds.",
+              details: ["Username + password", "No email required", "Instant access"],
+            },
+            {
+              step: "2", title: "Configure Your System",
+              desc: "Default habits, budget categories, and life domains are pre-loaded. Customize them or start tracking immediately.",
+              details: ["Pre-loaded defaults", "6 life domains", "Budget categories ready"],
+            },
+            {
+              step: "3", title: "Track & Connect AI",
+              desc: "Start logging everything from one dashboard. Grab your API key to let Claude, ChatGPT, or any agent update your system.",
+              details: ["One dashboard for all", "REST API access", "Bearer token auth"],
+            },
+          ].map((s, i) => (
+            <div key={i} style={{
+              background: T.surface, borderRadius: 16, padding: "32px 28px",
+              border: `1px solid ${T.border}`, position: "relative",
+            }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: "50%", marginBottom: 20,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.2)",
+                fontFamily: T.display, fontSize: 18, fontWeight: 700, color: T.primary,
+              }}>
+                {s.step}
+              </div>
+              <h3 style={{
+                fontFamily: T.font, fontSize: 18, fontWeight: 700,
+                color: T.text, margin: "0 0 10px",
+              }}>
+                {s.title}
+              </h3>
+              <p style={{
+                fontFamily: T.font, fontSize: 14, color: T.textDim,
+                lineHeight: 1.7, margin: "0 0 16px",
+              }}>
+                {s.desc}
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {s.details.map((d, j) => (
+                  <div key={j} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ color: T.primary, fontSize: 12 }}>&#10003;</span>
+                    <span style={{ fontFamily: T.font, fontSize: 13, color: T.textFaint }}>{d}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════ FEATURES ═══════════ */}
       <section id="features" style={{ ...section, paddingTop: 100 }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
           <h2 style={{
@@ -336,35 +493,50 @@ export default function LifeTrackerLanding() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
           {[
             {
-              icon: "💰", title: "Finances",
+              icon: "\u{1F4B0}", title: "Finances",
               desc: "Track accounts, net worth, transactions, and monthly budgets. See exactly where your money goes with category breakdowns.",
+              highlight: "Net worth tracking with visual trends",
             },
             {
-              icon: "✅", title: "Tasks",
-              desc: "Kanban board with backlog, this week, today, and done columns. Set your One Thing each day. Drag and drop to prioritize.",
+              icon: "\u2705", title: "Tasks",
+              desc: "Kanban board with backlog, this week, today, and done columns. Set your One Thing each day to stay focused.",
+              highlight: "\"The One Thing\" daily priority system",
             },
             {
-              icon: "🔁", title: "Habits",
+              icon: "\u{1F501}", title: "Habits",
               desc: "Daily habit tracking with weekly progress. See your streaks, hit your targets, and build systems that compound.",
+              highlight: "Weekly dot grid with streak tracking",
             },
             {
-              icon: "🏋️", title: "Workouts",
-              desc: "Log runs, lifts, bikes, swims, and more. Weekly overview, duration tracking, and workout history at a glance.",
+              icon: "\u{1F3CB}\u{FE0F}", title: "Workouts",
+              desc: "Log runs, lifts, bikes, swims, and more. Weekly overview, duration tracking, and 30-day workout history.",
+              highlight: "Emoji-based weekly calendar view",
             },
             {
-              icon: "🎯", title: "Goals",
-              desc: "Set targets with deadlines. Track progress with visual bars. Auto-completes when you hit the number. Stay accountable.",
+              icon: "\u{1F3AF}", title: "Goals",
+              desc: "Set targets with deadlines and track progress with visual bars. Auto-completes when you hit the number.",
+              highlight: "Progress bars with quick-increment buttons",
             },
             {
-              icon: "📅", title: "Calendar",
-              desc: "Pull in your Google Calendar events. See today's schedule alongside your tasks and habits in one daily view.",
+              icon: "\u{1F4C5}", title: "Calendar",
+              desc: "Pull in your iCal/Google Calendar events. See today's schedule alongside your tasks and habits in one daily view.",
+              highlight: "6am-11pm daily timeline integration",
             },
           ].map((f, i) => (
             <div key={i} style={{
               background: T.surface, borderRadius: 14, padding: "28px 24px",
               border: `1px solid ${T.border}`,
-              transition: "border-color 0.2s",
-            }}>
+              transition: "border-color 0.2s, transform 0.2s",
+            }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(16,185,129,0.3)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = T.border;
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
               <div style={{ fontSize: 32, marginBottom: 14 }}>{f.icon}</div>
               <h3 style={{
                 fontFamily: T.font, fontSize: 17, fontWeight: 700,
@@ -374,16 +546,22 @@ export default function LifeTrackerLanding() {
               </h3>
               <p style={{
                 fontFamily: T.font, fontSize: 14, color: T.textDim,
-                lineHeight: 1.7, margin: 0,
+                lineHeight: 1.7, margin: "0 0 12px",
               }}>
                 {f.desc}
               </p>
+              <div style={{
+                fontFamily: T.font, fontSize: 12, fontWeight: 600,
+                color: T.primary, display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <span>&#9679;</span> {f.highlight}
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ─── AI INTEGRATION ─── */}
+      {/* ═══════════ AI INTEGRATION / TECHNICAL DEEP DIVE ═══════════ */}
       <section style={{ ...section, paddingTop: 100 }}>
         <div style={{
           background: T.surface, borderRadius: 20, border: `1px solid ${T.border}`,
@@ -450,9 +628,7 @@ export default function LifeTrackerLanding() {
             </div>
           </div>
 
-          <div style={{
-            marginTop: 24, display: "flex", gap: 20, flexWrap: "wrap",
-          }}>
+          <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
             {["Claude Code", "ChatGPT", "Custom Agents", "Zapier", "Make"].map((tool) => (
               <span key={tool} style={{
                 fontFamily: T.font, fontSize: 12, fontWeight: 500,
@@ -464,54 +640,84 @@ export default function LifeTrackerLanding() {
               </span>
             ))}
           </div>
+
+          {/* API Capabilities */}
+          <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {[
+              "Create & update tasks",
+              "Log habit completions",
+              "Track goal progress",
+              "Record transactions",
+              "Add workout logs",
+              "Query net worth",
+            ].map((cap, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: T.primary, fontSize: 14 }}>&#10003;</span>
+                <span style={{ fontFamily: T.font, fontSize: 13, color: T.textDim }}>{cap}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ─── HOW IT WORKS ─── */}
+      {/* ═══════════ TRUST & SECURITY ═══════════ */}
       <section style={{ ...section, paddingTop: 100 }}>
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
           <h2 style={{
-            fontFamily: T.display, fontSize: "clamp(28px, 5vw, 40px)",
+            fontFamily: T.display, fontSize: "clamp(24px, 4vw, 34px)",
             fontWeight: 700, lineHeight: 1.15, margin: "0 0 16px", color: T.text,
           }}>
-            Up and Running in Minutes
+            Your Data. Your Control.
           </h2>
+          <p style={{
+            fontFamily: T.font, fontSize: 16, color: T.textDim,
+            maxWidth: 500, margin: "0 auto", lineHeight: 1.7,
+          }}>
+            No ads. No data selling. No third-party analytics watching your finances. This is your personal system.
+          </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 32 }}>
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 20, maxWidth: 900, margin: "0 auto",
+        }}>
           {[
-            { step: "1", title: "Create Your Account", desc: "Pick a password. That's it. No email verification, no friction." },
-            { step: "2", title: "Set Your Defaults", desc: "Default habits, budget categories, and domains are pre-loaded. Customize or start tracking immediately." },
-            { step: "3", title: "Track Everything", desc: "Log habits, add tasks, update finances, log workouts. All from one dashboard." },
-            { step: "4", title: "Connect Your AI", desc: "Grab your API key and let Claude, ChatGPT, or any tool update your system automatically." },
-          ].map((s, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: "50%", margin: "0 auto 16px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.2)",
-                fontFamily: T.display, fontSize: 20, fontWeight: 700, color: T.primary,
-              }}>
-                {s.step}
-              </div>
+            {
+              icon: "\u{1F512}", title: "Private by Default",
+              desc: "Your financial data, habits, and goals are never shared. API keys are hashed and stored securely.",
+            },
+            {
+              icon: "\u{1F6E1}\u{FE0F}", title: "Rate-Limited API",
+              desc: "Built-in rate limiting protects your endpoints. 200 requests per 15 minutes for general use, 20 for auth.",
+            },
+            {
+              icon: "\u{1F4E6}", title: "Self-Hostable",
+              desc: "Run it on your own infrastructure. SQLite database means no external dependencies. Your data never leaves your server.",
+            },
+          ].map((item, i) => (
+            <div key={i} style={{
+              background: T.surface, borderRadius: 14, padding: "28px 24px",
+              border: `1px solid ${T.border}`, textAlign: "center",
+            }}>
+              <div style={{ fontSize: 32, marginBottom: 14 }}>{item.icon}</div>
               <h3 style={{
-                fontFamily: T.font, fontSize: 16, fontWeight: 700,
+                fontFamily: T.font, fontSize: 17, fontWeight: 700,
                 color: T.text, margin: "0 0 8px",
               }}>
-                {s.title}
+                {item.title}
               </h3>
               <p style={{
                 fontFamily: T.font, fontSize: 14, color: T.textDim,
-                lineHeight: 1.6, margin: 0,
+                lineHeight: 1.7, margin: 0,
               }}>
-                {s.desc}
+                {item.desc}
               </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ─── WHO IT'S FOR ─── */}
+      {/* ═══════════ WHO IT'S FOR ═══════════ */}
       <section style={{ ...section, paddingTop: 100 }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <h2 style={{
@@ -552,7 +758,133 @@ export default function LifeTrackerLanding() {
         </div>
       </section>
 
-      {/* ─── CTA ─── */}
+      {/* ═══════════ PRICING ═══════════ */}
+      <section id="pricing" style={{ ...section, paddingTop: 100 }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{
+            fontFamily: T.display, fontSize: "clamp(28px, 5vw, 40px)",
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 16px", color: T.text,
+          }}>
+            Simple, Transparent Pricing
+          </h2>
+        </div>
+
+        <div style={{
+          maxWidth: 440, margin: "0 auto",
+          background: T.surface, borderRadius: 20,
+          border: `1px solid ${T.border}`, padding: "40px 36px",
+          textAlign: "center", position: "relative", overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", top: 0, left: 0, right: 0, height: 4,
+            background: "linear-gradient(90deg, #6EE7B7, #10B981, #065F46)",
+          }} />
+
+          <div style={{
+            fontFamily: T.font, fontSize: 14, fontWeight: 600, color: T.primary,
+            textTransform: "uppercase", letterSpacing: 1, marginBottom: 16,
+          }}>
+            Early Access
+          </div>
+
+          <div style={{
+            fontFamily: T.display, fontSize: 56, fontWeight: 700, color: T.text,
+            lineHeight: 1,
+          }}>
+            $0
+          </div>
+          <div style={{
+            fontFamily: T.font, fontSize: 14, color: T.textFaint, marginTop: 4, marginBottom: 28,
+          }}>
+            Free forever during early access
+          </div>
+
+          <div style={{
+            textAlign: "left", display: "flex", flexDirection: "column", gap: 12,
+            marginBottom: 32,
+          }}>
+            {[
+              "All 6 modules included",
+              "Full REST API access",
+              "AI integration ready",
+              "Unlimited tasks, habits, goals",
+              "Net worth & budget tracking",
+              "iCal calendar sync",
+              "Self-hostable (SQLite)",
+              "Rate-limited endpoints",
+            ].map((feature, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{
+                  width: 20, height: 20, borderRadius: 6, flexShrink: 0,
+                  background: "rgba(16,185,129,0.15)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: T.primary, fontSize: 11, fontWeight: 700,
+                }}>&#10003;</span>
+                <span style={{ fontFamily: T.font, fontSize: 14, color: T.textDim }}>{feature}</span>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={() => scrollTo("get-started")} style={{
+            width: "100%", fontFamily: T.font, fontSize: 16, fontWeight: 700,
+            cursor: "pointer", padding: "14px 0", borderRadius: 8, border: "none",
+            background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
+            color: "#fff",
+            boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
+          }}>
+            Start Free
+          </button>
+        </div>
+      </section>
+
+      {/* ═══════════ FAQ ═══════════ */}
+      <section id="faq" style={{ ...section, paddingTop: 100 }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{
+            fontFamily: T.display, fontSize: "clamp(28px, 5vw, 40px)",
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 16px", color: T.text,
+          }}>
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <FaqItem
+            question="What exactly is the Personal Command Center?"
+            answer="It's a single dashboard that combines task management (kanban board), habit tracking, workout logging, goal tracking, financial management (accounts, transactions, net worth, budgets), and calendar integration. Instead of using five different apps, you use one."
+          />
+          <FaqItem
+            question="How does the AI integration work?"
+            answer="Every module has a REST API with Bearer token authentication. You get an API key, and any AI tool — Claude Code, ChatGPT, custom agents, Zapier, Make — can create tasks, log habits, update goals, and record transactions by making HTTP requests. Your AI tools become part of your life system."
+          />
+          <FaqItem
+            question="Is my data private?"
+            answer="Yes. Your data is stored in a SQLite database on your server. There are no third-party analytics, no data sharing, and no ads. API keys are securely hashed. You own everything."
+          />
+          <FaqItem
+            question="Can I self-host this?"
+            answer="Yes. The backend is Express + Prisma + SQLite and the frontend is React + Vite + Tailwind. Clone the repo, run npm install, and you're live. No external database dependencies."
+          />
+          <FaqItem
+            question="What does 'The One Thing' mean?"
+            answer="Each day, you can mark one task as your most important priority. It gets highlighted at the top of your dashboard so you always know what to focus on. Inspired by Gary Keller's book."
+          />
+          <FaqItem
+            question="What kind of workouts can I track?"
+            answer="Runs, lifts, HYROX, cycling, swimming, mobility, rest days, and a general 'other' category. Each workout logs type, duration, distance, and notes. You get a weekly emoji calendar and 30-day history."
+          />
+          <FaqItem
+            question="How does the financial tracking work?"
+            answer="You add your accounts (checking, savings, brokerage, crypto, etc.) and log balance snapshots to track net worth over time. Record transactions with categories to see monthly budget breakdowns. No bank linking required — you're in full control."
+          />
+          <FaqItem
+            question="Is there a mobile app?"
+            answer="Not yet. The web app is fully responsive and works well on mobile browsers. A native mobile app is on the roadmap."
+          />
+        </div>
+      </section>
+
+      {/* ═══════════ CTA ═══════════ */}
       <section id="get-started" style={{ ...section, paddingTop: 100, paddingBottom: 100, textAlign: "center" }}>
         <h2 style={{
           fontFamily: T.display, fontSize: "clamp(28px, 5vw, 40px)",
@@ -610,14 +942,13 @@ export default function LifeTrackerLanding() {
           </form>
         )}
         <p style={{
-          fontFamily: T.font, fontSize: 13, color: T.textFaint,
-          marginTop: 16,
+          fontFamily: T.font, fontSize: 13, color: T.textFaint, marginTop: 16,
         }}>
           Currently in early access. Request an invite and you'll be set up within 24 hours.
         </p>
       </section>
 
-      {/* ─── FOOTER ─── */}
+      {/* ═══════════ FOOTER ═══════════ */}
       <footer style={{
         borderTop: `1px solid ${T.border}`, padding: "32px 24px",
         maxWidth: 1080, margin: "0 auto",
@@ -629,11 +960,13 @@ export default function LifeTrackerLanding() {
         }}>
           &copy; 2026 Vallota Ventures
         </Link>
-        <a href="mailto:diego@vallotaventures.com" style={{
-          fontFamily: T.font, fontSize: 13, color: T.textFaint, textDecoration: "none",
-        }}>
-          diego@vallotaventures.com
-        </a>
+        <div style={{ display: "flex", gap: 20 }}>
+          <a href="mailto:diego@vallotaventures.com" style={{
+            fontFamily: T.font, fontSize: 13, color: T.textFaint, textDecoration: "none",
+          }}>
+            diego@vallotaventures.com
+          </a>
+        </div>
       </footer>
     </div>
   );
