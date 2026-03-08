@@ -2523,6 +2523,15 @@ export default function App() {
         <Route path="/tracker" element={<LifeTrackerLanding />} />
         <Route path="/trading/*" element={<TradingApp />} />
         <Route path="/vela/*" element={<VelaApp />} />
+        <Route path="*" element={
+          <div style={{ background: "#0A0A0B", color: "#F5F0EB", fontFamily: "'Inter', sans-serif", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 24 }}>
+            <div>
+              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, fontWeight: 700, margin: "0 0 16px" }}>404</h1>
+              <p style={{ fontSize: 16, color: "#A39E98", margin: "0 0 32px" }}>This page doesn't exist.</p>
+              <a href="/" style={{ fontSize: 15, fontWeight: 600, color: "#D68853", textDecoration: "none" }}>&larr; Back to Vallota Ventures</a>
+            </div>
+          </div>
+        } />
       </Routes>
       {exitOpen && (
         <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", padding: 24 }}>

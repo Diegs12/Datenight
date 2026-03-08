@@ -101,18 +101,20 @@ export default function Portfolio() {
           Vallota Ventures
         </span>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="#projects" style={{
+          <button onClick={() => { const el = document.getElementById("projects"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{
+            background: "none", border: "none", cursor: "pointer",
             fontFamily: T.font, fontSize: 14, fontWeight: 500,
-            color: T.textDim, textDecoration: "none",
+            color: T.textDim, padding: 0,
           }}>
             Projects
-          </a>
-          <a href="#about" style={{
+          </button>
+          <button onClick={() => { const el = document.getElementById("about"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{
+            background: "none", border: "none", cursor: "pointer",
             fontFamily: T.font, fontSize: 14, fontWeight: 500,
-            color: T.textDim, textDecoration: "none",
+            color: T.textDim, padding: 0,
           }}>
             About
-          </a>
+          </button>
           <a href="mailto:diego@vallotaventures.com" style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
             padding: "8px 20px", borderRadius: 6,
@@ -160,15 +162,15 @@ export default function Portfolio() {
           </p>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <a href="#projects" style={{
-              fontFamily: T.font, fontSize: 15, fontWeight: 700, textDecoration: "none",
-              padding: "14px 32px", borderRadius: 8,
+            <button onClick={() => { const el = document.getElementById("projects"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{
+              fontFamily: T.font, fontSize: 15, fontWeight: 700, cursor: "pointer",
+              padding: "14px 32px", borderRadius: 8, border: "none",
               background: "linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",
               color: "#141414",
               boxShadow: "0 4px 12px rgba(139,74,40,0.25), inset 0 1px 0 rgba(255,208,161,0.3)",
             }}>
               View Projects
-            </a>
+            </button>
             <a href="https://github.com/Diegs12" target="_blank" rel="noopener noreferrer" style={{
               fontFamily: T.font, fontSize: 15, fontWeight: 600, textDecoration: "none",
               padding: "14px 32px", borderRadius: 8,
