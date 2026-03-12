@@ -538,9 +538,10 @@ export default function Portfolio() {
         <section id="about" style={{
           padding: "80px 48px", maxWidth: 960,
         }}>
+          {/* Intro card */}
           <div style={{
             background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
-            padding: "48px 40px",
+            padding: "48px 40px", marginBottom: 28,
             display: "flex", gap: 40, alignItems: "flex-start", flexWrap: "wrap",
           }}>
             <div style={{
@@ -565,71 +566,157 @@ export default function Portfolio() {
               <p style={{
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px",
               }}>
-                I'm Diego, a Revenue and Growth Analyst at a sports marketing agency in
-                Cincinnati, a UNC Chapel Hill economics grad, and the founder of Vallota
-                Ventures. I spend my days at the intersection of marketing, finance, and
-                operations, building systems that help businesses grow smarter. Outside of
-                work, I'm big into fitness. I've completed two Ironman 70.3s and I'm always
-                training for something.
+                I'm Diego — a UNC Chapel Hill economics grad, Revenue and Growth Analyst
+                at a sports marketing agency in Cincinnati, and the founder of Vallota Ventures.
+                My day job sits at the intersection of marketing, finance, and operations. My
+                nights and weekends go into building AI-powered tools that solve the problems
+                I see businesses struggling with every day.
               </p>
               <p style={{
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: 0,
               }}>
-                Vallota Ventures is where I build practical AI tools that solve real
-                operational problems for businesses. From voice agents that answer phones
-                and qualify leads, to automation systems that eliminate repetitive work.
-                This site is the home for everything I'm building. If you're here, you're
-                probably looking for a smarter way to run your business. That's exactly
-                what I'm working on.
+                I don't build for the sake of building. Every project on this site started
+                with a real problem — something I watched a business waste time or money on —
+                and turned into a working product. I'm relocating to Austin, TX and actively
+                looking for companies that want to stop talking about AI and start using it.
               </p>
-              <div style={{
-                marginTop: 28, paddingTop: 24,
-                borderTop: `1px solid ${T.border}`,
-                display: "flex", gap: 24, flexWrap: "wrap",
+            </div>
+          </div>
+
+          {/* What I've Built — value highlights */}
+          <div style={{
+            background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
+            padding: "40px 40px 44px", marginBottom: 28,
+          }}>
+            <h3 style={{
+              fontFamily: T.display, fontSize: 22, fontWeight: 700,
+              color: T.navy, margin: "0 0 8px",
+            }}>
+              What I've Built — and Why It Matters
+            </h3>
+            <p style={{
+              fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 28px", lineHeight: 1.7,
+            }}>
+              Each project solves a specific operational problem. Here's the work behind the cards above.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {[
+                {
+                  label: "Vela",
+                  accent: T.gold,
+                  text: "Most couples spend 30+ minutes debating where to go on date night, then default to the same three places. Vela replaces that entire decision loop — a 2-minute personality quiz generates a ranked list of 154+ date ideas tailored to your partner, then builds the full plan: step-by-step instructions, shopping lists, budget, and a calendar invite sent directly to their inbox. It's live, free, and people are using it.",
+                },
+                {
+                  label: "Vallota Trading",
+                  accent: "#00D4FF",
+                  text: "A fully autonomous crypto trading bot running 24/7 on Railway. It pairs Claude for trade decisions with Grok for real-time sentiment analysis, layered on top of computed technical indicators (RSI, MACD, Bollinger Bands) across multiple timeframes. The bot reviews its own trades, learns from mistakes through a self-review loop, and syncs shared lessons to a knowledge base. This isn't a demo — it's executing paper trades on Coinbase Base L2 right now.",
+                },
+                {
+                  label: "Life Tracker",
+                  accent: "#10B981",
+                  text: "A full-stack personal command center for tracking finances, tasks, habits, workouts, and goals in one place. The real differentiator: an AI-integrated API that lets any LLM create tasks, log habits, and update progress on your behalf. It turns your personal dashboard into something your AI tools can actually write to.",
+                },
+                {
+                  label: "UNCHARTED",
+                  accent: "#F59E0B",
+                  text: "A concept app I built for Sea-Doo's experiential marketing events — gamified scavenger hunts, crew leaderboards, and live photo feeds designed to solve the data collection problem that plagues experiential campaigns. I pitched it, and it got funded.",
+                },
+              ].map((item) => (
+                <div key={item.label} style={{
+                  padding: "20px 24px", borderRadius: 12,
+                  background: T.bg, border: `1px solid ${T.border}`,
+                }}>
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 10, marginBottom: 10,
+                  }}>
+                    <div style={{
+                      width: 8, height: 8, borderRadius: "50%",
+                      background: item.accent,
+                      boxShadow: `0 0 8px ${item.accent}66`,
+                    }} />
+                    <span style={{
+                      fontFamily: T.font, fontSize: 15, fontWeight: 700, color: T.navy,
+                    }}>
+                      {item.label}
+                    </span>
+                  </div>
+                  <p style={{
+                    fontFamily: T.font, fontSize: 14, color: T.textDim,
+                    lineHeight: 1.75, margin: 0,
+                  }}>
+                    {item.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom — personal + CTA */}
+          <div style={{
+            background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
+            padding: "36px 40px",
+          }}>
+            <p style={{
+              fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 8px",
+            }}>
+              Outside of work, I've completed two Ironman 70.3 triathlons and I'm always
+              training for the next thing. Same mindset applies to how I build — pick
+              something hard, commit, and ship it.
+            </p>
+            <p style={{
+              fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: 0,
+            }}>
+              If you're a business owner tired of hearing about AI without seeing results,
+              or a team that needs someone who can actually build and ship — let's talk.
+            </p>
+            <div style={{
+              marginTop: 28, paddingTop: 24,
+              borderTop: `1px solid ${T.border}`,
+              display: "flex", gap: 20, flexWrap: "wrap",
+            }}>
+              <a href="mailto:diego@vallotaventures.com" style={{
+                fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                color: T.navy, textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 6,
               }}>
-                <a href="mailto:diego@vallotaventures.com" style={{
-                  fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                  color: T.navy, textDecoration: "none",
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                    <path d="M22 4L12 13 2 4" />
-                  </svg>
-                  diego@vallotaventures.com
-                </a>
-                <a href="https://substack.com/@diegovallota" target="_blank" rel="noopener noreferrer" style={{
-                  fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                  color: T.navy, textDecoration: "none",
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
-                  </svg>
-                  Substack
-                </a>
-                <a href="https://www.instagram.com/diegovallota/" target="_blank" rel="noopener noreferrer" style={{
-                  fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                  color: T.navy, textDecoration: "none",
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                  </svg>
-                  Instagram
-                </a>
-                <a href="https://www.linkedin.com/in/diego-vallota/" target="_blank" rel="noopener noreferrer" style={{
-                  fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                  color: T.navy, textDecoration: "none",
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                  LinkedIn
-                </a>
-              </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M22 4L12 13 2 4" />
+                </svg>
+                diego@vallotaventures.com
+              </a>
+              <a href="https://substack.com/@diegovallota" target="_blank" rel="noopener noreferrer" style={{
+                fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                color: T.navy, textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+                </svg>
+                Substack
+              </a>
+              <a href="https://www.instagram.com/diegovallota/" target="_blank" rel="noopener noreferrer" style={{
+                fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                color: T.navy, textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                </svg>
+                Instagram
+              </a>
+              <a href="https://www.linkedin.com/in/diego-vallota/" target="_blank" rel="noopener noreferrer" style={{
+                fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                color: T.navy, textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                LinkedIn
+              </a>
             </div>
           </div>
         </section>
