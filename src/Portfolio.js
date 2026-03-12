@@ -103,13 +103,13 @@ export default function Portfolio() {
       dashboardLink: null,
       hasSession: false,
       external: false,
-      gradient: "linear-gradient(135deg, #1A0F00 0%, #3D2200 50%, #1A0F00 100%)",
-      accent: "#F59E0B",
-      glow: "rgba(245,158,11,0.35)",
+      gradient: "linear-gradient(135deg, #0a0a0a 0%, #0f1a12 50%, #0a0a0a 100%)",
+      accent: "#3dd98a",
+      glow: "rgba(61,217,138,0.35)",
       icon: (
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
           <path d="M24 10L28 18L37 19.5L30.5 25.8L32 35L24 30.5L16 35L17.5 25.8L11 19.5L20 18L24 10Z" fill="rgba(255,255,255,0.9)" />
-          <path d="M24 16L26.5 21L32 21.8L28 25.6L29 31L24 28.2L19 31L20 25.6L16 21.8L21.5 21L24 16Z" fill="#F59E0B" fillOpacity="0.6" />
+          <path d="M24 16L26.5 21L32 21.8L28 25.6L29 31L24 28.2L19 31L20 25.6L16 21.8L21.5 21L24 16Z" fill="#3dd98a" fillOpacity="0.6" />
         </svg>
       ),
     },

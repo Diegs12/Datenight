@@ -1,82 +1,71 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
+// Theme matched to the UNCHARTED app's actual design language
 const T = {
-  bg: "#0A0E17", surface: "#111827", surfaceAlt: "#1F2937", border: "#2A3344",
-  primary: "#F59E0B", accent: "#3B82F6", green: "#10B981", text: "#F9FAFB",
-  textDim: "#9CA3AF", textFaint: "#6B7280",
-  font: "'Inter', sans-serif", display: "'Playfair Display', serif",
+  bg: "#0a0a0a", surface: "#141414", surfaceHover: "#1c1c1c",
+  border: "rgba(255,255,255,0.06)", borderLight: "rgba(255,255,255,0.1)",
+  teal: "#3dd98a", cyan: "#00bfb3", lime: "#b8e926", orange: "#ff8c42", coral: "#ff6b6b",
+  text: "#ffffff", textDim: "#aaaaaa", textFaint: "#888888", textMuted: "#555555",
+  font: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  gradient: "linear-gradient(135deg, #b8e926, #3dd98a, #00bfb3)",
 };
 
 const features = [
   {
+    emoji: "👥",
     title: "Crew Board",
     description: "Attendees scan in and instantly join a live board where they can browse profiles, connect social handles, and find other riders at the event.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
+    color: T.teal,
   },
   {
+    emoji: "🗺️",
     title: "Scavenger Hunt",
-    description: "A location-based game using QR codes hidden around the venue. Each scan reveals a word in a secret phrase — turning the resort into a Survivor-style challenge that gives everyone a reason to explore, compete, and connect.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
-        <path d="M11 8v6" /><path d="M8 11h6" />
-      </svg>
-    ),
+    description: "QR codes hidden around the venue each reveal a word in a secret phrase — a Survivor-style challenge that gives everyone a legit reason to download the app.",
+    color: T.lime,
   },
   {
+    emoji: "📸",
     title: "Moments Feed",
-    description: "A shared real-time photo feed where riders upload and browse event photos from the digital cameras the brand distributed — creating a living gallery of the day.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
-        <path d="M21 15l-5-5L5 21" />
-      </svg>
-    ),
+    description: "A shared real-time photo feed where riders upload and browse event photos from the digital cameras the brand distributed — a living gallery of the day.",
+    color: T.cyan,
   },
   {
+    emoji: "⚡",
     title: "Vibe Check",
-    description: "A live sentiment pulse that lets organizers read the energy of the crowd in real time — giving the brand instant feedback on how the event is landing.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-      </svg>
-    ),
+    description: "A live sentiment pulse that lets organizers read the energy of the crowd in real time — instant feedback on how the event is landing.",
+    color: T.orange,
   },
 ];
 
 const stats = [
-  { label: "Zero Dependencies", value: "1 File" },
-  { label: "Stack", value: "React 18" },
-  { label: "Deploy", value: "GitHub Pages" },
-  { label: "Status", value: "Funded" },
+  { value: "1 File", label: "Zero Dependencies" },
+  { value: "React 18", label: "Stack" },
+  { value: "GitHub Pages", label: "Deploy" },
+  { value: "Funded", label: "Status", highlight: true },
 ];
 
 export default function UnchartedLanding() {
   const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [hoveredBtn, setHoveredBtn] = useState(null);
 
   return (
     <div style={{ background: T.bg, color: T.text, fontFamily: T.font, minHeight: "100vh" }}>
 
-      {/* Nav */}
+      {/* ─── NAV ─── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: "rgba(10,14,23,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+        background: "rgba(10,10,10,0.8)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
         borderBottom: `1px solid ${T.border}`,
-        padding: "0 32px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 24px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <Link to="/" style={{
-          textDecoration: "none", display: "flex", alignItems: "center", gap: 10,
+          textDecoration: "none", display: "flex", alignItems: "center", gap: 8,
         }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={T.textFaint} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />
           </svg>
-          <span style={{ fontFamily: T.font, fontSize: 14, fontWeight: 500, color: T.textDim }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: T.textFaint }}>
             Vallota Ventures
           </span>
         </Link>
@@ -84,73 +73,100 @@ export default function UnchartedLanding() {
           href="https://diegs12.github.io/UNCHARTED/"
           target="_blank"
           rel="noopener noreferrer"
+          onMouseEnter={() => setHoveredBtn("nav")}
+          onMouseLeave={() => setHoveredBtn(null)}
           style={{
-            fontFamily: T.font, fontSize: 13, fontWeight: 600, textDecoration: "none",
-            padding: "8px 20px", borderRadius: 8,
-            background: T.primary, color: T.bg,
+            fontSize: 13, fontWeight: 700, textDecoration: "none",
+            padding: "8px 20px", borderRadius: 50,
+            background: T.gradient, color: "#0a0a0a",
+            boxShadow: hoveredBtn === "nav" ? `0 0 20px ${T.teal}66` : "none",
+            transition: "all 0.2s ease",
           }}
         >
           Try the Prototype
         </a>
       </nav>
 
-      {/* Hero */}
+      {/* ─── HERO ─── */}
       <section style={{
         paddingTop: 140, paddingBottom: 80,
         textAlign: "center", position: "relative", overflow: "hidden",
       }}>
-        {/* Ambient glow */}
+        {/* Gradient glow orbs */}
         <div style={{
-          position: "absolute", top: 40, left: "50%", transform: "translateX(-50%)",
-          width: 600, height: 400, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%)",
+          position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)",
+          width: 700, height: 500, borderRadius: "50%",
+          background: `radial-gradient(circle, ${T.teal}18 0%, transparent 60%)`,
+          pointerEvents: "none",
+        }} />
+        <div style={{
+          position: "absolute", top: 60, left: "20%",
+          width: 300, height: 300, borderRadius: "50%",
+          background: `radial-gradient(circle, ${T.lime}0d 0%, transparent 60%)`,
           pointerEvents: "none",
         }} />
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
+          {/* Status badge */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "6px 16px", borderRadius: 20, marginBottom: 28,
-            background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)",
+            padding: "6px 16px", borderRadius: 50, marginBottom: 28,
+            background: "rgba(61,217,138,0.08)",
+            border: `1px solid rgba(61,217,138,0.2)`,
+            backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
           }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: T.primary, boxShadow: `0 0 8px ${T.primary}` }} />
-            <span style={{ fontFamily: T.font, fontSize: 12, fontWeight: 600, color: T.primary, letterSpacing: 1.5, textTransform: "uppercase" }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: "50%",
+              background: T.teal, boxShadow: `0 0 8px ${T.teal}`,
+            }} />
+            <span style={{
+              fontSize: 11, fontWeight: 700, color: T.teal,
+              letterSpacing: 2, textTransform: "uppercase",
+            }}>
               Concept App &middot; Funded
             </span>
           </div>
 
+          {/* Title with gradient text */}
           <h1 style={{
-            fontFamily: T.display, fontSize: "clamp(42px, 6vw, 72px)",
-            fontWeight: 700, lineHeight: 1.05, margin: "0 0 8px", color: T.text,
-            letterSpacing: -1,
+            fontSize: "clamp(48px, 7vw, 80px)",
+            fontWeight: 800, lineHeight: 1, margin: "0 0 12px",
+            letterSpacing: -2,
+            background: T.gradient,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
           }}>
             UNCHARTED
           </h1>
           <p style={{
-            fontFamily: T.font, fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 500,
-            color: T.primary, margin: "0 0 28px", letterSpacing: 0.5,
+            fontSize: "clamp(15px, 2vw, 18px)", fontWeight: 600,
+            color: T.textFaint, margin: "0 0 32px", letterSpacing: 3, textTransform: "uppercase",
           }}>
             Sea-Doo Legendary Meetups 2026
           </p>
           <p style={{
-            fontFamily: T.font, fontSize: 17, color: T.textDim, lineHeight: 1.8,
-            margin: "0 0 40px", maxWidth: 600, marginLeft: "auto", marginRight: "auto",
+            fontSize: 17, color: T.textDim, lineHeight: 1.8,
+            margin: "0 auto 40px", maxWidth: 560,
           }}>
             A mobile-first digital companion app I built for Sea-Doo's experiential marketing events.
             Designed to solve a real problem — how do you collect attendee information, connect people,
             and gather content at a live event without being intrusive?
           </p>
 
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <a
               href="https://diegs12.github.io/UNCHARTED/"
               target="_blank"
               rel="noopener noreferrer"
+              onMouseEnter={() => setHoveredBtn("hero")}
+              onMouseLeave={() => setHoveredBtn(null)}
               style={{
-                fontFamily: T.font, fontSize: 15, fontWeight: 700, textDecoration: "none",
-                padding: "14px 32px", borderRadius: 10,
-                background: T.primary, color: T.bg,
-                boxShadow: `0 4px 20px rgba(245,158,11,0.3)`,
+                fontSize: 15, fontWeight: 700, textDecoration: "none",
+                padding: "14px 36px", borderRadius: 50,
+                background: T.gradient, color: "#0a0a0a",
+                boxShadow: hoveredBtn === "hero" ? `0 0 30px ${T.teal}55` : `0 4px 20px ${T.teal}22`,
+                transition: "all 0.2s ease",
                 display: "inline-flex", alignItems: "center", gap: 8,
               }}
             >
@@ -160,10 +176,11 @@ export default function UnchartedLanding() {
               </svg>
             </a>
             <Link to="/" style={{
-              fontFamily: T.font, fontSize: 15, fontWeight: 600, textDecoration: "none",
-              padding: "14px 32px", borderRadius: 10,
-              background: T.surfaceAlt, color: T.text,
-              border: `1px solid ${T.border}`,
+              fontSize: 15, fontWeight: 600, textDecoration: "none",
+              padding: "14px 36px", borderRadius: 50,
+              background: "rgba(255,255,255,0.04)", color: T.textDim,
+              border: `1px solid ${T.borderLight}`,
+              backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
             }}>
               Back to Portfolio
             </Link>
@@ -171,21 +188,24 @@ export default function UnchartedLanding() {
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section style={{ padding: "0 24px 60px" }}>
+      {/* ─── STATS ─── */}
+      <section style={{ padding: "0 24px 70px" }}>
         <div style={{
-          maxWidth: 800, margin: "0 auto",
-          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1,
-          background: T.border, borderRadius: 16, overflow: "hidden",
+          maxWidth: 720, margin: "0 auto",
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12,
         }}>
           {stats.map((s) => (
             <div key={s.label} style={{
-              background: T.surface, padding: "24px 16px", textAlign: "center",
+              background: T.surface, borderRadius: 16, padding: "20px 16px", textAlign: "center",
+              border: `1px solid ${s.highlight ? "rgba(61,217,138,0.2)" : T.border}`,
             }}>
-              <div style={{ fontFamily: T.font, fontSize: 20, fontWeight: 700, color: T.primary, marginBottom: 4 }}>
+              <div style={{
+                fontSize: 18, fontWeight: 800, marginBottom: 4,
+                color: s.highlight ? T.teal : T.text,
+              }}>
                 {s.value}
               </div>
-              <div style={{ fontFamily: T.font, fontSize: 12, color: T.textDim, letterSpacing: 0.5 }}>
+              <div style={{ fontSize: 11, color: T.textFaint, letterSpacing: 0.5, textTransform: "uppercase" }}>
                 {s.label}
               </div>
             </div>
@@ -193,26 +213,33 @@ export default function UnchartedLanding() {
         </div>
       </section>
 
-      {/* The Problem */}
-      <section style={{ padding: "60px 24px 80px" }}>
+      {/* ─── THE PROBLEM ─── */}
+      <section style={{ padding: "0 24px 80px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <h2 style={{
-            fontFamily: T.display, fontSize: "clamp(24px, 4vw, 36px)",
-            fontWeight: 700, margin: "0 0 20px", color: T.text, textAlign: "center",
+          <div style={{
+            fontSize: 11, fontWeight: 700, color: T.coral, letterSpacing: 3,
+            textTransform: "uppercase", textAlign: "center", marginBottom: 12,
           }}>
             The Problem
+          </div>
+          <h2 style={{
+            fontSize: "clamp(24px, 4vw, 36px)",
+            fontWeight: 800, margin: "0 0 24px", color: T.text, textAlign: "center",
+            lineHeight: 1.2,
+          }}>
+            Event data collection is broken
           </h2>
           <div style={{
-            background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
-            padding: "32px 36px",
+            background: T.surface, borderRadius: 20, border: `1px solid ${T.border}`,
+            padding: "32px 32px",
           }}>
-            <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
               An experiential marketing client was running large-scale ride events for Sea-Doo but struggling
               with a fundamental challenge: how do you collect attendee information, help people connect with
               each other, and gather all the photos from the digital cameras distributed at the event — without
               it feeling forced or intrusive?
             </p>
-            <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: 0 }}>
+            <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: 0 }}>
               Traditional methods — clipboards, email sign-ups, post-event surveys — had low engagement.
               The brand needed a way to make data collection feel like part of the experience, not an interruption.
             </p>
@@ -220,31 +247,44 @@ export default function UnchartedLanding() {
         </div>
       </section>
 
-      {/* The Solution */}
+      {/* ─── THE SOLUTION ─── */}
       <section style={{ padding: "0 24px 80px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <h2 style={{
-            fontFamily: T.display, fontSize: "clamp(24px, 4vw, 36px)",
-            fontWeight: 700, margin: "0 0 20px", color: T.text, textAlign: "center",
+          <div style={{
+            fontSize: 11, fontWeight: 700, color: T.teal, letterSpacing: 3,
+            textTransform: "uppercase", textAlign: "center", marginBottom: 12,
           }}>
             The Solution
+          </div>
+          <h2 style={{
+            fontSize: "clamp(24px, 4vw, 36px)",
+            fontWeight: 800, margin: "0 0 24px", color: T.text, textAlign: "center",
+            lineHeight: 1.2,
+          }}>
+            A game they actually want to play
           </h2>
           <div style={{
-            background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
-            padding: "32px 36px",
+            background: T.surface, borderRadius: 20, border: `1px solid ${T.border}`,
+            padding: "32px 32px",
           }}>
-            <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
               I built a concept app that turns a one-day ride event into a connected, gamified experience.
-              The key insight was the <strong style={{ color: T.primary }}>Scavenger Hunt</strong> — a Survivor-style
-              challenge where QR codes hidden around the venue each reveal a word in a secret phrase. Whoever
-              cracks it first wins prizes.
+              The key insight was the{" "}
+              <strong style={{
+                background: T.gradient,
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+              }}>
+                Scavenger Hunt
+              </strong>{" "}
+              — a Survivor-style challenge where QR codes hidden around the venue each reveal a word
+              in a secret phrase. Whoever cracks it first wins prizes.
             </p>
-            <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
               This gave us a <strong style={{ color: T.text }}>legitimate reason to have every attendee download the app</strong>.
               It wasn't a data grab — it was a game people actually wanted to play. And once they were in, they
               were sharing socials, uploading photos, and giving us real-time feedback on the event — all voluntarily.
             </p>
-            <p style={{ fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: 0 }}>
+            <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: 0 }}>
               The scavenger hunt is designed to make you have a good time in a group of people. It's competitive
               enough to be exciting but collaborative enough that strangers end up working together.
             </p>
@@ -252,75 +292,94 @@ export default function UnchartedLanding() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* ─── FEATURES ─── */}
       <section style={{ padding: "0 24px 80px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{
+            fontSize: 11, fontWeight: 700, color: T.lime, letterSpacing: 3,
+            textTransform: "uppercase", textAlign: "center", marginBottom: 12,
+          }}>
+            Features
+          </div>
           <h2 style={{
-            fontFamily: T.display, fontSize: "clamp(24px, 4vw, 36px)",
-            fontWeight: 700, margin: "0 0 40px", color: T.text, textAlign: "center",
+            fontSize: "clamp(24px, 4vw, 36px)",
+            fontWeight: 800, margin: "0 0 40px", color: T.text, textAlign: "center",
           }}>
             What's Inside
           </h2>
           <div style={{
-            display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20,
+            display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16,
           }}>
-            {features.map((f, i) => (
-              <div
-                key={f.title}
-                onMouseEnter={() => setHoveredFeature(i)}
-                onMouseLeave={() => setHoveredFeature(null)}
-                style={{
-                  background: T.surface, borderRadius: 16,
-                  border: `1px solid ${hoveredFeature === i ? "rgba(245,158,11,0.3)" : T.border}`,
-                  padding: "28px 24px",
-                  transition: "all 0.3s ease",
-                  transform: hoveredFeature === i ? "translateY(-4px)" : "none",
-                  boxShadow: hoveredFeature === i ? "0 12px 40px rgba(245,158,11,0.1)" : "none",
-                }}
-              >
-                <div style={{
-                  width: 52, height: 52, borderRadius: 14,
-                  background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.15)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: 20,
-                }}>
-                  {f.icon}
+            {features.map((f, i) => {
+              const hovered = hoveredFeature === i;
+              return (
+                <div
+                  key={f.title}
+                  onMouseEnter={() => setHoveredFeature(i)}
+                  onMouseLeave={() => setHoveredFeature(null)}
+                  style={{
+                    background: hovered ? T.surfaceHover : T.surface,
+                    borderRadius: 20, padding: "28px 24px",
+                    border: `1px solid ${hovered ? `${f.color}33` : T.border}`,
+                    transition: "all 0.2s ease",
+                    transform: hovered ? "translateY(-4px)" : "none",
+                    boxShadow: hovered ? `0 12px 40px ${f.color}15` : "none",
+                  }}
+                >
+                  <div style={{
+                    width: 52, height: 52, borderRadius: 14,
+                    background: `${f.color}12`,
+                    border: `1px solid ${f.color}22`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    marginBottom: 20, fontSize: 26,
+                  }}>
+                    {f.emoji}
+                  </div>
+                  <h3 style={{
+                    fontSize: 18, fontWeight: 700,
+                    color: T.text, margin: "0 0 10px",
+                  }}>
+                    {f.title}
+                  </h3>
+                  <p style={{
+                    fontSize: 14, color: T.textDim, lineHeight: 1.7, margin: 0,
+                  }}>
+                    {f.description}
+                  </p>
                 </div>
-                <h3 style={{
-                  fontFamily: T.font, fontSize: 18, fontWeight: 700,
-                  color: T.text, margin: "0 0 10px",
-                }}>
-                  {f.title}
-                </h3>
-                <p style={{
-                  fontFamily: T.font, fontSize: 14, color: T.textDim, lineHeight: 1.7, margin: 0,
-                }}>
-                  {f.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Technical highlight */}
+      {/* ─── TECHNICAL HIGHLIGHT ─── */}
       <section style={{ padding: "0 24px 80px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{
-            background: "linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(59,130,246,0.08) 100%)",
-            borderRadius: 16, border: `1px solid rgba(245,158,11,0.15)`,
-            padding: "36px 36px",
+            background: T.surface,
+            borderRadius: 20,
+            border: `1px solid ${T.borderLight}`,
+            padding: "40px 36px",
             textAlign: "center",
+            position: "relative", overflow: "hidden",
           }}>
+            {/* Gradient border glow */}
+            <div style={{
+              position: "absolute", top: 0, left: 0, right: 0, height: 2,
+              background: T.gradient,
+              opacity: 0.6,
+            }} />
+            <div style={{ fontSize: 40, marginBottom: 16 }}>⚡</div>
             <h3 style={{
-              fontFamily: T.display, fontSize: 24, fontWeight: 700,
+              fontSize: 26, fontWeight: 800,
               color: T.text, margin: "0 0 16px",
             }}>
               One File. Zero Dependencies.
             </h3>
             <p style={{
-              fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8,
-              margin: "0 0 8px", maxWidth: 560, marginLeft: "auto", marginRight: "auto",
+              fontSize: 15, color: T.textDim, lineHeight: 1.8,
+              margin: "0 auto 12px", maxWidth: 520,
             }}>
               The entire prototype is a fully functional React app running as a single standalone HTML file —
               no backend, no build tools, no dependencies beyond React via CDN. Every screen is interactive,
@@ -328,7 +387,9 @@ export default function UnchartedLanding() {
               deploys straight to GitHub Pages.
             </p>
             <p style={{
-              fontFamily: T.font, fontSize: 15, fontWeight: 600, color: T.primary, margin: 0,
+              fontSize: 16, fontWeight: 700, margin: 0,
+              background: T.gradient,
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
             }}>
               It was designed to sell a concept to a real client — and it got funded.
             </p>
@@ -336,25 +397,28 @@ export default function UnchartedLanding() {
         </div>
       </section>
 
-      {/* Role / Credits */}
+      {/* ─── ROLE / CREDITS ─── */}
       <section style={{ padding: "0 24px 80px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{
-            display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20,
+            display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12,
           }}>
             {[
-              { label: "Role", value: "Sole Designer & Developer" },
-              { label: "Client", value: "Sea-Doo (via Rooted Creative Agency)" },
-              { label: "Stack", value: "React 18, Inline SVG, CSS-in-JS, GitHub Pages" },
+              { label: "Role", value: "Sole Designer & Developer", color: T.teal },
+              { label: "Client", value: "Sea-Doo (via Rooted Creative)", color: T.cyan },
+              { label: "Stack", value: "React 18, SVG, CSS-in-JS", color: T.lime },
             ].map((item) => (
               <div key={item.label} style={{
-                background: T.surface, borderRadius: 12, border: `1px solid ${T.border}`,
+                background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
                 padding: "20px 24px",
               }}>
-                <div style={{ fontFamily: T.font, fontSize: 11, fontWeight: 600, color: T.textFaint, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 700, color: item.color,
+                  letterSpacing: 2, textTransform: "uppercase", marginBottom: 8,
+                }}>
                   {item.label}
                 </div>
-                <div style={{ fontFamily: T.font, fontSize: 15, fontWeight: 600, color: T.text }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: T.text }}>
                   {item.value}
                 </div>
               </div>
@@ -363,17 +427,20 @@ export default function UnchartedLanding() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ─── CTA ─── */}
       <section style={{ padding: "0 24px 100px", textAlign: "center" }}>
         <a
           href="https://diegs12.github.io/UNCHARTED/"
           target="_blank"
           rel="noopener noreferrer"
+          onMouseEnter={() => setHoveredBtn("cta")}
+          onMouseLeave={() => setHoveredBtn(null)}
           style={{
-            fontFamily: T.font, fontSize: 16, fontWeight: 700, textDecoration: "none",
-            padding: "16px 40px", borderRadius: 12,
-            background: T.primary, color: T.bg,
-            boxShadow: `0 4px 20px rgba(245,158,11,0.3)`,
+            fontSize: 16, fontWeight: 700, textDecoration: "none",
+            padding: "16px 44px", borderRadius: 50,
+            background: T.gradient, color: "#0a0a0a",
+            boxShadow: hoveredBtn === "cta" ? `0 0 30px ${T.teal}55` : `0 4px 20px ${T.teal}22`,
+            transition: "all 0.2s ease",
             display: "inline-flex", alignItems: "center", gap: 10,
           }}
         >
@@ -384,14 +451,14 @@ export default function UnchartedLanding() {
         </a>
       </section>
 
-      {/* Footer */}
+      {/* ─── FOOTER ─── */}
       <footer style={{
         borderTop: `1px solid ${T.border}`, padding: "32px 24px",
         display: "flex", justifyContent: "space-between", alignItems: "center",
         flexWrap: "wrap", gap: 12, maxWidth: 800, margin: "0 auto",
       }}>
         <Link to="/" style={{
-          fontFamily: T.font, fontSize: 13, color: T.textFaint, textDecoration: "none",
+          fontSize: 13, color: T.textMuted, textDecoration: "none",
           display: "flex", alignItems: "center", gap: 6,
         }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -399,15 +466,22 @@ export default function UnchartedLanding() {
           </svg>
           Back to Vallota Ventures
         </Link>
-        <span style={{ fontFamily: T.font, fontSize: 13, color: T.textFaint }}>
+        <span style={{ fontSize: 13, color: T.textMuted }}>
           &copy; 2026 Vallota Ventures
         </span>
       </footer>
 
-      {/* Responsive */}
+      {/* ─── ANIMATIONS + RESPONSIVE ─── */}
       <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         @media (max-width: 600px) {
           section > div { padding-left: 16px !important; padding-right: 16px !important; }
+        }
+        @media (max-width: 480px) {
+          nav { padding: 0 16px !important; }
         }
       `}</style>
     </div>
