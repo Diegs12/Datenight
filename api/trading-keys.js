@@ -3,6 +3,7 @@
 // The encryption key lives ONLY on the server (ENCRYPTION_KEY env var).
 
 const crypto = require('crypto');
+const { setCorsHeaders, handlePreflight } = require('./_cors');
 
 const ALGORITHM = 'aes-256-gcm';
 
@@ -28,7 +29,7 @@ function encrypt(text) {
   return `${iv.toString('hex')}:${authTag}:${encrypted}`;
 }
 
-function decrypt(data) {
+function decrypt(data) { // eslint-disable-line no-unused-vars
   const key = getEncryptionKey();
   if (!key) throw new Error('Encryption key not configured');
 
@@ -45,11 +46,16 @@ function decrypt(data) {
   return decrypted;
 }
 
+// Validate user_id format — only allow UUIDs, hex strings, or prefixed IDs
+function isValidUserId(id) {
+  if (!id || typeof id !== 'string') return false;
+  if (id.length > 128) return false;
+  return /^[a-zA-Z0-9_-]+$/.test(id);
+}
+
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (handlePreflight(req, res)) return;
+  setCorsHeaders(req, res);
 
   if (!process.env.ENCRYPTION_KEY) {
     return res.status(503).json({ error: 'Encryption not configured' });
@@ -59,8 +65,8 @@ module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { user_id, coinbase_cdp_key, coinbase_cdp_secret, anthropic_key } = req.body || {};
 
-    if (!user_id) {
-      return res.status(400).json({ error: 'user_id required' });
+    if (!isValidUserId(user_id)) {
+      return res.status(400).json({ error: 'Valid user_id required' });
     }
 
     // Encrypt each key before storage
@@ -75,8 +81,6 @@ module.exports = async (req, res) => {
 
     // Store in Supabase
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-      // Supabase not configured — log and return success
-      console.log('Trading keys saved (Supabase not configured):', user_id, Object.keys(encrypted));
       return res.status(200).json({
         success: true,
         stored: Object.keys(encrypted).map((k) => k.replace(/_/g, ' ')),
@@ -103,7 +107,7 @@ module.exports = async (req, res) => {
         stored: Object.keys(encrypted).map((k) => k.replace(/_/g, ' ')),
       });
     } catch (err) {
-      console.error('Key storage error:', err.message);
+      console.error('Key storage failed');
       return res.status(500).json({ error: 'Failed to store keys' });
     }
   }
@@ -111,8 +115,8 @@ module.exports = async (req, res) => {
   // ── GET KEY STATUS (never returns actual keys, just which ones are stored) ──
   if (req.method === 'GET') {
     const user_id = req.query.user_id;
-    if (!user_id) {
-      return res.status(400).json({ error: 'user_id required' });
+    if (!isValidUserId(user_id)) {
+      return res.status(400).json({ error: 'Valid user_id required' });
     }
 
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
@@ -138,7 +142,7 @@ module.exports = async (req, res) => {
         anthropic_connected: !!data.anthropic_key,
       });
     } catch (err) {
-      console.error('Key status error:', err.message);
+      console.error('Key status check failed');
       return res.status(200).json({ coinbase_connected: false, anthropic_connected: false });
     }
   }

@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { TT, btnPrimary, btnOutline, inp, card } from "./theme";
 
 // In production, use the Vercel proxy (handles auth server-side).
-// Locally, hit the bot directly.
+// Locally, hit the bot directly for development.
 const IS_LOCAL = window.location.hostname === "localhost";
-const BOT_API = process.env.REACT_APP_BOT_API || "http://localhost:3333";
+const BOT_API = process.env.REACT_APP_BOT_API || "";
 const POLL_INTERVAL = 10000;
 
 function botFetch(endpoint) {
-  if (IS_LOCAL) {
+  if (IS_LOCAL && BOT_API) {
     return fetch(`${BOT_API}/api/${endpoint}`).then((r) => r.ok ? r.json() : null);
   }
   return fetch(`/api/bot-proxy?endpoint=${endpoint}`).then((r) => r.ok ? r.json() : null);
@@ -328,8 +328,15 @@ export default function TradingDashboard() {
     try {
       const saved = localStorage.getItem("vt_risk_profile");
       if (saved) setRiskProfile(saved);
+      // Check session expiration
+      const session = JSON.parse(localStorage.getItem("vt_session") || "{}");
+      if (session.expiresAt && Date.now() > session.expiresAt) {
+        localStorage.removeItem("vt_session");
+        navigate("/trading");
+        return;
+      }
     } catch {}
-  }, []);
+  }, [navigate]);
 
   const fetchAll = useCallback(async () => {
     try {
@@ -515,7 +522,7 @@ export default function TradingDashboard() {
           padding: "10px 24px", textAlign: "center",
         }}>
           <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.red }}>
-            NOT CONNECTED — Cannot reach bot at {BOT_API}. Make sure your trading bot is running.
+            NOT CONNECTED — Cannot reach bot. Make sure your trading bot is running.
           </span>
         </div>
       )}

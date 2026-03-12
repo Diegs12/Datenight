@@ -17,7 +17,9 @@ function getReferralCode() {
   try {
     let code = localStorage.getItem("vela_ref_code");
     if (!code) {
-      code = Math.random().toString(36).slice(2, 10).toUpperCase();
+      const arr = new Uint8Array(5);
+      crypto.getRandomValues(arr);
+      code = Array.from(arr, (b) => b.toString(36).padStart(2, "0")).join("").slice(0, 8).toUpperCase();
       localStorage.setItem("vela_ref_code", code);
     }
     return code;

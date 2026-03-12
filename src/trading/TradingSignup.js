@@ -44,22 +44,31 @@ export default function TradingSignup() {
 
     setLoading(true);
     try {
-      // Save locally first — backend is optional
-      const userId = "local_" + Date.now();
-      localStorage.setItem("vt_session", JSON.stringify({ email, id: userId }));
-      try { localStorage.setItem("vt_quiz_answers", localStorage.getItem("vt_quiz_answers") || "null"); } catch {}
+      // Generate crypto-secure local ID
+      const arr = new Uint8Array(16);
+      crypto.getRandomValues(arr);
+      const secureId = Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
 
-      // Try API signup if available (non-blocking)
-      fetch("/api/trading-signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          risk_profile: riskProfile || null,
-          quiz_answers: (() => { try { return JSON.parse(localStorage.getItem("vt_quiz_answers")); } catch { return null; } })(),
-        }),
-      }).catch(() => {}); // Silently ignore API errors
+      // Try API signup first — use server-generated ID if available
+      let userId = secureId;
+      try {
+        const res = await fetch("/api/trading-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+            risk_profile: riskProfile || null,
+            quiz_answers: (() => { try { return JSON.parse(localStorage.getItem("vt_quiz_answers")); } catch { return null; } })(),
+          }),
+        });
+        const data = await res.json();
+        if (data.user_id) userId = data.user_id;
+      } catch {} // Fall back to local secure ID if API unavailable
+
+      // Store session with expiration timestamp (24 hours)
+      const session = { email, id: userId, expiresAt: Date.now() + 86400000 };
+      localStorage.setItem("vt_session", JSON.stringify(session));
 
       setStep("setup");
     } catch {
