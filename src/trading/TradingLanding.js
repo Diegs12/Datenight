@@ -169,6 +169,298 @@ function TerminalAnimation() {
   );
 }
 
+// ─── TRADING DASHBOARD MOCKUP ───
+function TradingDashboardMockup() {
+  const [tab, setTab] = useState("overview");
+  const [tradeFilter, setTradeFilter] = useState("all");
+
+  const M = {
+    bg: "#1a1f2e", card: "#212736", border: "#2a3344",
+    text: "#e8edf3", dim: "#8899aa", faint: "#4a5568",
+    green: "#10B981", red: "#ef4444", yellow: "#fbbf24",
+    blue: "#60a5fa", cyan: "#67e8f9", purple: "#a78bfa",
+    font: "'Inter', sans-serif",
+  };
+
+  const cs = { background: M.card, border: `1px solid ${M.border}`, borderRadius: 10, padding: "18px 22px" };
+  const sl = { fontSize: 10, fontWeight: 600, color: M.dim, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 };
+  const sv = { fontSize: 24, fontWeight: 700, color: M.text };
+
+  const navItems = [
+    { key: "overview", label: "Overview", d: "M3 3h6v6H3zM13 3h6v6h-6zM3 13h6v6H3zM13 13h6v6h-6z" },
+    { key: "trades", label: "Trades", d: "M4 6h14M15 3l3 3-3 3M20 18H6M9 15l-3 3 3 3" },
+    { key: "payouts", label: "Payouts", d: "M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 8h8M8 12h8M8 16h4" },
+    { key: "performance", label: "Performance", d: "M3 18l5-6 4 3 8-10" },
+    { key: "holdings", label: "Holdings", d: "M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6h5" },
+  ];
+
+  const allTrades = [
+    { action: "BUY", token: "AERO", amount: "$142.50", time: "2h ago", reason: "Strong momentum signal detected on Base DEX volume spike" },
+    { action: "SELL", token: "VIRTUAL", amount: "$89.20", time: "6h ago" },
+    { action: "BUY", token: "MORPHO", amount: "$210.00", time: "12h ago" },
+    { action: "BUY", token: "ETH", amount: "$450.00", time: "1d ago" },
+    { action: "SELL", token: "BRETT", amount: "$67.30", time: "1d ago" },
+  ];
+
+  const holdings = [
+    { token: "USDC", value: 4210, tokens: "4,210.50 tokens", color: "#60a5fa", pct: 33 },
+    { token: "ETH", value: 3860, tokens: "1.245 tokens", color: "#67e8f9", pct: 30 },
+    { token: "AERO", value: 2580, tokens: "2,150 tokens", color: "#10B981", pct: 20 },
+    { token: "MORPHO", value: 1246, tokens: "890 tokens", color: "#a78bfa", pct: 10 },
+  ];
+
+  const badge = (action) => ({
+    fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4,
+    background: action === "BUY" ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
+    color: action === "BUY" ? M.green : M.red,
+  });
+
+  const renderOverview = () => (
+    <>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 14 }}>
+        <div style={cs}><div style={sl}>PORTFOLIO VALUE</div><div style={sv}>$12,847</div><div style={{ fontSize: 12, color: M.green, fontWeight: 600, marginTop: 4 }}>+28.47%</div></div>
+        <div style={cs}><div style={sl}>TOTAL P&L</div><div style={sv}>$2,847</div><div style={{ fontSize: 12, color: M.dim, marginTop: 4 }}>47 trades</div></div>
+        <div style={cs}><div style={sl}>TODAY'S PAYOUTS</div><div style={sv}>$64.20</div><div style={{ fontSize: 12, color: M.green, marginTop: 4 }}>2 recipients</div></div>
+        <div style={cs}><div style={sl}>MAX DRAWDOWN</div><div style={{ ...sv, color: M.red }}>-4.21%</div><div style={{ fontSize: 12, color: M.red, marginTop: 4 }}>Within limits</div></div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div style={cs}>
+          <div style={sl}>DAILY P&L (14D)</div>
+          <div style={{ display: "flex", alignItems: "end", gap: 6, height: 100, marginTop: 12 }}>
+            {[65, 42, -18, 35, 58, -12, 28, 45, -8, 32, 15, -22, 48, 38].map((v, i) => (
+              <div key={i} style={{ flex: 1, height: `${Math.abs(v)}%`, borderRadius: 3, background: v >= 0 ? M.green : M.red, opacity: 0.8 }} />
+            ))}
+          </div>
+        </div>
+        <div style={cs}>
+          <div style={sl}>RECENT TRADES</div>
+          {[
+            { action: "BUY", token: "AERO", amount: "$142.50", time: "2h ago" },
+            { action: "SELL", token: "VIRTUAL", amount: "$89.20", time: "6h ago" },
+            { action: "BUY", token: "MORPHO", amount: "$210.00", time: "12h ago" },
+          ].map((t, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", padding: "8px 0", borderBottom: i < 2 ? `1px solid ${M.border}` : "none" }}>
+              <span style={{ ...badge(t.action), marginRight: 10 }}>{t.action}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: M.text, flex: 1 }}>{t.token}</span>
+              <span style={{ fontSize: 13, color: M.dim, marginRight: 10 }}>{t.amount}</span>
+              <span style={{ fontSize: 11, color: M.faint }}>{t.time}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
+  const renderTrades = () => {
+    const filtered = tradeFilter === "all" ? allTrades : allTrades.filter(t => t.action.toLowerCase() === tradeFilter);
+    return (
+      <div style={cs}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={sl}>TRADE HISTORY</div>
+          <div style={{ display: "flex", gap: 6 }}>
+            {["all", "buy", "sell"].map(f => (
+              <button key={f} onClick={() => setTradeFilter(f)} style={{
+                padding: "4px 12px", borderRadius: 16, fontFamily: M.font,
+                border: `1px solid ${tradeFilter === f ? M.green : M.border}`,
+                background: tradeFilter === f ? "rgba(16,185,129,0.12)" : "transparent",
+                color: tradeFilter === f ? M.green : M.dim,
+                fontSize: 11, fontWeight: 600, cursor: "pointer", textTransform: "uppercase",
+              }}>{f === "all" ? "All" : f}</button>
+            ))}
+          </div>
+        </div>
+        {filtered.map((t, i) => (
+          <div key={i} style={{ padding: "12px 0", borderTop: i > 0 ? `1px solid ${M.border}` : "none" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ ...badge(t.action), marginRight: 10 }}>{t.action}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: M.text, marginRight: 8 }}>{t.token}</span>
+              <span style={{ fontSize: 13, color: M.dim, flex: 1 }}>{t.amount}</span>
+              <span style={{ fontSize: 12, color: M.faint }}>{t.time}</span>
+              <span style={{ fontSize: 14, color: M.faint, marginLeft: 8 }}>{"\u203A"}</span>
+            </div>
+            {t.reason && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, marginLeft: 42 }}>
+                <span style={{ fontSize: 14 }}>{"\u{1F9E0}"}</span>
+                <span style={{ fontSize: 12, color: M.dim }}>{t.reason}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderPayouts = () => (
+    <>
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 14, marginBottom: 14 }}>
+        <div style={cs}><div style={sl}>TOTAL PAID OUT</div><div style={sv}>$2,418.60</div></div>
+        <div style={cs}><div style={sl}>PAYOUT COUNT</div><div style={sv}>42</div></div>
+        <div style={cs}><div style={sl}>REINVEST RATE</div><div style={sv}>70%</div></div>
+      </div>
+      <div style={{ ...cs, marginBottom: 14 }}>
+        <div style={{ ...sl, color: M.purple }}>RECIPIENTS</div>
+        {[
+          { name: "Henry", wallet: "0x1a2B...9f4E", amount: "$32.10", split: "15% split" },
+          { name: "Harrison", wallet: "0x3c4D...2b1A", amount: "$32.10", split: "15% split" },
+        ].map((r, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderTop: i > 0 ? `1px solid ${M.border}` : "none" }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: M.text }}>{r.name}</div>
+              <div style={{ fontSize: 12, color: M.faint, fontFamily: "'JetBrains Mono', monospace" }}>{r.wallet}</div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: M.green }}>{r.amount}</div>
+              <div style={{ fontSize: 11, color: M.dim }}>{r.split}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={cs}>
+        <div style={{ ...sl, color: M.purple }}>AAVE YIELD</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: M.text }}>$2,000 deposited</div>
+            <div style={{ fontSize: 12, color: M.dim }}>Earning 4.2% APY</div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: M.green }}>+$18.42</div>
+            <div style={{ fontSize: 11, color: M.dim }}>yield earned</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  const renderPerformance = () => (
+    <>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 14 }}>
+        <div style={cs}><div style={{ ...sl, textAlign: "center" }}>WIN RATE</div><div style={{ ...sv, textAlign: "center" }}>67.2%</div></div>
+        <div style={cs}><div style={{ ...sl, textAlign: "center" }}>PROFIT FACTOR</div><div style={{ ...sv, textAlign: "center" }}>2.14</div></div>
+        <div style={cs}><div style={{ ...sl, textAlign: "center" }}>AVG WIN</div><div style={{ ...sv, textAlign: "center", color: M.green }}>+$48.20</div></div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 14 }}>
+        <div style={cs}><div style={{ ...sl, textAlign: "center" }}>AVG LOSS</div><div style={{ ...sv, textAlign: "center", color: M.red }}>-$22.50</div></div>
+        <div style={cs}><div style={{ ...sl, textAlign: "center" }}>EXPECTANCY</div><div style={{ ...sv, textAlign: "center", color: M.green }}>+$18.40</div></div>
+        <div style={cs}><div style={{ ...sl, textAlign: "center" }}>RISK/REWARD</div><div style={{ ...sv, textAlign: "center" }}>2.1:1</div></div>
+      </div>
+      <div style={cs}>
+        <div style={sl}>PORTFOLIO GROWTH</div>
+        <svg viewBox="0 0 500 120" style={{ width: "100%", height: 120, marginTop: 8 }}>
+          <polyline points="0,110 35,105 70,95 105,90 140,82 175,72 210,65 245,60 280,55 315,48 350,42 385,35 420,28 455,20 500,12" fill="none" stroke={M.yellow} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </>
+  );
+
+  const renderHoldings = () => (
+    <>
+      <div style={cs}>
+        <div style={sl}>ALLOCATION</div>
+        <div style={{ display: "flex", height: 16, borderRadius: 8, overflow: "hidden", marginBottom: 14 }}>
+          {holdings.map((x, i) => <div key={i} style={{ width: `${x.pct}%`, background: x.color }} />)}
+          <div style={{ width: "7%", background: "#6b7280" }} />
+        </div>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+          {holdings.map((x, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: M.dim }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: x.color }} />
+              {x.token} {x.pct}%
+            </div>
+          ))}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: M.dim }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#6b7280" }} />
+            Others 7%
+          </div>
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 14 }}>
+        {holdings.slice(0, 3).map((x, i) => (
+          <div key={i} style={cs}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: x.color }} />
+              <span style={{ fontSize: 14, fontWeight: 600, color: M.text }}>{x.token}</span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: M.text }}>${x.value.toLocaleString()}</div>
+            <div style={{ fontSize: 12, color: M.dim, marginTop: 4 }}>{x.tokens}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 14 }}>
+        {holdings.slice(3).map((x, i) => (
+          <div key={i} style={cs}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: x.color }} />
+              <span style={{ fontSize: 14, fontWeight: 600, color: M.text }}>{x.token}</span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: M.text }}>${x.value.toLocaleString()}</div>
+            <div style={{ fontSize: 12, color: M.dim, marginTop: 4 }}>{x.tokens}</div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+
+  return (
+    <div style={{ background: M.bg, borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)", maxWidth: 960, margin: "0 auto", fontFamily: M.font, textAlign: "left" }}>
+      {/* Browser chrome */}
+      <div style={{ background: "#141824", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+        <div style={{ position: "absolute", left: 16, display: "flex", gap: 6 }}>
+          <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#EF4444" }} />
+          <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#FBBF24" }} />
+          <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#22C55E" }} />
+        </div>
+        <div style={{ background: "#2a3040", borderRadius: 20, padding: "6px 24px", fontSize: 12, color: M.dim, fontFamily: "'JetBrains Mono', monospace" }}>
+          vallotaventures.com/trading/dashboard
+        </div>
+      </div>
+      {/* Main */}
+      <div style={{ display: "flex" }}>
+        {/* Sidebar */}
+        <div style={{ width: 200, borderRight: `1px solid ${M.border}`, padding: "20px 0", display: "flex", flexDirection: "column", minHeight: 480 }}>
+          <div style={{ padding: "0 20px 20px", display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", border: `2px solid ${M.yellow}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: M.yellow }}>VT</div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: M.text }}>My Bot</div>
+              <div style={{ fontSize: 11, color: M.dim }}>Trading Command</div>
+            </div>
+          </div>
+          <nav style={{ flex: 1, padding: "10px 8px" }}>
+            {navItems.map(n => (
+              <button key={n.key} onClick={() => setTab(n.key)} style={{
+                width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", cursor: "pointer",
+                background: tab === n.key ? "rgba(16,185,129,0.08)" : "transparent",
+                color: tab === n.key ? M.green : M.dim,
+                fontFamily: M.font, fontSize: 13, fontWeight: tab === n.key ? 600 : 500,
+                textAlign: "left", display: "flex", alignItems: "center", gap: 10, marginBottom: 2,
+                borderLeft: tab === n.key ? `3px solid ${M.green}` : "3px solid transparent",
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={n.d} /></svg>
+                {n.label}
+              </button>
+            ))}
+          </nav>
+          <div style={{ padding: "16px 20px", borderTop: `1px solid ${M.border}` }}>
+            <div style={{ fontSize: 11, color: M.faint, marginBottom: 8 }}>Theme</div>
+            <div style={{ display: "flex", gap: 6 }}>
+              {["#fbbf24", "#f472b6", "#a78bfa", "#10B981", "#e8edf3", "#6b7280", "#1a1f2e"].map((c, i) => (
+                <div key={i} style={{ width: 20, height: 20, borderRadius: "50%", background: c, border: i === 0 ? `2px solid ${M.yellow}` : `1px solid ${M.border}` }} />
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Content */}
+        <div style={{ flex: 1, padding: 20, background: "#212736" }}>
+          {tab === "overview" && renderOverview()}
+          {tab === "trades" && renderTrades()}
+          {tab === "payouts" && renderPayouts()}
+          {tab === "performance" && renderPerformance()}
+          {tab === "holdings" && renderHoldings()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── STATS BAR ───
 function StatsBar() {
   const stats = [
@@ -264,71 +556,64 @@ export default function TradingLanding() {
 
       {/* ─── HERO ─── */}
       <section style={{
-        padding: "100px 24px 60px",
+        padding: "80px 24px 60px",
         maxWidth: 1100,
         margin: "0 auto",
-        display: "flex",
-        alignItems: "center",
-        gap: 60,
-        flexWrap: "wrap",
+        textAlign: "center",
       }}>
-        <div style={{ flex: 1, minWidth: 320 }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            marginBottom: 24,
-            padding: "6px 14px", borderRadius: 20,
-            background: TT.greenDim, border: `1px solid rgba(0,255,136,0.15)`,
-            fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
-            color: TT.green,
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: TT.green }} />
-            LIVE ON COINBASE BASE L2
-          </div>
-
-          <h1 style={{
-            fontFamily: TT.font,
-            fontSize: "clamp(36px, 5.5vw, 56px)",
-            fontWeight: 800,
-            lineHeight: 1.1,
-            margin: "0 0 24px",
-            color: TT.text,
-          }}>
-            I Built Two AIs.{" "}
-            <br />
-            <span style={{
-              background: "linear-gradient(135deg, #00d4ff, #00ff88)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}>
-              Then I Let Them Trade.
-            </span>
-          </h1>
-
-          <p style={{
-            fontFamily: TT.font,
-            fontSize: 18,
-            color: TT.textDim,
-            lineHeight: 1.7,
-            margin: "0 0 36px",
-            maxWidth: 480,
-          }}>
-            One AI reads the charts. The other reads the room. Together they
-            find trades most humans miss — and they get smarter after every single one.
-          </p>
-
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
-              Take the Risk Quiz
-            </Link>
-            <a href="#how-it-works" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 32px" }) }}>
-              How It Works
-            </a>
-          </div>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          marginBottom: 24,
+          padding: "6px 14px", borderRadius: 20,
+          background: TT.greenDim, border: `1px solid rgba(0,255,136,0.15)`,
+          fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
+          color: TT.green,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: TT.green }} />
+          LIVE ON COINBASE BASE L2
         </div>
 
-        <div style={{ flex: 1, minWidth: 320, display: "flex", justifyContent: "center" }}>
-          <TerminalAnimation />
+        <h1 style={{
+          fontFamily: TT.font,
+          fontSize: "clamp(36px, 5.5vw, 56px)",
+          fontWeight: 800,
+          lineHeight: 1.1,
+          margin: "0 0 24px",
+          color: TT.text,
+        }}>
+          I Built Two AIs.{" "}
+          <br />
+          <span style={{
+            background: "linear-gradient(135deg, #00d4ff, #00ff88)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}>
+            Then I Let Them Trade.
+          </span>
+        </h1>
+
+        <p style={{
+          fontFamily: TT.font,
+          fontSize: 18,
+          color: TT.textDim,
+          lineHeight: 1.7,
+          margin: "0 auto 36px",
+          maxWidth: 560,
+        }}>
+          One AI reads the charts. The other reads the room. Together they
+          find trades most humans miss — and they get smarter after every single one.
+        </p>
+
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
+          <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
+            Take the Risk Quiz
+          </Link>
+          <a href="#how-it-works" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 32px" }) }}>
+            How It Works
+          </a>
         </div>
+
+        <TradingDashboardMockup />
       </section>
 
       {/* ─── STATS BAR ─── */}

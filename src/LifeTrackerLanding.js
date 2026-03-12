@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
 const T = {
@@ -254,6 +254,7 @@ function DashboardMockup() {
 
 // ─── Main Landing Page ───
 export default function LifeTrackerLanding() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -262,11 +263,8 @@ export default function LifeTrackerLanding() {
     e.preventDefault();
     if (!email.trim() || submitting) return;
     setSubmitting(true);
-    window.location.href = `mailto:diego@vallotaventures.com?subject=Life Tracker Early Access&body=I'd like early access to Life Tracker.%0A%0AEmail: ${encodeURIComponent(email.trim())}`;
-    setTimeout(() => {
-      setSubmitted(true);
-      setSubmitting(false);
-    }, 1000);
+    try { localStorage.setItem("lifetracker_email", email.trim()); } catch {}
+    setTimeout(() => { navigate("/tracker/app"); }, 400);
   };
 
   return (
@@ -309,21 +307,20 @@ export default function LifeTrackerLanding() {
               {link.label}
             </button>
           ))}
-          <button onClick={() => scrollTo("get-started")} style={{
-            background: "none", border: "none", cursor: "pointer",
+          <Link to="/tracker/app" style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 500,
-            color: T.textDim, padding: 0, transition: "color 0.2s",
+            color: T.textDim, textDecoration: "none", transition: "color 0.2s",
           }}>
             Log In
-          </button>
-          <button onClick={() => scrollTo("get-started")} style={{
-            fontFamily: T.font, fontSize: 14, fontWeight: 600, cursor: "pointer",
-            padding: "8px 20px", borderRadius: 6, border: "none",
+          </Link>
+          <Link to="/tracker/app" style={{
+            fontFamily: T.font, fontSize: 14, fontWeight: 600,
+            padding: "8px 20px", borderRadius: 6, textDecoration: "none",
             background: T.primary, color: "#fff",
             transition: "opacity 0.2s",
           }}>
             Get Started
-          </button>
+          </Link>
         </div>
       </nav>
 
@@ -351,16 +348,16 @@ export default function LifeTrackerLanding() {
           AI-integrated so your tools can talk to your life system.
         </p>
 
-        <button onClick={() => scrollTo("get-started")} style={{
+        <Link to="/tracker/app" style={{
           fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
           padding: "14px 40px", borderRadius: 8, border: "none",
           background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
-          color: "#fff",
+          color: "#fff", textDecoration: "none", display: "inline-block",
           boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
           marginBottom: 12,
         }}>
-          Deploy Your Dashboard
-        </button>
+          Try the Live Demo
+        </Link>
         <p style={{
           fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 60px",
         }}>
@@ -825,15 +822,15 @@ export default function LifeTrackerLanding() {
             ))}
           </div>
 
-          <button onClick={() => scrollTo("get-started")} style={{
+          <Link to="/tracker/app" style={{
             width: "100%", fontFamily: T.font, fontSize: 16, fontWeight: 700,
             cursor: "pointer", padding: "14px 0", borderRadius: 8, border: "none",
             background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
-            color: "#fff",
+            color: "#fff", textDecoration: "none", display: "block", textAlign: "center",
             boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
           }}>
             Start Free
-          </button>
+          </Link>
         </div>
       </section>
 

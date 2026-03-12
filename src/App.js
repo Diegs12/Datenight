@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Portfolio from "./Portfolio";
 import LifeTrackerLanding from "./LifeTrackerLanding";
+import LifeTrackerDashboard from "./LifeTrackerDashboard";
 import TradingApp from "./trading/TradingApp";
 import { track, identify } from "./analytics";
 
@@ -2521,6 +2522,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Portfolio />} />
         <Route path="/tracker" element={<LifeTrackerLanding />} />
+        <Route path="/tracker/app" element={<LifeTrackerDashboard />} />
         <Route path="/trading/*" element={<TradingApp />} />
         <Route path="/vela/*" element={<VelaApp />} />
         <Route path="*" element={
