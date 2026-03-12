@@ -31,13 +31,13 @@ export default function Portfolio() {
       dashboardLink: "/vela",
       hasSession: sessions.vela,
       external: false,
-      gradient: "linear-gradient(135deg, #1B2A4A 0%, #2D4A7A 50%, #1B2A4A 100%)",
-      accent: "#B8963E",
-      glow: "rgba(184,150,62,0.35)",
+      gradient: "linear-gradient(135deg, #141414 0%, #1C1810 50%, #141414 100%)",
+      accent: "#D68853",
+      glow: "rgba(214,136,83,0.35)",
       icon: (
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
           <path d="M24 8C24 8 16 18 16 26C16 30.4 19.6 34 24 34C28.4 34 32 30.4 32 26C32 18 24 8 24 8Z" fill="rgba(255,255,255,0.9)" />
-          <path d="M24 16C24 16 20 22 20 26C20 28.2 21.8 30 24 30C26.2 30 28 28.2 28 26C28 22 24 16 24 16Z" fill="#B8963E" fillOpacity="0.7" />
+          <path d="M24 16C24 16 20 22 20 26C20 28.2 21.8 30 24 30C26.2 30 28 28.2 28 26C28 22 24 16 24 16Z" fill="#D68853" fillOpacity="0.7" />
         </svg>
       ),
     },
