@@ -196,21 +196,21 @@ export default function Portfolio() {
         className="vv-sidebar"
       >
         {/* Logo */}
-        <div style={{ marginBottom: 40 }}>
+        <div style={{ marginBottom: 40, textAlign: "center" }}>
           <img
             src="/vv-logo.png"
             alt="Vallota Ventures"
-            style={{ width: "100%", maxWidth: 160, height: "auto", marginBottom: 12 }}
+            style={{ width: 64, height: "auto", marginBottom: 10 }}
           />
-          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" }}>
             <span style={{
-              fontFamily: T.display, fontSize: 20, fontWeight: 700,
+              fontFamily: T.display, fontSize: 18, fontWeight: 700,
               color: T.navy, letterSpacing: 0.5,
             }}>
               VALLOTA
             </span>
             <span style={{
-              fontFamily: T.font, fontSize: 10, fontWeight: 500,
+              fontFamily: T.font, fontSize: 9, fontWeight: 500,
               color: T.textDim, letterSpacing: 4, textTransform: "uppercase",
             }}>
               VENTURES
@@ -241,12 +241,20 @@ export default function Portfolio() {
         padding: "0 20px", zIndex: 100,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/vv-logo.png" alt="Vallota Ventures" style={{ height: 32, width: "auto" }} />
-          <span style={{
-            fontFamily: T.display, fontSize: 16, fontWeight: 700, color: T.navy,
-          }}>
-            VALLOTA
-          </span>
+          <img src="/vv-logo.png" alt="Vallota Ventures" style={{ height: 36, width: "auto" }} />
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+            <span style={{
+              fontFamily: T.display, fontSize: 15, fontWeight: 700, color: T.navy,
+            }}>
+              VALLOTA
+            </span>
+            <span style={{
+              fontFamily: T.font, fontSize: 8, fontWeight: 500,
+              color: T.textDim, letterSpacing: 3, textTransform: "uppercase",
+            }}>
+              VENTURES
+            </span>
+          </div>
         </div>
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{
           background: "none", border: "none", cursor: "pointer", padding: 4,
@@ -723,15 +731,17 @@ export default function Portfolio() {
 
         {/* ─── FOOTER ─── */}
         <footer style={{
-          borderTop: `1px solid ${T.border}`, padding: "32px 48px",
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          flexWrap: "wrap", gap: 12,
+          borderTop: `1px solid ${T.border}`, padding: "40px 48px",
+          display: "flex", flexDirection: "column", alignItems: "center",
+          gap: 16,
         }}>
+          <img
+            src="/vv-logo-full.png"
+            alt="Vallota Ventures"
+            style={{ height: 48, width: "auto", opacity: 0.7 }}
+          />
           <span style={{ fontFamily: T.font, fontSize: 13, color: T.textFaint }}>
-            &copy; 2026 Vallota Ventures
-          </span>
-          <span style={{ fontFamily: T.font, fontSize: 13, color: T.textFaint }}>
-            Built by Diego Vallota
+            &copy; 2026 Vallota Ventures &middot; Built by Diego Vallota
           </span>
         </footer>
       </main>
