@@ -91,6 +91,28 @@ export default function Portfolio() {
         </svg>
       ),
     },
+    {
+      id: "uncharted",
+      title: "UNCHARTED",
+      tagline: "Sea-Doo Experiential App",
+      description:
+        "A concept app I built for Sea-Doo's experiential events — gamified scavenger hunts, crew boards, and live photo feeds that solved the data collection problem. Pitched it, got it funded.",
+      tags: ["React 18", "Concept", "Experiential"],
+      status: "Funded",
+      link: "/uncharted",
+      dashboardLink: null,
+      hasSession: false,
+      external: false,
+      gradient: "linear-gradient(135deg, #1A0F00 0%, #3D2200 50%, #1A0F00 100%)",
+      accent: "#F59E0B",
+      glow: "rgba(245,158,11,0.35)",
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <path d="M24 10L28 18L37 19.5L30.5 25.8L32 35L24 30.5L16 35L17.5 25.8L11 19.5L20 18L24 10Z" fill="rgba(255,255,255,0.9)" />
+          <path d="M24 16L26.5 21L32 21.8L28 25.6L29 31L24 28.2L19 31L20 25.6L16 21.8L21.5 21L24 16Z" fill="#F59E0B" fillOpacity="0.6" />
+        </svg>
+      ),
+    },
   ];
 
   const scrollTo = (id) => {

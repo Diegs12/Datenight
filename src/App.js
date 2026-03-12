@@ -4,6 +4,7 @@ import Portfolio from "./Portfolio";
 import LifeTrackerLanding from "./LifeTrackerLanding";
 import LifeTrackerDashboard from "./LifeTrackerDashboard";
 import TradingApp from "./trading/TradingApp";
+import UnchartedLanding from "./UnchartedLanding";
 import { track, identify } from "./analytics";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
@@ -2524,6 +2525,7 @@ export default function App() {
         <Route path="/tracker" element={<LifeTrackerLanding />} />
         <Route path="/tracker/app" element={<LifeTrackerDashboard />} />
         <Route path="/trading/*" element={<TradingApp />} />
+        <Route path="/uncharted" element={<UnchartedLanding />} />
         <Route path="/vela/*" element={<VelaApp />} />
         <Route path="*" element={
           <div style={{ background: "#0A0A0B", color: "#F5F0EB", fontFamily: "'Inter', sans-serif", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 24 }}>
