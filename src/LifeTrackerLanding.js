@@ -264,6 +264,13 @@ export default function LifeTrackerLanding() {
     if (!email.trim() || submitting) return;
     setSubmitting(true);
     try { localStorage.setItem("lifetracker_email", email.trim()); } catch {}
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "life_tracker" }),
+      });
+    } catch {}
     setTimeout(() => { navigate("/tracker/app"); }, 400);
   };
 
