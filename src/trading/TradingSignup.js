@@ -49,7 +49,7 @@ export default function TradingSignup() {
       crypto.getRandomValues(arr);
       const secureId = Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
 
-      // Try API signup first — use server-generated ID if available
+      // Try API signup first,use server-generated ID if available
       let userId = secureId;
       try {
         const res = await fetch("/api/trading-signup", {

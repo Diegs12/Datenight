@@ -21,19 +21,19 @@ const features = [
   {
     emoji: "🗺️",
     title: "Scavenger Hunt",
-    description: "QR codes hidden around the venue each reveal a word in a secret phrase — a Survivor-style challenge that gives everyone a legit reason to download the app.",
+    description: "QR codes hidden around the venue each reveal a word in a secret phrase,a Survivor-style challenge that gives everyone a legit reason to download the app.",
     color: T.lime,
   },
   {
     emoji: "📸",
     title: "Moments Feed",
-    description: "A shared real-time photo feed where riders upload and browse event photos from the digital cameras the brand distributed — a living gallery of the day.",
+    description: "A shared real-time photo feed where riders upload and browse event photos from the digital cameras the brand distributed,a living gallery of the day.",
     color: T.cyan,
   },
   {
     emoji: "⚡",
     title: "Vibe Check",
-    description: "A live sentiment pulse that lets organizers read the energy of the crowd in real time — instant feedback on how the event is landing.",
+    description: "A live sentiment pulse that lets organizers read the energy of the crowd in real time,instant feedback on how the event is landing.",
     color: T.orange,
   },
 ];
@@ -150,7 +150,7 @@ export default function UnchartedLanding() {
             margin: "0 auto 40px", maxWidth: 560,
           }}>
             A mobile-first digital companion app I built for Sea-Doo's experiential marketing events.
-            Designed to solve a real problem — how do you collect attendee information, connect people,
+            Designed to solve a real problem,how do you collect attendee information, connect people,
             and gather content at a live event without being intrusive?
           </p>
 
@@ -236,11 +236,11 @@ export default function UnchartedLanding() {
             <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
               An experiential marketing client was running large-scale ride events for Sea-Doo but struggling
               with a fundamental challenge: how do you collect attendee information, help people connect with
-              each other, and gather all the photos from the digital cameras distributed at the event — without
+              each other, and gather all the photos from the digital cameras distributed at the event,without
               it feeling forced or intrusive?
             </p>
             <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: 0 }}>
-              Traditional methods — clipboards, email sign-ups, post-event surveys — had low engagement.
+              Traditional methods,clipboards, email sign-ups, post-event surveys,had low engagement.
               The brand needed a way to make data collection feel like part of the experience, not an interruption.
             </p>
           </div>
@@ -276,13 +276,13 @@ export default function UnchartedLanding() {
               }}>
                 Scavenger Hunt
               </strong>{" "}
-              — a Survivor-style challenge where QR codes hidden around the venue each reveal a word
+             ,a Survivor-style challenge where QR codes hidden around the venue each reveal a word
               in a secret phrase. Whoever cracks it first wins prizes.
             </p>
             <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px" }}>
               This gave us a <strong style={{ color: T.text }}>legitimate reason to have every attendee download the app</strong>.
-              It wasn't a data grab — it was a game people actually wanted to play. And once they were in, they
-              were sharing socials, uploading photos, and giving us real-time feedback on the event — all voluntarily.
+              It wasn't a data grab,it was a game people actually wanted to play. And once they were in, they
+              were sharing socials, uploading photos, and giving us real-time feedback on the event,all voluntarily.
             </p>
             <p style={{ fontSize: 16, color: T.textDim, lineHeight: 1.8, margin: 0 }}>
               The scavenger hunt is designed to make you have a good time in a group of people. It's competitive
@@ -391,7 +391,7 @@ export default function UnchartedLanding() {
               background: T.gradient,
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
             }}>
-              It was designed to sell a concept to a real client — and it got funded.
+              It was designed to sell a concept to a real client,and it got funded.
             </p>
           </div>
         </div>

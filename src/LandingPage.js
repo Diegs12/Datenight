@@ -83,7 +83,7 @@ export default function LandingPage() {
           maxWidth: 560, margin: "0 auto 40px",
         }}>
           Answer 13 questions about her. Vela scores 154+ date night ideas to her personality
-          and builds the whole plan — shopping list, steps, budget, everything.
+          and builds the whole plan,shopping list, steps, budget, everything.
           You show up looking like you thought of it yourself.
         </p>
 
@@ -95,7 +95,7 @@ export default function LandingPage() {
             color: "#141414",
             boxShadow: "0 4px 12px rgba(139,74,40,0.25), inset 0 1px 0 rgba(255,208,161,0.3)",
           }}>
-            Plan Her Perfect Date — It's Free
+            Plan Her Perfect Date,It's Free
           </Link>
           <a href="#how-it-works" style={{
             fontFamily: T.font, fontSize: 16, fontWeight: 600, textDecoration: "none",
@@ -117,7 +117,7 @@ export default function LandingPage() {
             </p>
             {landingEmailSuccess ? (
               <p style={{ color: T.primary, fontSize: 14, fontWeight: 600, margin: 0 }}>
-                You're in — start your quiz to see your matches.
+                You're in,start your quiz to see your matches.
               </p>
             ) : (
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -158,8 +158,8 @@ export default function LandingPage() {
           Is his date planning stuck on repeat?{" "}
           <button onClick={() => {
             const url = "https://vallotaventures.com/vela";
-            const text = "My boyfriend needs this 😂 — it plans the whole date based on what I actually like. Send him this: " + url;
-            if (navigator.share) { navigator.share({ title: "Vela — Date Night Planner", text }); }
+            const text = "My boyfriend needs this 😂,it plans the whole date based on what I actually like. Send him this: " + url;
+            if (navigator.share) { navigator.share({ title: "Vela,Date Night Planner", text }); }
             else { navigator.clipboard && navigator.clipboard.writeText(url); alert("Link copied!"); }
           }} style={{ background: "none", border: "none", color: T.primary, fontFamily: T.font, fontSize: 14, fontWeight: 700, cursor: "pointer", padding: 0, textDecoration: "underline" }}>
             Send him this →
@@ -204,7 +204,7 @@ export default function LandingPage() {
           {[
             {
               icon: "🎯", title: "Scored to Her Personality",
-              desc: "She's more outdoorsy than fancy-restaurant. Or the opposite. The quiz figures that out — and every date idea gets ranked accordingly. You're not guessing anymore.",
+              desc: "She's more outdoorsy than fancy-restaurant. Or the opposite. The quiz figures that out,and every date idea gets ranked accordingly. You're not guessing anymore.",
             },
             {
               icon: "📋", title: "The Whole Plan, Built",
@@ -256,9 +256,9 @@ export default function LandingPage() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
           {[
-            { step: "1", title: "Answer the Quiz", desc: "13 questions about her — adventure level, budget, food, energy. Takes 2 minutes." },
+            { step: "1", title: "Answer the Quiz", desc: "13 questions about her,adventure level, budget, food, energy. Takes 2 minutes." },
             { step: "2", title: "See Your Matches", desc: "154+ date night ideas ranked by how well they fit her. The best ones are at the top." },
-            { step: "3", title: "Get the Full Plan", desc: "Tap any date — you get the shopping list, steps, cost estimate, and links. Nothing left to figure out." },
+            { step: "3", title: "Get the Full Plan", desc: "Tap any date,you get the shopping list, steps, cost estimate, and links. Nothing left to figure out." },
             { step: "4", title: "Send the Invite", desc: "Add a time and a note. Send it. She finds out when you want her to." },
           ].map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
@@ -328,7 +328,7 @@ export default function LandingPage() {
           color: "#141414",
           boxShadow: "0 4px 12px rgba(139,74,40,0.25), inset 0 1px 0 rgba(255,208,161,0.3)",
         }}>
-          Find Her Perfect Date — It's Free
+          Find Her Perfect Date,It's Free
         </Link>
       </section>
 

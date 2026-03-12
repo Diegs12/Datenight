@@ -10,12 +10,12 @@ const T = {
 const features = [
   {
     title: "2-Minute Personality Quiz",
-    desc: "Answer a few questions about your partner — their energy, how they like to eat, what kind of adventure they're into. Vela builds a profile from there.",
+    desc: "Answer a few questions about your partner,their energy, how they like to eat, what kind of adventure they're into. Vela builds a profile from there.",
     icon: "💡",
   },
   {
     title: "154+ Date Ideas, Ranked",
-    desc: "Every idea is scored against your partner's personality. The best matches float to the top — no more scrolling through generic lists.",
+    desc: "Every idea is scored against your partner's personality. The best matches float to the top,no more scrolling through generic lists.",
     icon: "🎯",
   },
   {
@@ -168,7 +168,7 @@ export default function VelaLanding() {
             <p style={{
               fontSize: 13, color: T.primary, marginTop: 16, fontWeight: 500,
             }}>
-              Welcome back — your account is ready.
+              Welcome back,your account is ready.
             </p>
           )}
         </div>
@@ -223,7 +223,7 @@ export default function VelaLanding() {
             {[
               { step: "01", title: "Take the Quiz", desc: "2 minutes. Answer a few questions about your partner's personality, interests, and energy level." },
               { step: "02", title: "Get Ranked Ideas", desc: "Vela scores 154+ date ideas and surfaces the best matches. Every suggestion is tailored." },
-              { step: "03", title: "Pick & Plan", desc: "Choose a date and Vela builds the full plan — instructions, shopping list, budget, and timing." },
+              { step: "03", title: "Pick & Plan", desc: "Choose a date and Vela builds the full plan,instructions, shopping list, budget, and timing." },
               { step: "04", title: "Send the Invite", desc: "Your partner gets a beautiful calendar invite with a hint about what's coming." },
             ].map((item) => (
               <div key={item.step} style={{

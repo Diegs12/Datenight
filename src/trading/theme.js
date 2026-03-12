@@ -1,4 +1,4 @@
-// Vallota Trading — Dark terminal theme
+// Vallota Trading,Dark terminal theme
 export const TT = {
   bg: "#0a0e17",
   surface: "#0f1419",

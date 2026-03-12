@@ -142,7 +142,7 @@ function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfil
         )}
       </div>
 
-      {/* Connect Your Accounts — Secure Key Entry */}
+      {/* Connect Your Accounts,Secure Key Entry */}
       <div style={{ ...card(), marginBottom: 20, padding: 28 }}>
         <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 6px" }}>
           Connect Your Accounts
@@ -276,7 +276,7 @@ function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfil
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {[
               "Encrypted with AES-256-GCM before storage",
-              "Encryption key lives only on the server — never in your browser",
+              "Encryption key lives only on the server,never in your browser",
               "Keys are sent over HTTPS (TLS 1.3)",
               "We never store or log your raw keys",
               "You can update or overwrite keys at any time",
@@ -386,7 +386,7 @@ export default function TradingDashboard() {
     { id: "settings", label: "Settings" },
   ];
 
-  // Build trades for display — sorted newest first, with normalized fields
+  // Build trades for display,sorted newest first, with normalized fields
   const displayTrades = trades.map((t) => ({
     id: t.id,
     action: (t.action || "hold").toUpperCase(),
@@ -424,7 +424,7 @@ export default function TradingDashboard() {
     aiLog.push({
       time: fmtTime(t.timestamp),
       type: "decision",
-      msg: `EXECUTED ${t.action}: ${t.token} $${t.amount_usd} — ${t.reasoning?.slice(0, 150)}`,
+      msg: `EXECUTED ${t.action}: ${t.token} $${t.amount_usd},${t.reasoning?.slice(0, 150)}`,
     });
   });
   // Add reviews
@@ -522,7 +522,7 @@ export default function TradingDashboard() {
           padding: "10px 24px", textAlign: "center",
         }}>
           <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.red }}>
-            NOT CONNECTED — Cannot reach bot. Make sure your trading bot is running.
+            NOT CONNECTED,Cannot reach bot. Make sure your trading bot is running.
           </span>
         </div>
       )}
@@ -532,7 +532,7 @@ export default function TradingDashboard() {
           padding: "10px 24px", textAlign: "center",
         }}>
           <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.primary }}>
-            PAPER TRADING — Bot is running with simulated funds. Cycle {status.cycleCount || 0} | Last: {fmtTime(status.lastCycle)}
+            PAPER TRADING,Bot is running with simulated funds. Cycle {status.cycleCount || 0} | Last: {fmtTime(status.lastCycle)}
           </span>
         </div>
       )}
@@ -662,7 +662,7 @@ export default function TradingDashboard() {
                     fontFamily: TT.mono, fontSize: 13, fontWeight: 700,
                     color: decision.action === "buy" ? TT.green : decision.action === "sell" ? TT.red : TT.primary,
                   }}>
-                    {decision.action?.toUpperCase()} {decision.token ? `${decision.token.toUpperCase()}` : ""} — {decision.confidence}% confidence
+                    {decision.action?.toUpperCase()} {decision.token ? `${decision.token.toUpperCase()}` : ""},{decision.confidence}% confidence
                   </div>
                 </div>
                 <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, lineHeight: 1.7, margin: "0 0 12px" }}>
@@ -708,7 +708,7 @@ export default function TradingDashboard() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                       <span style={{ fontFamily: TT.mono, fontSize: 14, fontWeight: 600, color: TT.text }}>
-                        {t.token} {t.amount_usd ? `$${t.amount_usd}` : ""} — {t.confidence}% conf
+                        {t.token} {t.amount_usd ? `$${t.amount_usd}` : ""},{t.confidence}% conf
                       </span>
                     </div>
                     <div style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim, lineHeight: 1.5 }}>
@@ -757,7 +757,7 @@ export default function TradingDashboard() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontFamily: TT.mono, fontSize: 14, fontWeight: 600, color: TT.text }}>
-                      {t.token} {t.amount_usd ? `$${t.amount_usd}` : ""} — {t.confidence}% confidence
+                      {t.token} {t.amount_usd ? `$${t.amount_usd}` : ""},{t.confidence}% confidence
                     </span>
                     <span style={{
                       fontFamily: TT.mono, fontSize: 11,

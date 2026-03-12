@@ -116,7 +116,7 @@ function DashboardMockup() {
         <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#FBBF24" }} />
         <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#22C55E" }} />
         <span style={{ marginLeft: 12, color: "#94A3B8", fontSize: 12, fontWeight: 500 }}>
-          Life Tracker — Personal Command Center
+          Life Tracker,Personal Command Center
         </span>
       </div>
 
@@ -499,7 +499,7 @@ export default function LifeTrackerLanding() {
             fontFamily: T.font, fontSize: 16, color: T.textDim,
             maxWidth: 520, margin: "0 auto", lineHeight: 1.7,
           }}>
-            Stop context-switching between five different apps. Your finances, tasks, habits, workouts, and goals — all connected.
+            Stop context-switching between five different apps. Your finances, tasks, habits, workouts, and goals,all connected.
           </p>
         </div>
 
@@ -609,7 +609,7 @@ export default function LifeTrackerLanding() {
             margin: "0 0 28px", maxWidth: 560,
           }}>
             Every module is accessible through a REST API with Bearer token auth.
-            Claude Code, ChatGPT, custom agents — anything that can make an HTTP request
+            Claude Code, ChatGPT, custom agents,anything that can make an HTTP request
             can create tasks, log habits, track goals, and update your finances.
           </p>
 
@@ -743,7 +743,7 @@ export default function LifeTrackerLanding() {
             fontFamily: T.font, fontSize: 16, color: T.textDim,
             maxWidth: 500, margin: "0 auto", lineHeight: 1.7,
           }}>
-            If you track your life in spreadsheets, sticky notes, and five different apps — this replaces all of it.
+            If you track your life in spreadsheets, sticky notes, and five different apps,this replaces all of it.
           </p>
         </div>
 
@@ -868,7 +868,7 @@ export default function LifeTrackerLanding() {
           />
           <FaqItem
             question="How does the AI integration work?"
-            answer="Every module has a REST API with Bearer token authentication. You get an API key, and any AI tool — Claude Code, ChatGPT, custom agents, Zapier, Make — can create tasks, log habits, update goals, and record transactions by making HTTP requests. Your AI tools become part of your life system."
+            answer="Every module has a REST API with Bearer token authentication. You get an API key, and any AI tool,Claude Code, ChatGPT, custom agents, Zapier, Make,can create tasks, log habits, update goals, and record transactions by making HTTP requests. Your AI tools become part of your life system."
           />
           <FaqItem
             question="Is my data private?"
@@ -888,7 +888,7 @@ export default function LifeTrackerLanding() {
           />
           <FaqItem
             question="How does the financial tracking work?"
-            answer="You add your accounts (checking, savings, brokerage, crypto, etc.) and log balance snapshots to track net worth over time. Record transactions with categories to see monthly budget breakdowns. No bank linking required — you're in full control."
+            answer="You add your accounts (checking, savings, brokerage, crypto, etc.) and log balance snapshots to track net worth over time. Record transactions with categories to see monthly budget breakdowns. No bank linking required,you're in full control."
           />
           <FaqItem
             question="Is there a mobile app?"

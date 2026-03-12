@@ -77,7 +77,7 @@ const miniBtn = {
 };
 
 // ═══════════════════════════════════════════
-// Initial Data — simulates 1 year of use
+// Initial Data,simulates 1 year of use
 // ═══════════════════════════════════════════
 function getInitialData() {
   const habitCompletions = (rate, seed) => {
@@ -927,7 +927,7 @@ export default function LifeTrackerDashboard() {
               <>
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: D.text, margin: "0 0 8px" }}>Get Your Own Dashboard</h2>
                 <p style={{ fontSize: 14, color: D.textDim, lineHeight: 1.6, margin: "0 0 24px" }}>
-                  Sign up for early access. Free to use — your data stays yours.
+                  Sign up for early access. Free to use,your data stays yours.
                 </p>
                 <form onSubmit={handleSignup}>
                   <div style={{ marginBottom: 12 }}>

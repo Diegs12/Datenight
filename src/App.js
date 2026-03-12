@@ -399,11 +399,11 @@ const HYPE_COACHING={
   day_of:[
     "Today's the day! A quick text to let {partner} know you're excited would set the tone",
     "{Theyre} probably thinking about tonight already. Time to build some hype",
-    "A little anticipation goes a long way — send {partner} something to look forward to",
+    "A little anticipation goes a long way,send {partner} something to look forward to",
   ],
   hour_before:[
     "Almost time! One last text to get {partner} excited",
-    "The countdown is on — a quick 'get ready' text to {partner} would hit perfectly right now",
+    "The countdown is on,a quick 'get ready' text to {partner} would hit perfectly right now",
     "You're so close. Drop {partner} one more line to build the tension",
   ]
 };
@@ -857,93 +857,93 @@ function InvitePicker({ date, scheduledFor, onClose, partnerName, partnerGender 
 // ——— ROMANTIC INVITE DESCRIPTION GENERATOR ———
 const ROMANTIC_INVITES = {
   d01: "I'm taking you somewhere the sky puts on a show just for us. Blankets, snacks, and a whole lot of stars. Dress warm, bring your sense of wonder, and leave the rest to me. ✨",
-  d02: "I found a trail with a view that's going to take your breath away. We're timing it perfectly with golden hour, and I'm packing all your favorite snacks for the top. Wear something you can hike in — I've got everything else covered. 🌅",
+  d02: "I found a trail with a view that's going to take your breath away. We're timing it perfectly with golden hour, and I'm packing all your favorite snacks for the top. Wear something you can hike in,I've got everything else covered. 🌅",
   d03: "We're doing something ridiculous and I can't stop smiling about it. All you need to know: bring $10, your sense of humor, and be ready to laugh harder than you have in a while. Trust me on this one. 😂",
-  d04: "I'm challenging you to a cook-off. Same ingredients, two kitchens, one winner. Loser does the dishes. I already know you think you're going to win — so come prove it. 🍳",
-  d05: "I'm setting up canvases, paint, and wine for us. No artistic talent required — just you, me, and the kind of messy, creative night we'll be laughing about for weeks. Wear something you don't mind getting a little paint on. 🎨",
-  d06: "I'm taking you somewhere quiet with really good coffee and thousands of stories to get lost in. I'll be picking something out just for you — and you'll do the same for me. Dress cozy. ☕",
-  d07: "I'm making you dinner from scratch — and I mean from scratch. We're rolling the dough together, making a mess of the kitchen, and eating something incredible that we made with our own hands. Just bring your appetite. 🍝",
+  d04: "I'm challenging you to a cook-off. Same ingredients, two kitchens, one winner. Loser does the dishes. I already know you think you're going to win,so come prove it. 🍳",
+  d05: "I'm setting up canvases, paint, and wine for us. No artistic talent required,just you, me, and the kind of messy, creative night we'll be laughing about for weeks. Wear something you don't mind getting a little paint on. 🎨",
+  d06: "I'm taking you somewhere quiet with really good coffee and thousands of stories to get lost in. I'll be picking something out just for you,and you'll do the same for me. Dress cozy. ☕",
+  d07: "I'm making you dinner from scratch,and I mean from scratch. We're rolling the dough together, making a mess of the kitchen, and eating something incredible that we made with our own hands. Just bring your appetite. 🍝",
   d08: "I'm setting up something magical in the backyard. Think big screen, blankets, popcorn, and the stars above us. All you have to do is pick the movie and show up looking cozy. I've handled the rest. 🎬",
-  d09: "I'm playing bartender for you tonight. I've got the recipes, the ingredients, and the shaker. Your only job is to show up, taste everything, and tell me which one I nailed. Dress cute — we're fancy tonight. 🍸",
-  d10: "I've booked you an appointment at the best spa you've never left home for. Face masks, candles, the works — everything's arriving this week. All you have to do is show up ready to be completely pampered. You deserve this one. 🧖‍♀️",
-  d11: "I mapped out a little food tour for us. Multiple stops, different flavors at each one, and a lot of walking in between. Come hungry — like, really hungry. I've got the whole route planned. 🍜",
+  d09: "I'm playing bartender for you tonight. I've got the recipes, the ingredients, and the shaker. Your only job is to show up, taste everything, and tell me which one I nailed. Dress cute,we're fancy tonight. 🍸",
+  d10: "I've booked you an appointment at the best spa you've never left home for. Face masks, candles, the works,everything's arriving this week. All you have to do is show up ready to be completely pampered. You deserve this one. 🧖‍♀️",
+  d11: "I mapped out a little food tour for us. Multiple stops, different flavors at each one, and a lot of walking in between. Come hungry,like, really hungry. I've got the whole route planned. 🍜",
   d12: "I'm taking you somewhere with games, drinks, and a little friendly competition. I'm already planning to talk trash. Wear something fun and get ready to lose (gracefully). 🕹️",
-  d13: "Wake up early for me — I promise it's worth it. We're going somewhere with fresh coffee, fresh flowers, and the best food you've ever sampled. Then we're cooking brunch together with everything we find. ☀️",
+  d13: "Wake up early for me,I promise it's worth it. We're going somewhere with fresh coffee, fresh flowers, and the best food you've ever sampled. Then we're cooking brunch together with everything we find. ☀️",
   d14: "I signed us up for something where we have to work together under pressure, solve puzzles, and communicate really well. Sound intense? It is. And you're going to love it. 🔐",
-  d15: "I found a class where we get to make something with our hands — and take it home after. It's creative, it's different, and we're going to be terrible at first. That's the best part. Wear something you don't mind getting a little dirty. 🏺",
-  d16: "I planned an adventure through a part of the city we've never explored. Bring your phone camera and your curiosity — we've got a photo challenge to complete and dinner to find along the way. 📸",
+  d15: "I found a class where we get to make something with our hands,and take it home after. It's creative, it's different, and we're going to be terrible at first. That's the best part. Wear something you don't mind getting a little dirty. 🏺",
+  d16: "I planned an adventure through a part of the city we've never explored. Bring your phone camera and your curiosity,we've got a photo challenge to complete and dinner to find along the way. 📸",
   d17: "I'm turning our kitchen into a sushi bar. We're rolling our own, judging each other's technique, and eating way too much. It's going to be messy, fun, and way better than ordering delivery. 🍣",
-  d18: "Get dressed up. I'm taking you somewhere with a view, great cocktails, and the kind of evening where the city lights do all the work. You just need to look amazing — which I know won't be a problem. 🌃",
+  d18: "Get dressed up. I'm taking you somewhere with a view, great cocktails, and the kind of evening where the city lights do all the work. You just need to look amazing,which I know won't be a problem. 🌃",
   d19: "I planned something a little different for us. We're giving back together and I think it's going to bring out the best in both of us. Wear comfortable clothes and bring your big heart. 🤍",
   d20: "I found live music for us under the open sky. Bring a blanket, your best dancing shoes, and nothing else to worry about. I've got the rest handled. 🎶",
   d21: "I'm setting up a tournament and you're my only competition. Games, snacks, and bragging rights on the line. The loser has to make dinner. So you should probably start practicing. 🎲",
   d22: "Set your alarm for stupid early and trust me. I'm taking you somewhere beautiful before the rest of the world wakes up. Coffee's already made. Just show up half-asleep and I'll take care of everything. 🌊",
   d23: "I'm building something ridiculous for us tonight. There will be pillows, fairy lights, takeout, and absolutely no reason to leave. Wear your comfiest everything. This is going to be perfect. 🏰",
-  d24: "I'm taking you on a tour of the sweetest spots in town. Multiple stops, one scoop at each, and you're the judge. Wear walking shoes and save room — there's more than you think. 🍦",
+  d24: "I'm taking you on a tour of the sweetest spots in town. Multiple stops, one scoop at each, and you're the judge. Wear walking shoes and save room,there's more than you think. 🍦",
   d25: "I booked us a private room where nobody can hear us sing. That's all I'm going to say. Bring your confidence and your guilty pleasure playlist. 🎤",
   d26: "I'm taking you to three different restaurants tonight. Appetizers at one, dinner at another, dessert at a third. Just bring your appetite and let me walk you through the city like you deserve. 🥂",
-  d27: "I booked us something relaxing. Side by side, no phones, no stress — just an hour of being completely taken care of. You deserve to have someone else worry about you for once. 💆‍♀️",
+  d27: "I booked us something relaxing. Side by side, no phones, no stress,just an hour of being completely taken care of. You deserve to have someone else worry about you for once. 💆‍♀️",
   d28: "We're getting creative and a little messy. I've got supplies for a project that's going to be colorful, chaotic, and completely ours. Wear something you don't care about. You'll thank me later. 🌈",
   d29: "I planned something that involves fresh air, a little exercise, and a surprise meal waiting at the end. Wear something comfortable and bring your sense of adventure. The route is beautiful. 🚲",
   d30: "I'm building a fire, making s'mores, and setting up a movie under the stars. All you have to do is bring a blanket and yourself. I'll keep you warm for the rest. 🔥",
-  d31: "Clear your entire day. I've planned something big — like, multiple stops, multiple surprises, all-day-long big. Every detail is handled. Just bring your energy and trust me. This is going to be one for the books. 💐",
+  d31: "Clear your entire day. I've planned something big,like, multiple stops, multiple surprises, all-day-long big. Every detail is handled. Just bring your energy and trust me. This is going to be one for the books. 💐",
   d32: "I'm taking you somewhere with wide open space, a sunset view, and a little nostalgia. It's playful, it's sweet, and it's the kind of afternoon you'll remember for a long time. Dress for a breeze. 🪁",
   d33: "I found the weirdest little shop and I'm taking you there. We're each buying the other something ridiculous. The only rule: it has to make the other person laugh. Bring your sense of humor. 🎁",
-  d34: "We're trying something wild — spending the whole day together without saying a single word. Just gestures, expressions, and notes. It's harder than you think and way more intimate. You in? 🤫",
-  d35: "I'm setting up something on the water that's going to look straight out of a movie. Torchlight, good food, sunset — the whole thing. Dress comfortable and leave the rest to me. 🔥",
-  d36: "I'm taking you skating. I don't care if we're terrible — I'm holding your hand the whole time. And after, I've got the coziest hot chocolate situation planned. Dress warm and cute. ⛸️",
+  d34: "We're trying something wild,spending the whole day together without saying a single word. Just gestures, expressions, and notes. It's harder than you think and way more intimate. You in? 🤫",
+  d35: "I'm setting up something on the water that's going to look straight out of a movie. Torchlight, good food, sunset,the whole thing. Dress comfortable and leave the rest to me. 🔥",
+  d36: "I'm taking you skating. I don't care if we're terrible,I'm holding your hand the whole time. And after, I've got the coziest hot chocolate situation planned. Dress warm and cute. ⛸️",
   d37: "I planned a real-life treasure hunt through the city. It involves GPS, hidden containers, and us exploring places we've never been. Wear walking shoes and get ready for an adventure. 🗺️",
   d38: "I found the perfect night to watch shooting stars. I'm taking you somewhere dark, quiet, and completely ours. Blankets, warm drinks, and a sky full of magic. Just say yes. 🌠",
   d39: "I'm taking you to a pumpkin patch and then we're carving them at home. Cider, corn maze, the whole thing. It's about to be the most fall day of your life. Wear flannel. 🎃",
-  d40: "We're picking fruit together and then baking something incredible from scratch. The kitchen is going to smell unreal and we're eating it warm. Wear something cozy — this is a whole afternoon thing. 🍎",
+  d40: "We're picking fruit together and then baking something incredible from scratch. The kitchen is going to smell unreal and we're eating it warm. Wear something cozy,this is a whole afternoon thing. 🍎",
   d41: "I'm turning the bathroom into a spa tonight. Warm water, floating lights, drinks, and the kind of conversation that lasts for hours. No agenda. Just us. Bring nothing but yourself. 🛁",
-  d42: "I got us something that picks the date for us — we scratch it off and commit, no matter what it says. Could be anything. That's the whole point. You ready to trust the universe? 🎰",
-  d43: "We're cooking something insanely good from scratch — and then we're getting dressed up like we're going to the nicest restaurant in town. Except the restaurant is our kitchen. And it's going to be amazing. 👩‍🍳",
-  d44: "I'm setting up the coziest spot you've ever seen. No phones, no distractions — just questions that'll have us talking for hours. Some of them might make you cry (the good kind). Come ready to go deep. 💭",
+  d42: "I got us something that picks the date for us,we scratch it off and commit, no matter what it says. Could be anything. That's the whole point. You ready to trust the universe? 🎰",
+  d43: "We're cooking something insanely good from scratch,and then we're getting dressed up like we're going to the nicest restaurant in town. Except the restaurant is our kitchen. And it's going to be amazing. 👩‍🍳",
+  d44: "I'm setting up the coziest spot you've ever seen. No phones, no distractions,just questions that'll have us talking for hours. Some of them might make you cry (the good kind). Come ready to go deep. 💭",
   d45: "I'm taking you somewhere and we each have 15 minutes to buy the other person a gift, a snack, and a surprise. It's a race, it's a challenge, and it's going to be hilarious. Let's go. 🎯",
-  d46: "We're doing something adorable and I'm not even a little embarrassed about it. You're getting a custom stuffed animal from me — with a name and everything. Just trust me, it's the cutest date ever. 🧸",
+  d46: "We're doing something adorable and I'm not even a little embarrassed about it. You're getting a custom stuffed animal from me,with a name and everything. Just trust me, it's the cutest date ever. 🧸",
   d47: "I'm transforming our living room into something magical tonight. Think fairy lights everywhere, a blanket on the floor, and a full spread just for us. No reason to go anywhere. Everything we need is right here. ✨",
   d48: "I picked out something for us to read together. We're getting under the covers, dimming the lights, and taking turns reading to each other. It's quiet, it's intimate, and I think you're going to love it. 📖",
-  d49: "I made something for you. It's a treasure hunt — through all our spots, with clues and memories at each one. There's a surprise at the end. Just follow the clues and trust me. 💌",
-  d50: "I'm turning our dining room into a restaurant tonight. There's a printed menu, candles, courses — the whole thing. I'm cooking everything and serving it to you. All you have to do is sit down and be impressed. 🍽️",
-  d51: "I'm blindfolding you tonight. Don't worry — it's a taste test. You're going to try a bunch of things and guess what they are. It's way funnier than it sounds. Just come hungry. 😋",
-  d52: "I'm taking you back to where it all started. Same place, same vibes — but this time we know each other. I think it's going to hit different. Get dressed up like you did the first time. 💫",
+  d49: "I made something for you. It's a treasure hunt,through all our spots, with clues and memories at each one. There's a surprise at the end. Just follow the clues and trust me. 💌",
+  d50: "I'm turning our dining room into a restaurant tonight. There's a printed menu, candles, courses,the whole thing. I'm cooking everything and serving it to you. All you have to do is sit down and be impressed. 🍽️",
+  d51: "I'm blindfolding you tonight. Don't worry,it's a taste test. You're going to try a bunch of things and guess what they are. It's way funnier than it sounds. Just come hungry. 😋",
+  d52: "I'm taking you back to where it all started. Same place, same vibes,but this time we know each other. I think it's going to hit different. Get dressed up like you did the first time. 💫",
   d53: "We're going off the grid for a day. Phones locked away, no screens, no notifications. Just us, doing whatever we want without the world buzzing in our ears. It's going to be the most present you've felt in a while. 🔇",
   d54: "I'm taking you somewhere that's going to make you grab my arm and not let go. There will be screaming. There will be laughing. We're getting drinks after to recover. Wear something you can run in. 👻",
-  d55: "I found a trail that looks like it belongs in a movie right now. The colors are unreal. I'm packing hot cider and snacks, and we're going to take our time. Dress in layers — I've got everything else. 🍂",
-  d56: "I'm taking you to see something incredible and then we're getting wine after to talk about it. Dress however you want — the only requirement is curiosity. I think you're going to love this. 🖼️",
-  d57: "I'm setting up something on the water with torches and the sunset. It's going to be one of those nights that feels like it was made for a movie. Just show up — I'm handling everything. 🔥",
-  d58: "NASA says the sky is putting on a show and I'm taking you to the best seat in the house. Dark beach, blankets, warm drinks, and shooting stars. Clear your night — this one's going to be magical. 🌠",
-  d59: "We're going to a pumpkin patch and then coming home to compete. Carving contest — my pumpkin vs. yours. Loser makes hot chocolate. Winner gets bragging rights all season. 🎃",
+  d55: "I found a trail that looks like it belongs in a movie right now. The colors are unreal. I'm packing hot cider and snacks, and we're going to take our time. Dress in layers,I've got everything else. 🍂",
+  d56: "I'm taking you to see something incredible and then we're getting wine after to talk about it. Dress however you want,the only requirement is curiosity. I think you're going to love this. 🖼️",
+  d57: "I'm setting up something on the water with torches and the sunset. It's going to be one of those nights that feels like it was made for a movie. Just show up,I'm handling everything. 🔥",
+  d58: "NASA says the sky is putting on a show and I'm taking you to the best seat in the house. Dark beach, blankets, warm drinks, and shooting stars. Clear your night,this one's going to be magical. 🌠",
+  d59: "We're going to a pumpkin patch and then coming home to compete. Carving contest,my pumpkin vs. yours. Loser makes hot chocolate. Winner gets bragging rights all season. 🎃",
   d60: "I'm setting up the bathtub with floating lights, drinks, and a playlist. We're getting in together and just... talking. No phones. No plans. Just us and the warmth. You ready? 🛁",
-  d61: "I'm building a private movie theater on the roof for us. Projector, blankets, string lights, and a full snack bar. You pick the movie — I'm handling the magic. 🎬",
+  d61: "I'm building a private movie theater on the roof for us. Projector, blankets, string lights, and a full snack bar. You pick the movie,I'm handling the magic. 🎬",
   d62: "I'm setting up something cozy with conversation cards that are going to make us laugh, think, and maybe get a little vulnerable. Phones go away. This one's just about us. 💭",
-  d63: "I've booked you a full spa experience — and you don't even have to leave home. Face masks, foot soaks, massage oils, robes — the whole treatment. All the supplies are already here. Just show up ready to be taken care of. 🧖‍♀️",
-  d64: "We're eating our way across the city tonight. Five stops, five different spots, one incredible night. I've planned the whole route — all you need is an empty stomach and comfortable shoes. 🍴",
+  d63: "I've booked you a full spa experience,and you don't even have to leave home. Face masks, foot soaks, massage oils, robes,the whole treatment. All the supplies are already here. Just show up ready to be taken care of. 🧖‍♀️",
+  d64: "We're eating our way across the city tonight. Five stops, five different spots, one incredible night. I've planned the whole route,all you need is an empty stomach and comfortable shoes. 🍴",
   d65: "We're doing something wholesome and I'm not apologizing for it. You're getting a custom stuffed animal from me with a voice message inside. It's going to be adorable. Just come ready to have fun. 🧸",
   d66: "I bought mystery ingredients and we're both cooking with them. Same stuff, different dishes, and one of us is going to get crowned the winner. Loser does every single dish. Game on. 👨‍🍳",
-  d67: "I'm turning our living room into the most romantic spot you've ever seen tonight. Fairy lights, floor picnic, candles — the works. You don't have to lift a finger. Just show up and let me spoil you. ✨",
+  d67: "I'm turning our living room into the most romantic spot you've ever seen tonight. Fairy lights, floor picnic, candles,the works. You don't have to lift a finger. Just show up and let me spoil you. ✨",
   d68: "I made you a treasure hunt through all the places that matter to us. There are clues, memories, and a surprise waiting at the end. Just follow where I lead. 💌",
-  d69: "When you walk through the door tonight, it's not going to look like home. I'm turning it into a restaurant — your name's on the menu, candles are lit, and I'm your waiter for the evening. 🍷",
-  d70: "We're cooking something insane from scratch — starting in sweats, ending in our best outfits. The transformation is part of the fun. Come ready to get your hands dirty first, then clean up real nice. 👗",
+  d69: "When you walk through the door tonight, it's not going to look like home. I'm turning it into a restaurant,your name's on the menu, candles are lit, and I'm your waiter for the evening. 🍷",
+  d70: "We're cooking something insane from scratch,starting in sweats, ending in our best outfits. The transformation is part of the fun. Come ready to get your hands dirty first, then clean up real nice. 👗",
   d71: "I've hidden little notes for you. Some are sweet, some are funny, and each one leads to the next. The last one has a surprise. Just start where I tell you and enjoy the ride. 💌",
   d72: "Set your alarm for ridiculously early and trust me. I'm taking you somewhere with the most beautiful view and coffee already made. It'll just be us and the sunrise. You won't regret it. 🌅",
-  d73: "I made you something that lasts all year. Twelve surprises — one for every month. Each one is a date night planned just for you. You open the first one tonight. 🎁",
-  d74: "When you get home tonight, it's going to look different. Really different. Fresh sheets, flowers, robes, champagne — the full hotel treatment. Consider this your staycation. Check-in time is whenever you walk in the door. 🏨",
-  d75: "We're doing dinner backwards tonight. Dessert first, entrée second, appetizers last. It sounds weird but trust me — it's going to be one of the most fun meals we've ever had. 🍰",
+  d73: "I made you something that lasts all year. Twelve surprises,one for every month. Each one is a date night planned just for you. You open the first one tonight. 🎁",
+  d74: "When you get home tonight, it's going to look different. Really different. Fresh sheets, flowers, robes, champagne,the full hotel treatment. Consider this your staycation. Check-in time is whenever you walk in the door. 🏨",
+  d75: "We're doing dinner backwards tonight. Dessert first, entrée second, appetizers last. It sounds weird but trust me,it's going to be one of the most fun meals we've ever had. 🍰",
   d76: "I'm taking you and another couple somewhere that's going to have all of us screaming. There will be adrenaline. There will be someone grabbing someone's arm. Drinks after to recover. 👻",
-  d77: "We're learning to cook something we've never made before — together. I've got the tutorial queued up and the ingredients ready. The mistakes are half the fun. Come hungry. 🍜",
+  d77: "We're learning to cook something we've never made before,together. I've got the tutorial queued up and the ingredients ready. The mistakes are half the fun. Come hungry. 🍜",
   d78: "I'm building us a private outdoor theater tonight. Projector, blankets, a popcorn bar, and string lights everywhere. Your only job is picking the movie. I've handled the rest. 🎬",
   d79: "I'm taking you somewhere with books, coffee, and zero rush. We're picking something out for each other and reading together. It's the kind of quiet, perfect afternoon that I know you love. ☕",
   d80: "We're going to the market first thing, buying whatever looks incredible, and then figuring out what to cook when we get home. No recipe. Just us and whatever the morning inspires. 🌻",
-  d81: "I found a studio where we paint pottery and take it home a week later. We're making something for each other — no peeking until the reveal. It's going to be so us. 🎨",
+  d81: "I found a studio where we paint pottery and take it home a week later. We're making something for each other,no peeking until the reveal. It's going to be so us. 🎨",
   d82: "Make a playlist of your favorite songs. We're driving around, windows down, singing at the top of our lungs. I'll grab food on the way. All you need is your voice and zero shame. 🎵",
-  d83: "Don't set an alarm. I'm waking you up the right way — breakfast in bed. Pancakes, coffee, the whole thing on a tray. Your only job is to stay in bed and look cute. ☕",
-  d84: "I'm building a fort in the living room tonight. Sleeping bags, lanterns, s'mores, ghost stories — the full experience. Wear pajamas and bring your inner kid. 🏕️",
-  d85: "Push the furniture back when you get home. I'm teaching us a dance tonight — it's going to be terrible and hilarious and we're going to have the best time. No experience needed. Just you. 💃",
-  d86: "We're doing a photo shoot. You and me, dressed up, multiple locations, and we're finally getting the kind of couple pics we actually want. I've got the setup ready. Just look like yourself — that's more than enough. 📸",
+  d83: "Don't set an alarm. I'm waking you up the right way,breakfast in bed. Pancakes, coffee, the whole thing on a tray. Your only job is to stay in bed and look cute. ☕",
+  d84: "I'm building a fort in the living room tonight. Sleeping bags, lanterns, s'mores, ghost stories,the full experience. Wear pajamas and bring your inner kid. 🏕️",
+  d85: "Push the furniture back when you get home. I'm teaching us a dance tonight,it's going to be terrible and hilarious and we're going to have the best time. No experience needed. Just you. 💃",
+  d86: "We're doing a photo shoot. You and me, dressed up, multiple locations, and we're finally getting the kind of couple pics we actually want. I've got the setup ready. Just look like yourself,that's more than enough. 📸",
   d87: "I've got a chocolate tasting set up for us. Different kinds from around the world, wine to pair with each one, and scorecards. It's sophisticated, it's delicious, and it's just for us. 🍫",
-  d88: "I made us a date night in a box. Everything we need for tonight is inside — the game, the snacks, the drinks, the vibe. All we do is open it and follow the plan. 📦",
+  d88: "I made us a date night in a box. Everything we need for tonight is inside,the game, the snacks, the drinks, the vibe. All we do is open it and follow the plan. 📦",
   d89: "I got us a craft kit and we're making something together. It's hands-on, it's creative, and we get to keep what we make. Wear something you don't mind ruining (just a little). 🎨",
   d90: "I've got everything handled for tonight. Food's on the way, candles are lit, the place looks good, and there's wine chilling. Just come over. Everything's ready for you. 🕯️",
 };
@@ -951,7 +951,7 @@ const ROMANTIC_INVITES = {
 function getRomanticInvite(date) {
   const custom = ROMANTIC_INVITES[date.id];
   if (custom) return `${custom}\n\nSent with Vela`;
-  return `I planned something special just for us — ${date.title.toLowerCase()}. Every detail is handled. Just show up and let me take care of the rest. ✨\n\nSent with Vela`;
+  return `I planned something special just for us,${date.title.toLowerCase()}. Every detail is handled. Just show up and let me take care of the rest. ✨\n\nSent with Vela`;
 }
 
 // ——— REAL (FULL DETAILS) INVITE ———
@@ -1045,7 +1045,7 @@ function PlanPromptModal({ date, scheduledFor, startTime, quiz, city, onClose, p
     quiz.q12 ? `Typical budget: ${s(quiz.q12)}` : "",
   ].filter(Boolean).join("\n") : "";
 
-  const prompt = `You are an elite date planner — the kind couples pay serious money to hire. Your job is to take this date idea and turn it into a fully personalized, effortless experience. Think concierge-level planning, not a spreadsheet.
+  const prompt = `You are an elite date planner,the kind couples pay serious money to hire. Your job is to take this date idea and turn it into a fully personalized, effortless experience. Think concierge-level planning, not a spreadsheet.
 
 THE DATE
 Title: ${date.title}
@@ -1058,24 +1058,24 @@ Description: ${date.description}
 THE APP'S TEMPLATE:
 ${date.instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}
 ${date.materials.length > 0 ? `\nMaterials: ${date.materials.map(m => `${m.name} (~$${m.price})`).join(", ")}` : ""}
-${quizContext ? `\nABOUT ${pn.toUpperCase()} (real preferences from a quiz — use these to personalize everything):\n${quizContext}` : ""}${previousDebrief ? `\n\nPREVIOUS EXPERIENCE\nThey've done this date before. Here's what happened:\n- Reaction: ${previousDebrief.debrief_reaction || "N/A"}\n- Notes: "${previousDebrief.debrief_notes || "None"}"\n- Would do again: ${previousDebrief.debrief_want_again ? "Yes" : "No"}\nUse this feedback to improve the plan. Address any issues mentioned and build on what worked.` : ""}
+${quizContext ? `\nABOUT ${pn.toUpperCase()} (real preferences from a quiz,use these to personalize everything):\n${quizContext}` : ""}${previousDebrief ? `\n\nPREVIOUS EXPERIENCE\nThey've done this date before. Here's what happened:\n- Reaction: ${previousDebrief.debrief_reaction || "N/A"}\n- Notes: "${previousDebrief.debrief_notes || "None"}"\n- Would do again: ${previousDebrief.debrief_want_again ? "Yes" : "No"}\nUse this feedback to improve the plan. Address any issues mentioned and build on what worked.` : ""}
 
 HERE'S WHAT I NEED FROM YOU:
 
 1. THE GAME PLAN
-Give me a natural flow for the evening — not a minute-by-minute itinerary. Break it into phases (prep, the date itself, wind-down) with loose timeframes. People don't live on a stopwatch, so keep it relaxed but structured enough that I know what's happening and when. Start time is ${startTimeDisplay} — work backwards for any prep I need to do beforehand.
+Give me a natural flow for the evening,not a minute-by-minute itinerary. Break it into phases (prep, the date itself, wind-down) with loose timeframes. People don't live on a stopwatch, so keep it relaxed but structured enough that I know what's happening and when. Start time is ${startTimeDisplay},work backwards for any prep I need to do beforehand.
 
-2. WHERE TO GO — OPTIONS, NOT ORDERS${city ? ` (real places in ${city} only)` : ""}
+2. WHERE TO GO,OPTIONS, NOT ORDERS${city ? ` (real places in ${city} only)` : ""}
 For any restaurant, bar, venue, or activity spot: give me 2-3 options ranked by your recommendation. For each option include:
 - Why it's a great fit for this specific date and ${pn}'s preferences
 - The vibe (atmosphere, crowd, noise level)
 - Price range and what to expect to spend
 - Any heads up (reservation needed, dress code, parking situation, wait times)
-- Your honest take — pros and cons
+- Your honest take,pros and cons
 Pick a clear winner but explain why the others are solid backups.
 
 3. WHAT TO BUY / BRING
-A clean shopping list — what I need, where to get it${city ? ` in ${city}` : ""}, and estimated cost. Group it so I can knock it out in one trip if possible.
+A clean shopping list,what I need, where to get it${city ? ` in ${city}` : ""}, and estimated cost. Group it so I can knock it out in one trip if possible.
 
 4. RESERVATIONS & BOOKINGS
 What needs to be booked in advance and how far ahead. Include direct booking info where possible.
@@ -1085,7 +1085,7 @@ What needs to be booked in advance and how far ahead. Include direct booking inf
 - A playlist vibe or specific playlist recommendations for the mood
 
 6. BACKUP PLAN
-If something falls through — weather, closed venue, long wait — what's the pivot? Give me a ready-to-go Plan B, not just "try somewhere else."
+If something falls through,weather, closed venue, long wait,what's the pivot? Give me a ready-to-go Plan B, not just "try somewhere else."
 
 7. PRO MOVES
 3-5 small, thoughtful details that turn a good date into one ${p.they} won't stop talking about. These should feel personal to ${pn}, not generic "bring flowers" advice.
@@ -1398,7 +1398,7 @@ function Detail({ date: d, onClose, onSchedule, scheduledInfo, onSendInvite, onP
             <p style={{ color: T.textFaint, fontSize: 12, margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 0.8, fontWeight: 600 }}>Know someone who'd love this?</p>
             <button onClick={() => {
               const link = getReferralLink();
-              const text = `Found the perfect date idea on Vela — you should try this one: "${d.title}"\n\n${link}`;
+              const text = `Found the perfect date idea on Vela,you should try this one: "${d.title}"\n\n${link}`;
               if (navigator.share) { navigator.share({ title: d.title, text }); }
               else { navigator.clipboard && navigator.clipboard.writeText(link); alert("Link copied! Send it to someone."); }
             }} style={{ ...btn(T.surface, T.textDim, { border: `1px solid ${T.border}`, width: "100%", padding: "12px 20px", fontSize: 14, fontWeight: 600 }) }}>
@@ -1533,7 +1533,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
       else next[dateId] = rating;
       return next;
     });
-    flash(rating === "love" ? "Noted — more like this!" : "Got it — we'll dial these back.");
+    flash(rating === "love" ? "Noted,more like this!" : "Got it,we'll dial these back.");
   };
 
   const pp = P(partnerGender || "girl");
@@ -1674,7 +1674,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
         const texts = ANTICIPATION_TEXTS[cat] || ANTICIPATION_TEXTS.adventure;
         const h = Math.abs(hashId(s.id));
 
-        // Prep reminder: 12-24 hours before — only if unowned materials exist
+        // Prep reminder: 12-24 hours before,only if unowned materials exist
         if (hoursUntil <= 24 && hoursUntil > 12) {
           const key = s.id + "_prep";
           if (!dismissedNotifKeys.includes(key)) {
@@ -2128,7 +2128,7 @@ function Dashboard({ name, quiz, city, setCity, onRetake, partnerName, partnerGe
             <h3 style={{ color: T.text, fontSize: 15, margin: "20px 0 12px", fontWeight: 700, fontFamily: T.display }}>{partnerName ? `${partnerName}'s Preferences` : "Partner Preferences"}</h3>
             {QUIZ.filter(q => !["q12", "q13"].includes(q.id)).map(q => { const a = quiz[q.id]; if (!a || (Array.isArray(a) && !a.length)) return null; return <div key={q.id} style={{ ...crd({ padding: 14, marginBottom: 8 }) }}><p style={{ color: T.textFaint, fontSize: 11, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: 0.5 }}>{sub(q.q, partnerName, partnerGender)}</p><p style={{ color: T.text, fontSize: 14, margin: 0 }}>{Array.isArray(a) ? a.map(x => sub(x, partnerName, partnerGender)).join(", ") : sub(a, partnerName, partnerGender)}</p></div>; })}
           </>}
-          <button onClick={() => { if (window.confirm("This will erase all your data — quiz answers, scheduled dates, history, and contact info. Are you sure?")) { ["vela_name","vela_partner_name","vela_partner_gender","vela_quiz","vela_email","vela_phone","vela_city","vela_sched","vela_hist","vela_ratings","vela_owned_mats","vela_dismissed_notifs"].forEach(k => { try { localStorage.removeItem(k); } catch {} }); window.location.reload(); } }} style={{ width: "100%", ...crd({ padding: 16, marginTop: 20, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: `1px solid #e74c3c33` }}>
+          <button onClick={() => { if (window.confirm("This will erase all your data,quiz answers, scheduled dates, history, and contact info. Are you sure?")) { ["vela_name","vela_partner_name","vela_partner_gender","vela_quiz","vela_email","vela_phone","vela_city","vela_sched","vela_hist","vela_ratings","vela_owned_mats","vela_dismissed_notifs"].forEach(k => { try { localStorage.removeItem(k); } catch {} }); window.location.reload(); } }} style={{ width: "100%", ...crd({ padding: 16, marginTop: 20, marginBottom: 10 }), display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: `1px solid #e74c3c33` }}>
             <span style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "#e74c3c18", fontSize: 20 }}>🗑️</span>
             <div style={{ textAlign: "left" }}><p style={{ color: "#e74c3c", fontSize: 15, margin: "0 0 2px", fontWeight: 600 }}>Clear All My Data</p><p style={{ color: T.textDim, fontSize: 12, margin: 0 }}>Erase everything and start fresh</p></div>
           </button>
@@ -2405,14 +2405,14 @@ function getPartnerVibe(quiz, partnerName, partnerGender) {
   const q1 = quiz?.q1 || "";
   const q3 = Array.isArray(quiz?.q3) ? quiz.q3 : [];
   const p = P(partnerGender || "girl");
-  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: partnerGender === "guy" ? "The Cozy King" : "The Cozy Queen", description: `${p.Their} perfect night starts with takeout and ends with a blanket fort. ${p.They} fall${partnerGender === "girl" ? "s" : "s"} hardest for the quiet, intentional moments — candlelit dinners, slow mornings, movie marathons where you actually stay in. Don't overthink it. Just make ${p.them} feel like the world stopped for a night.` };
+  if (q1.includes("Homebody") && q3.includes("Chill / low-key")) return { emoji: "🕯️", title: partnerGender === "guy" ? "The Cozy King" : "The Cozy Queen", description: `${p.Their} perfect night starts with takeout and ends with a blanket fort. ${p.They} fall${partnerGender === "girl" ? "s" : "s"} hardest for the quiet, intentional moments,candlelit dinners, slow mornings, movie marathons where you actually stay in. Don't overthink it. Just make ${p.them} feel like the world stopped for a night.` };
   if (q1.includes("Adventurous") || q3.includes("Spontaneous / adventurous")) return { emoji: "⚡", title: "The Thrill Seeker", description: `${p.Theyre} the one who says 'let's go' before you even finish the sentence. Routine bores ${p.them}. ${p.They} want${partnerGender === "girl" ? "s" : "s"} the spontaneous road trip, the hole-in-the-wall restaurant you found by accident, the story ${p.theyll} retell for years. Surprise ${p.them} and ${p.theyll} remember it forever.` };
-  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: `${p.They} notice${partnerGender === "girl" ? "s" : "s"} when you pull out ${p.their} chair. Candles, flowers, a handwritten note tucked into ${p.their} bag — the whole nine. ${p.They} don't need expensive, ${p.they} need${partnerGender === "girl" ? "s" : "s"} intentional. Put in the effort most people skip and watch ${p.them} light up.` };
-  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: `Give ${p.them} a paintbrush, a kitchen, a pottery wheel — anything where ${p.they} can make something with ${p.their} hands and ${p.theyre} in ${p.their} element. ${p.They}'d pick a messy DIY night over a fancy dinner every time. Plan dates that let ${p.them} create, not just consume.` };
-  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: `${p.They} turn${partnerGender === "girl" ? "s" : "s"} everything into a competition — and honestly, ${p.they} probably win${partnerGender === "girl" ? "s" : "s"}. Bowling, mini golf, card games, bar trivia — if there's a scoreboard, ${p.theyre} locked in. Keep it high-energy, keep it playful, and don't be afraid to talk a little trash.` };
-  if (q3.includes("Intellectual / curious")) { const deepVenue = quiz?.q7 === "Doesn't drink at all" ? "coffee shops with good lighting" : "wine bars with good lighting"; return { emoji: "📚", title: "The Deep Thinker", description: `${p.They}'d rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, ${deepVenue} — ${p.they} want${partnerGender === "girl" ? "s" : "s"} dates that feed the mind. Bring your curiosity, not just your credit card.` }; }
-  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: `${p.Their} happy place has fresh air and a view. Sunrise hikes, beach days, kayaking, farmers markets — if it gets ${p.them} outside and moving, ${p.theyre} already excited. ${p.They} don't need fancy. ${p.They} need${partnerGender === "girl" ? "s" : "s"} you, sunlight, and something to explore.` };
-  return { emoji: "💫", title: "The Vibe", description: `${p.They} don't fit in one box — and that's what makes ${p.them} fun to plan for. One week it's a cozy night in, the next ${p.they} want${partnerGender === "girl" ? "s" : "s"} to try something completely new. Keep ${p.them} guessing, mix up the energy, and ${p.theyll} never get bored.` };
+  if (q3.includes("Romantic / intimate") && q3.includes("Bougie / sophisticated")) return { emoji: "✨", title: "The Hopeless Romantic", description: `${p.They} notice${partnerGender === "girl" ? "s" : "s"} when you pull out ${p.their} chair. Candles, flowers, a handwritten note tucked into ${p.their} bag,the whole nine. ${p.They} don't need expensive, ${p.they} need${partnerGender === "girl" ? "s" : "s"} intentional. Put in the effort most people skip and watch ${p.them} light up.` };
+  if (q3.includes("Creative / artsy")) return { emoji: "🎨", title: "The Creative Soul", description: `Give ${p.them} a paintbrush, a kitchen, a pottery wheel,anything where ${p.they} can make something with ${p.their} hands and ${p.theyre} in ${p.their} element. ${p.They}'d pick a messy DIY night over a fancy dinner every time. Plan dates that let ${p.them} create, not just consume.` };
+  if (q3.includes("Playful / competitive")) return { emoji: "🎯", title: "The Fun One", description: `${p.They} turn${partnerGender === "girl" ? "s" : "s"} everything into a competition,and honestly, ${p.they} probably win${partnerGender === "girl" ? "s" : "s"}. Bowling, mini golf, card games, bar trivia,if there's a scoreboard, ${p.theyre} locked in. Keep it high-energy, keep it playful, and don't be afraid to talk a little trash.` };
+  if (q3.includes("Intellectual / curious")) { const deepVenue = quiz?.q7 === "Doesn't drink at all" ? "coffee shops with good lighting" : "wine bars with good lighting"; return { emoji: "📚", title: "The Deep Thinker", description: `${p.They}'d rather have a three-hour conversation at a coffee shop than a loud night out. Museums, bookstores, documentary screenings, ${deepVenue},${p.they} want${partnerGender === "girl" ? "s" : "s"} dates that feed the mind. Bring your curiosity, not just your credit card.` }; }
+  if (q3.includes("Athletic / outdoorsy")) return { emoji: "🌿", title: "The Outdoor Type", description: `${p.Their} happy place has fresh air and a view. Sunrise hikes, beach days, kayaking, farmers markets,if it gets ${p.them} outside and moving, ${p.theyre} already excited. ${p.They} don't need fancy. ${p.They} need${partnerGender === "girl" ? "s" : "s"} you, sunlight, and something to explore.` };
+  return { emoji: "💫", title: "The Vibe", description: `${p.They} don't fit in one box,and that's what makes ${p.them} fun to plan for. One week it's a cozy night in, the next ${p.they} want${partnerGender === "girl" ? "s" : "s"} to try something completely new. Keep ${p.them} guessing, mix up the energy, and ${p.theyll} never get bored.` };
 }
 
 // ——— VIBE REVEAL (after unlock, first time only) ———
@@ -2557,7 +2557,7 @@ export default function App() {
             <h2 style={{ color: "#1B2A4A", fontSize: 24, margin: "0 0 10px", fontFamily: "'Playfair Display', serif", fontWeight: 700 }}>Before you go —</h2>
             <p style={{ color: "#4A5876", fontSize: 15, margin: "0 0 22px", lineHeight: 1.7 }}>I build custom AI tools and automation for businesses. If that's something you need, drop your email and I'll reach out personally.</p>
             {exitDone ? (
-              <p style={{ color: "#B8963E", fontSize: 15, fontWeight: 600, textAlign: "center", margin: 0 }}>Got it — I'll be in touch.</p>
+              <p style={{ color: "#B8963E", fontSize: 15, fontWeight: 600, textAlign: "center", margin: 0 }}>Got it,I'll be in touch.</p>
             ) : (
               <>
                 <input type="email" placeholder="you@email.com" value={exitEmail} onChange={e => setExitEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleExitSubmit()} style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, padding: "13px 16px", borderRadius: 10, border: "1px solid #E2DDD4", background: "#FFFFFF", color: "#1B2A4A", outline: "none", width: "100%", boxSizing: "border-box", marginBottom: 12 }} />

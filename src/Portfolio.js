@@ -13,8 +13,8 @@ export default function Portfolio() {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Sessions no longer affect card links,cards always go to landing pages
-  const sessions = { vela: false, trading: false };
+  // Sessions no longer affect card links, cards always go to landing pages
+  const sessions = { vela: false, trading: false }; // eslint-disable-line no-unused-vars
 
   const apps = [
     {
@@ -590,7 +590,7 @@ export default function Portfolio() {
             </div>
           </div>
 
-          {/* What I've Built,value highlights */}
+          {/* What I've Built - value highlights */}
           <div style={{
             background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
             padding: "40px 40px 44px", marginBottom: 28,
@@ -599,7 +599,7 @@ export default function Portfolio() {
               fontFamily: T.display, fontSize: 22, fontWeight: 700,
               color: T.navy, margin: "0 0 8px",
             }}>
-              What I've Built,and Why It Matters
+              What I've Built and Why It Matters
             </h3>
             <p style={{
               fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 28px", lineHeight: 1.7,

@@ -44,7 +44,7 @@ const themes = {
 
 export default function LoginPage({ product = "vela" }) {
   const T = themes[product] || themes.vela;
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // eslint-disable-line no-unused-vars
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

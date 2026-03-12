@@ -47,12 +47,12 @@ const FEATURES = [
   {
     icon: <IconBrain />,
     title: "Dual AI Engine",
-    desc: "Claude handles trade decisions. Grok scans X/Twitter for real-time market sentiment. Two AI systems working together — no other bot does this.",
+    desc: "Claude handles trade decisions. Grok scans X/Twitter for real-time market sentiment. Two AI systems working together,no other bot does this.",
   },
   {
     icon: <IconChart />,
     title: "Real Technical Analysis",
-    desc: "RSI, MACD, Bollinger Bands — computed mathematically, not guessed by an LLM. Your bot runs actual indicators on real price data.",
+    desc: "RSI, MACD, Bollinger Bands,computed mathematically, not guessed by an LLM. Your bot runs actual indicators on real price data.",
   },
   {
     icon: <IconLoop />,
@@ -72,7 +72,7 @@ const FEATURES = [
   {
     icon: <IconTarget />,
     title: "Risk-Matched Trading",
-    desc: "Take our risk quiz and your bot is calibrated to your comfort level. Conservative, moderate, or aggressive — you decide how it trades.",
+    desc: "Take our risk quiz and your bot is calibrated to your comfort level. Conservative, moderate, or aggressive,you decide how it trades.",
   },
 ];
 
@@ -101,7 +101,7 @@ const FAQS = [
   },
   {
     q: "How does the dual AI system work?",
-    a: "Claude (by Anthropic) is the decision engine — it analyzes technicals, reviews past trades, and decides when to buy/sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they catch signals that neither could alone.",
+    a: "Claude (by Anthropic) is the decision engine,it analyzes technicals, reviews past trades, and decides when to buy/sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they catch signals that neither could alone.",
   },
   {
     q: "What does the self-review loop do?",
@@ -113,7 +113,7 @@ const FAQS = [
   },
   {
     q: "Can I stop trading at any time?",
-    a: "Absolutely. You can pause or stop your bot from the dashboard at any time. Your funds stay in your Coinbase account — we never have custody of your money.",
+    a: "Absolutely. You can pause or stop your bot from the dashboard at any time. Your funds stay in your Coinbase account,we never have custody of your money.",
   },
 ];
 
@@ -511,7 +511,7 @@ function StatsBar() {
 
 export default function TradingLanding() {
   const [openFaq, setOpenFaq] = useState(null);
-  const hasSession = (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })();
+  const hasSession = (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })(); // eslint-disable-line no-unused-vars
 
   return (
     <div style={{ background: TT.bg, color: TT.text, fontFamily: TT.font, minHeight: "100vh" }}>
@@ -598,7 +598,7 @@ export default function TradingLanding() {
           maxWidth: 560,
         }}>
           One AI reads the charts. The other reads the room. Together they
-          find trades most humans miss — and they get smarter after every single one.
+          find trades most humans miss,and they get smarter after every single one.
         </p>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
@@ -635,7 +635,7 @@ export default function TradingLanding() {
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 560, marginLeft: "auto", marginRight: "auto",
           }}>
-            No coding. No complicated setup. We handle the infrastructure — you just connect your account.
+            No coding. No complicated setup. We handle the infrastructure,you just connect your account.
           </p>
         </div>
 
@@ -850,7 +850,7 @@ export default function TradingLanding() {
 
             <div style={{ borderTop: `1px solid ${TT.border}`, paddingTop: 28, textAlign: "left" }}>
               {[
-                "Free setup — no upfront cost",
+                "Free setup,no upfront cost",
                 "No monthly subscription",
                 "No fee on losing days",
                 "Your funds stay in YOUR Coinbase account",
