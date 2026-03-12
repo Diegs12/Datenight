@@ -879,6 +879,12 @@ function GoalsTab({ data, setData }) {
 export default function LifeTrackerDashboard() {
   const [tab, setTab] = useState("overview");
   const [data, setData] = usePersistedState("lifetracker_data", getInitialData());
+  const [showSignup, setShowSignup] = useState(false);
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupDone, setSignupDone] = useState(() => {
+    try { return !!localStorage.getItem("lifetracker_signup"); } catch { return false; }
+  });
 
   const tabs = [
     { key: "overview", label: "Overview", icon: "\u{1F4CA}" },
@@ -891,8 +897,60 @@ export default function LifeTrackerDashboard() {
 
   const resetData = () => { localStorage.removeItem("lifetracker_data"); setData(getInitialData()); };
 
+  const handleSignup = (e) => {
+    e.preventDefault();
+    if (!signupEmail.trim()) return;
+    try {
+      localStorage.setItem("lifetracker_signup", JSON.stringify({ name: signupName.trim(), email: signupEmail.trim(), date: new Date().toISOString() }));
+    } catch {}
+    setSignupDone(true);
+  };
+
   return (
     <div style={{ display: "flex", minHeight: "100vh", fontFamily: D.font }}>
+      {/* Signup Modal */}
+      {showSignup && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }} onClick={() => setShowSignup(false)}>
+          <div style={{ background: D.surface, borderRadius: 16, padding: "36px 32px", maxWidth: 440, width: "90%", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", fontFamily: D.font }} onClick={e => e.stopPropagation()}>
+            {signupDone ? (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>{"\u2705"}</div>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: D.text, margin: "0 0 8px" }}>You're on the list!</h2>
+                <p style={{ fontSize: 15, color: D.textDim, lineHeight: 1.6, margin: "0 0 24px" }}>
+                  We'll reach out within 24 hours to set up your personal dashboard.
+                </p>
+                <button onClick={() => setShowSignup(false)} style={{ ...primaryBtn, width: "100%", padding: "14px 0" }}>
+                  Back to Demo
+                </button>
+              </div>
+            ) : (
+              <>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: D.text, margin: "0 0 8px" }}>Get Your Own Dashboard</h2>
+                <p style={{ fontSize: 14, color: D.textDim, lineHeight: 1.6, margin: "0 0 24px" }}>
+                  Sign up for early access. Free to use — your data stays yours.
+                </p>
+                <form onSubmit={handleSignup}>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: D.textDim, display: "block", marginBottom: 4 }}>Name</label>
+                    <input value={signupName} onChange={e => setSignupName(e.target.value)} placeholder="Your name" style={inputStyle} />
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: D.textDim, display: "block", marginBottom: 4 }}>Email</label>
+                    <input value={signupEmail} onChange={e => setSignupEmail(e.target.value)} type="email" placeholder="you@email.com" required style={inputStyle} />
+                  </div>
+                  <button type="submit" style={{ ...primaryBtn, width: "100%", padding: "14px 0", fontSize: 15 }}>
+                    Request Early Access
+                  </button>
+                  <p style={{ fontSize: 12, color: D.textFaint, textAlign: "center", margin: "12px 0 0" }}>
+                    No credit card required. We'll set up your account within 24 hours.
+                  </p>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside style={{ width: 260, background: D.sidebar, padding: "24px 0", display: "flex", flexDirection: "column", position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 100 }}>
         <div style={{ padding: "0 24px 24px", borderBottom: "1px solid #2A2A2E" }}>
@@ -900,7 +958,7 @@ export default function LifeTrackerDashboard() {
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #10B981, #065F46)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff" }}>D</div>
             <div>
               <div style={{ fontSize: 15, fontWeight: 600, color: "#F5F0EB" }}>Diego V.</div>
-              <div style={{ fontSize: 12, color: "#6B6560" }}>Personal Dashboard</div>
+              <div style={{ fontSize: 12, color: "#6B6560" }}>Demo Account</div>
             </div>
           </div>
         </div>
@@ -911,7 +969,18 @@ export default function LifeTrackerDashboard() {
             </button>
           ))}
         </nav>
-        <div style={{ padding: "16px 24px", borderTop: "1px solid #2A2A2E" }}>
+        {/* Signup CTA */}
+        <div style={{ padding: "0 16px 16px" }}>
+          <button onClick={() => setShowSignup(true)} style={{
+            width: "100%", padding: "12px 0", borderRadius: 8, border: "none", cursor: "pointer",
+            background: "linear-gradient(135deg, #10B981, #065F46)", color: "#fff",
+            fontFamily: D.font, fontSize: 14, fontWeight: 700,
+            boxShadow: "0 2px 8px rgba(16,185,129,0.3)",
+          }}>
+            {signupDone ? "\u2713 Signed Up" : "Get Your Own Dashboard"}
+          </button>
+        </div>
+        <div style={{ padding: "12px 24px", borderTop: "1px solid #2A2A2E" }}>
           <Link to="/tracker" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#6B6560", textDecoration: "none", fontFamily: D.font, marginBottom: 12 }}>
             {"\u2190"} Back to Landing
           </Link>
@@ -924,6 +993,28 @@ export default function LifeTrackerDashboard() {
       {/* Main Content */}
       <main style={{ marginLeft: 260, flex: 1, background: D.bg, padding: 32, minHeight: "100vh" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          {/* Demo Banner */}
+          {!signupDone && (
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              background: D.primaryGhost, border: `1px solid rgba(16,185,129,0.2)`,
+              borderRadius: 10, padding: "12px 20px", marginBottom: 24,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 16 }}>{"\u{1F50D}"}</span>
+                <span style={{ fontSize: 14, color: D.text, fontWeight: 500 }}>
+                  You're exploring a demo account.
+                </span>
+              </div>
+              <button onClick={() => setShowSignup(true)} style={{
+                padding: "6px 16px", borderRadius: 6, border: "none", cursor: "pointer",
+                background: D.primary, color: "#fff",
+                fontFamily: D.font, fontSize: 13, fontWeight: 600,
+              }}>
+                Sign Up for Your Own
+              </button>
+            </div>
+          )}
           {tab === "overview" && <OverviewTab data={data} setData={setData} />}
           {tab === "tasks" && <TasksTab data={data} setData={setData} />}
           {tab === "habits" && <HabitsTab data={data} setData={setData} />}
