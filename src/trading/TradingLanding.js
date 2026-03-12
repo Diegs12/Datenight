@@ -535,21 +535,18 @@ export default function TradingLanding() {
           <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
           <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Pricing</button>
           <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
-          {hasSession && (
-            <Link to="/trading/dashboard" style={{
-              fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
-              padding: "8px 20px", borderRadius: 6,
-              background: TT.primary, color: "#fff",
-            }}>
-              Dashboard
-            </Link>
-          )}
+          <Link to="/trading/login" style={{
+            fontFamily: TT.font, fontSize: 14, fontWeight: 500, textDecoration: "none",
+            color: TT.textDim,
+          }}>
+            Log In
+          </Link>
           <Link to="/trading/signup" style={{
             fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
             padding: "8px 20px", borderRadius: 6,
-            border: `1px solid ${TT.primary}`, color: TT.primary,
+            background: TT.primary, color: "#fff",
           }}>
-            {hasSession ? "Account" : "Get Started"}
+            Try Demo
           </Link>
         </div>
       </nav>

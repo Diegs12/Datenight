@@ -5,6 +5,8 @@ import LifeTrackerLanding from "./LifeTrackerLanding";
 import LifeTrackerDashboard from "./LifeTrackerDashboard";
 import TradingApp from "./trading/TradingApp";
 import UnchartedLanding from "./UnchartedLanding";
+import VelaLanding from "./VelaLanding";
+import LoginPage from "./LoginPage";
 import { track, identify } from "./analytics";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
@@ -2494,6 +2496,12 @@ export default function App() {
       if (e.clientY > 0) return;
       if (sessionStorage.getItem("vela_exit_shown")) return;
       if (Date.now() - enterTimeRef.current < 30000) return;
+      // Don't show exit intent if user has a real profile on any product
+      try {
+        if (localStorage.getItem("vela_quiz")) return;
+        if (localStorage.getItem("vt_session")) return;
+        if (localStorage.getItem("lifetracker_email")) return;
+      } catch {}
       sessionStorage.setItem("vela_exit_shown", "true");
       setExitOpen(true);
     };
@@ -2526,9 +2534,13 @@ export default function App() {
         <Route path="/" element={<Portfolio />} />
         <Route path="/tracker" element={<LifeTrackerLanding />} />
         <Route path="/tracker/app" element={<LifeTrackerDashboard />} />
+        <Route path="/tracker/login" element={<LoginPage product="tracker" />} />
         <Route path="/trading/*" element={<TradingApp />} />
         <Route path="/uncharted" element={<UnchartedLanding />} />
-        <Route path="/vela/*" element={<VelaApp />} />
+        <Route path="/vela" element={<VelaLanding />} />
+        <Route path="/vela/app/*" element={<VelaApp />} />
+        <Route path="/vela/demo/*" element={<VelaApp />} />
+        <Route path="/vela/login" element={<LoginPage product="vela" />} />
         <Route path="*" element={
           <div style={{ background: "#0A0A0B", color: "#F5F0EB", fontFamily: "'Inter', sans-serif", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 24 }}>
             <div>

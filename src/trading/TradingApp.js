@@ -3,6 +3,7 @@ import TradingLanding from "./TradingLanding";
 import RiskQuiz from "./RiskQuiz";
 import TradingSignup from "./TradingSignup";
 import TradingDashboard from "./TradingDashboard";
+import LoginPage from "../LoginPage";
 
 export default function TradingApp() {
   return (
@@ -11,6 +12,7 @@ export default function TradingApp() {
       <Route path="quiz" element={<RiskQuiz />} />
       <Route path="signup" element={<TradingSignup />} />
       <Route path="dashboard" element={<TradingDashboard />} />
+      <Route path="login" element={<LoginPage product="trading" />} />
     </Routes>
   );
 }

@@ -314,7 +314,7 @@ export default function LifeTrackerLanding() {
               {link.label}
             </button>
           ))}
-          <Link to="/tracker/app" style={{
+          <Link to="/tracker/login" style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 500,
             color: T.textDim, textDecoration: "none", transition: "color 0.2s",
           }}>
@@ -326,7 +326,7 @@ export default function LifeTrackerLanding() {
             background: T.primary, color: "#fff",
             transition: "opacity 0.2s",
           }}>
-            Get Started
+            Try Demo
           </Link>
         </div>
       </nav>
@@ -355,16 +355,25 @@ export default function LifeTrackerLanding() {
           AI-integrated so your tools can talk to your life system.
         </p>
 
-        <Link to="/tracker/app" style={{
-          fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
-          padding: "14px 40px", borderRadius: 8, border: "none",
-          background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
-          color: "#fff", textDecoration: "none", display: "inline-block",
-          boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
-          marginBottom: 12,
-        }}>
-          Try the Live Demo
-        </Link>
+        <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 12 }}>
+          <Link to="/tracker/app" style={{
+            fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
+            padding: "14px 36px", borderRadius: 8, border: "none",
+            background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
+            color: "#fff", textDecoration: "none", display: "inline-block",
+            boxShadow: "0 4px 12px rgba(16,185,129,0.3), inset 0 1px 0 rgba(110,231,183,0.3)",
+          }}>
+            Try the Demo
+          </Link>
+          <Link to="/tracker/login" style={{
+            fontFamily: T.font, fontSize: 16, fontWeight: 600, cursor: "pointer",
+            padding: "14px 36px", borderRadius: 8, textDecoration: "none",
+            border: `1px solid ${T.border}`, color: T.textDim,
+            display: "inline-block",
+          }}>
+            Log In
+          </Link>
+        </div>
         <p style={{
           fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 60px",
         }}>

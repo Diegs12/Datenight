@@ -13,10 +13,8 @@ export default function Portfolio() {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const sessions = {
-    vela: (() => { try { return !!localStorage.getItem("vela_quiz"); } catch { return false; } })(),
-    trading: (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })(),
-  };
+  // Sessions no longer affect card links,cards always go to landing pages
+  const sessions = { vela: false, trading: false };
 
   const apps = [
     {
@@ -24,12 +22,12 @@ export default function Portfolio() {
       title: "Vela",
       tagline: "Date Night, Figured Out",
       description:
-        "Take a 2-minute quiz about your partner. Vela scores 154+ date ideas to their personality, plans every detail, and sends a beautiful invite — all for free.",
+        "Take a 2-minute quiz about your partner. Vela scores 154+ date ideas to their personality, plans every detail, and sends a beautiful invite. All for free.",
       tags: ["React", "Vercel", "PWA"],
       status: "Live",
-      link: sessions.vela ? "/vela" : "/vela",
-      dashboardLink: "/vela",
-      hasSession: sessions.vela,
+      link: "/vela",
+      dashboardLink: null,
+      hasSession: false,
       external: false,
       gradient: "linear-gradient(135deg, #141414 0%, #1C1810 50%, #141414 100%)",
       accent: "#D68853",
@@ -70,12 +68,12 @@ export default function Portfolio() {
       title: "Vallota Trading",
       tagline: "AI-Powered Crypto Trading",
       description:
-        "Dual-AI trading bot powered by Claude + Grok. Computed technical analysis, self-improving AI, and multi-timeframe signals — all on Coinbase Base L2.",
+        "Dual-AI trading bot powered by Claude + Grok. Computed technical analysis, self-improving AI, and multi-timeframe signals,all on Coinbase Base L2.",
       tags: ["Node.js", "Claude AI", "Grok", "Crypto"],
       status: "Live",
-      link: sessions.trading ? "/trading/dashboard" : "/trading",
+      link: "/trading",
       dashboardLink: "/trading/dashboard",
-      hasSession: sessions.trading,
+      hasSession: false,
       external: false,
       gradient: "linear-gradient(135deg, #0A0E17 0%, #162033 50%, #0A0E17 100%)",
       accent: "#00D4FF",
@@ -96,7 +94,7 @@ export default function Portfolio() {
       title: "UNCHARTED",
       tagline: "Sea-Doo Experiential App",
       description:
-        "A concept app I built for Sea-Doo's experiential events — gamified scavenger hunts, crew boards, and live photo feeds that solved the data collection problem. Pitched it, got it funded.",
+        "A concept app I built for Sea-Doo's experiential events: gamified scavenger hunts, crew boards, and live photo feeds that solved the data collection problem. Pitched it, got it funded.",
       tags: ["React 18", "Concept", "Experiential"],
       status: "Funded",
       link: "/uncharted",
@@ -575,7 +573,7 @@ export default function Portfolio() {
               <p style={{
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px",
               }}>
-                I'm Diego — a UNC Chapel Hill economics grad, Revenue and Growth Analyst
+                I'm Diego,a UNC Chapel Hill economics grad, Revenue and Growth Analyst
                 at a sports marketing agency in Cincinnati, and the founder of Vallota Ventures.
                 My day job sits at the intersection of marketing, finance, and operations. My
                 nights and weekends go into building AI-powered tools that solve the problems
@@ -585,14 +583,14 @@ export default function Portfolio() {
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: 0,
               }}>
                 I don't build for the sake of building. Every project on this site started
-                with a real problem — something I watched a business waste time or money on —
+                with a real problem, something I watched a business waste time or money on,
                 and turned into a working product. I'm relocating to Austin, TX and actively
                 looking for companies that want to stop talking about AI and start using it.
               </p>
             </div>
           </div>
 
-          {/* What I've Built — value highlights */}
+          {/* What I've Built,value highlights */}
           <div style={{
             background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
             padding: "40px 40px 44px", marginBottom: 28,
@@ -601,7 +599,7 @@ export default function Portfolio() {
               fontFamily: T.display, fontSize: 22, fontWeight: 700,
               color: T.navy, margin: "0 0 8px",
             }}>
-              What I've Built — and Why It Matters
+              What I've Built,and Why It Matters
             </h3>
             <p style={{
               fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 28px", lineHeight: 1.7,
@@ -614,12 +612,12 @@ export default function Portfolio() {
                 {
                   label: "Vela",
                   accent: T.gold,
-                  text: "Most couples spend 30+ minutes debating where to go on date night, then default to the same three places. Vela replaces that entire decision loop — a 2-minute personality quiz generates a ranked list of 154+ date ideas tailored to your partner, then builds the full plan: step-by-step instructions, shopping lists, budget, and a calendar invite sent directly to their inbox. It's live, free, and people are using it.",
+                  text: "Most couples spend 30+ minutes debating where to go on date night, then default to the same three places. Vela replaces that entire decision loop. A 2-minute personality quiz generates a ranked list of 154+ date ideas tailored to your partner, then builds the full plan: step-by-step instructions, shopping lists, budget, and a calendar invite sent directly to their inbox. It's live, free, and people are using it.",
                 },
                 {
                   label: "Vallota Trading",
                   accent: "#00D4FF",
-                  text: "A fully autonomous crypto trading bot running 24/7 on Railway. It pairs Claude for trade decisions with Grok for real-time sentiment analysis, layered on top of computed technical indicators (RSI, MACD, Bollinger Bands) across multiple timeframes. The bot reviews its own trades, learns from mistakes through a self-review loop, and syncs shared lessons to a knowledge base. This isn't a demo — it's executing paper trades on Coinbase Base L2 right now.",
+                  text: "A fully autonomous crypto trading bot running 24/7 on Railway. It pairs Claude for trade decisions with Grok for real-time sentiment analysis, layered on top of computed technical indicators (RSI, MACD, Bollinger Bands) across multiple timeframes. The bot reviews its own trades, learns from mistakes through a self-review loop, and syncs shared lessons to a knowledge base. This isn't a demo. It's executing paper trades on Coinbase Base L2 right now.",
                 },
                 {
                   label: "Life Tracker",
@@ -629,7 +627,7 @@ export default function Portfolio() {
                 {
                   label: "UNCHARTED",
                   accent: "#F59E0B",
-                  text: "A concept app I built for Sea-Doo's experiential marketing events — gamified scavenger hunts, crew leaderboards, and live photo feeds designed to solve the data collection problem that plagues experiential campaigns. I pitched it, and it got funded.",
+                  text: "A concept app I built for Sea-Doo's experiential marketing events,gamified scavenger hunts, crew leaderboards, and live photo feeds designed to solve the data collection problem that plagues experiential campaigns. I pitched it, and it got funded.",
                 },
               ].map((item) => (
                 <div key={item.label} style={{
@@ -661,7 +659,7 @@ export default function Portfolio() {
             </div>
           </div>
 
-          {/* Bottom — personal + CTA */}
+          {/* Bottom,personal + CTA */}
           <div style={{
             background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
             padding: "36px 40px",
@@ -670,14 +668,14 @@ export default function Portfolio() {
               fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 8px",
             }}>
               Outside of work, I've completed two Ironman 70.3 triathlons and I'm always
-              training for the next thing. Same mindset applies to how I build — pick
+              training for the next thing. Same mindset applies to how I build: pick
               something hard, commit, and ship it.
             </p>
             <p style={{
               fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: 0,
             }}>
               If you're a business owner tired of hearing about AI without seeing results,
-              or a team that needs someone who can actually build and ship — let's talk.
+              or a team that needs someone who can actually build and ship, let's talk.
             </p>
             <div style={{
               marginTop: 28, paddingTop: 24,
