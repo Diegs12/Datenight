@@ -196,26 +196,24 @@ export default function Portfolio() {
         className="vv-sidebar"
       >
         {/* Logo */}
-        <div style={{ marginBottom: 40, textAlign: "center" }}>
+        <div style={{ marginBottom: 40, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <img
             src="/vv-logo.png"
             alt="Vallota Ventures"
             style={{ width: 64, height: "auto", marginBottom: 10 }}
           />
-          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" }}>
-            <span style={{
-              fontFamily: T.display, fontSize: 18, fontWeight: 700,
-              color: T.navy, letterSpacing: 0.5,
-            }}>
-              VALLOTA
-            </span>
-            <span style={{
-              fontFamily: T.font, fontSize: 9, fontWeight: 500,
-              color: T.textDim, letterSpacing: 4, textTransform: "uppercase",
-            }}>
-              VENTURES
-            </span>
-          </div>
+          <span style={{
+            fontFamily: T.display, fontSize: 16, fontWeight: 700,
+            color: T.navy, letterSpacing: 3,
+          }}>
+            VALLOTA
+          </span>
+          <span style={{
+            fontFamily: T.font, fontSize: 8.5, fontWeight: 500,
+            color: T.textDim, letterSpacing: 5.5, textTransform: "uppercase",
+          }}>
+            VENTURES
+          </span>
         </div>
 
         {/* Nav links */}
