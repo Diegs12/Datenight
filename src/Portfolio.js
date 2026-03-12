@@ -31,11 +31,13 @@ export default function Portfolio() {
       dashboardLink: "/vela",
       hasSession: sessions.vela,
       external: false,
+      gradient: "linear-gradient(135deg, #1B2A4A 0%, #2D4A7A 50%, #1B2A4A 100%)",
+      accent: "#B8963E",
+      glow: "rgba(184,150,62,0.35)",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="10" fill={T.navy} fillOpacity="0.08" />
-          <path d="M20 10C20 10 14 18 14 24C14 27.3 16.7 30 20 30C23.3 30 26 27.3 26 24C26 18 20 10 20 10Z" fill={T.navy} />
-          <path d="M20 16C20 16 17 21 17 24.5C17 26.2 18.3 27.5 20 27.5C21.7 27.5 23 26.2 23 24.5C23 21 20 16 20 16Z" fill={T.gold} fillOpacity="0.5" />
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <path d="M24 8C24 8 16 18 16 26C16 30.4 19.6 34 24 34C28.4 34 32 30.4 32 26C32 18 24 8 24 8Z" fill="rgba(255,255,255,0.9)" />
+          <path d="M24 16C24 16 20 22 20 26C20 28.2 21.8 30 24 30C26.2 30 28 28.2 28 26C28 22 24 16 24 16Z" fill="#B8963E" fillOpacity="0.7" />
         </svg>
       ),
     },
@@ -51,13 +53,15 @@ export default function Portfolio() {
       dashboardLink: null,
       hasSession: false,
       external: false,
+      gradient: "linear-gradient(135deg, #0F172A 0%, #1E3A5F 50%, #0F172A 100%)",
+      accent: "#10B981",
+      glow: "rgba(16,185,129,0.35)",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="10" fill={T.navy} fillOpacity="0.08" />
-          <rect x="12" y="12" width="7" height="7" rx="1.5" fill={T.navy} />
-          <rect x="21" y="12" width="7" height="7" rx="1.5" fill={T.navy} fillOpacity="0.6" />
-          <rect x="12" y="21" width="7" height="7" rx="1.5" fill={T.navy} fillOpacity="0.6" />
-          <rect x="21" y="21" width="7" height="7" rx="1.5" fill={T.navy} fillOpacity="0.3" />
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="12" y="12" width="9" height="9" rx="2" fill="rgba(255,255,255,0.9)" />
+          <rect x="24" y="12" width="9" height="9" rx="2" fill="rgba(255,255,255,0.5)" />
+          <rect x="12" y="24" width="9" height="9" rx="2" fill="rgba(255,255,255,0.5)" />
+          <rect x="24" y="24" width="9" height="9" rx="2" fill="#10B981" fillOpacity="0.7" />
         </svg>
       ),
     },
@@ -73,11 +77,17 @@ export default function Portfolio() {
       dashboardLink: "/trading/dashboard",
       hasSession: sessions.trading,
       external: false,
+      gradient: "linear-gradient(135deg, #0A0E17 0%, #162033 50%, #0A0E17 100%)",
+      accent: "#00D4FF",
+      glow: "rgba(0,212,255,0.35)",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="10" fill={T.navy} fillOpacity="0.08" />
-          <path d="M12 26L17 20L21 23L28 14" stroke={T.navy} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M24 14H28V18" stroke={T.navy} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <path d="M12 32L19 24L25 28L36 16" stroke="rgba(255,255,255,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M30 16H36V22" stroke="#00D4FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="32" r="2.5" fill="rgba(255,255,255,0.5)" />
+          <circle cx="19" cy="24" r="2.5" fill="rgba(255,255,255,0.5)" />
+          <circle cx="25" cy="28" r="2.5" fill="rgba(255,255,255,0.5)" />
+          <circle cx="36" cy="16" r="2.5" fill="#00D4FF" />
         </svg>
       ),
     },
@@ -297,7 +307,7 @@ export default function Portfolio() {
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: 24,
+            gap: 28,
           }}>
             {apps.map((app) => {
               const isHovered = hoveredCard === app.id;
@@ -309,88 +319,141 @@ export default function Portfolio() {
                   onMouseEnter={() => setHoveredCard(app.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                   style={{
-                    background: T.surface,
-                    borderRadius: 16,
-                    border: `1px solid ${isHovered && isLive ? T.navy : T.border}`,
+                    borderRadius: 20,
                     overflow: "hidden",
-                    transition: "all 0.25s ease",
-                    transform: isHovered && isLive ? "translateY(-4px)" : "none",
+                    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+                    transform: isHovered && isLive ? "translateY(-8px) scale(1.02)" : "none",
                     boxShadow: isHovered && isLive
-                      ? "0 12px 40px rgba(27,42,74,0.12), 0 0 0 1px rgba(27,42,74,0.08)"
-                      : "0 2px 8px rgba(27,42,74,0.06)",
+                      ? `0 20px 60px ${app.glow}, 0 0 0 1px rgba(255,255,255,0.1)`
+                      : "0 4px 20px rgba(0,0,0,0.12)",
                     cursor: isLive ? "pointer" : "default",
                     textDecoration: "none",
                     color: "inherit",
-                    display: "block",
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
                   }}
                 >
-                  {/* Card Header */}
+                  {/* Full card gradient background */}
                   <div style={{
-                    height: 160, background: T.navy,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    position: "relative", overflow: "hidden",
+                    background: app.gradient,
+                    padding: "36px 28px 32px",
+                    position: "relative",
+                    overflow: "hidden",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
                   }}>
+                    {/* Ambient glow orb */}
                     <div style={{
-                      position: "absolute", inset: 0,
-                      background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)",
+                      position: "absolute",
+                      top: -40, right: -40,
+                      width: 180, height: 180,
+                      borderRadius: "50%",
+                      background: `radial-gradient(circle, ${app.glow} 0%, transparent 70%)`,
+                      transition: "opacity 0.35s ease",
+                      opacity: isHovered ? 0.8 : 0.3,
+                      pointerEvents: "none",
                     }} />
-                    <span style={{
-                      fontFamily: T.display, fontSize: 32, fontWeight: 700,
-                      color: "rgba(250,247,242,0.9)", letterSpacing: 1,
-                    }}>
-                      {app.title}
-                    </span>
-                  </div>
-
-                  {/* Card Body */}
-                  <div style={{ padding: "24px 24px 28px" }}>
+                    {/* Secondary glow */}
                     <div style={{
-                      display: "flex", alignItems: "center", gap: 12, marginBottom: 12,
+                      position: "absolute",
+                      bottom: -60, left: -30,
+                      width: 160, height: 160,
+                      borderRadius: "50%",
+                      background: `radial-gradient(circle, ${app.glow} 0%, transparent 70%)`,
+                      opacity: isHovered ? 0.4 : 0.1,
+                      transition: "opacity 0.35s ease",
+                      pointerEvents: "none",
+                    }} />
+
+                    {/* Top row: icon + status */}
+                    <div style={{
+                      display: "flex", alignItems: "flex-start", justifyContent: "space-between",
+                      marginBottom: 28, position: "relative", zIndex: 1,
                     }}>
-                      {app.icon}
-                      <div>
-                        <h3 style={{
-                          fontFamily: T.font, fontSize: 18, fontWeight: 700,
-                          color: T.navy, margin: 0,
-                        }}>
-                          {app.title}
-                        </h3>
-                        <span style={{
-                          fontFamily: T.font, fontSize: 13, color: T.textDim,
-                        }}>
-                          {app.tagline}
-                        </span>
+                      <div style={{
+                        width: 64, height: 64, borderRadius: 16,
+                        background: "rgba(255,255,255,0.08)",
+                        backdropFilter: "blur(12px)",
+                        WebkitBackdropFilter: "blur(12px)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "all 0.35s ease",
+                        transform: isHovered ? "scale(1.08)" : "none",
+                        boxShadow: isHovered ? `0 8px 24px ${app.glow}` : "none",
+                      }}>
+                        {app.icon}
                       </div>
                       <span style={{
-                        marginLeft: "auto",
                         fontFamily: T.font, fontSize: 11, fontWeight: 600,
-                        padding: "4px 10px", borderRadius: 12,
-                        background: "rgba(27,42,74,0.06)",
-                        color: T.navy,
-                        border: `1px solid rgba(27,42,74,0.12)`,
-                        letterSpacing: 0.3,
+                        padding: "5px 12px", borderRadius: 20,
+                        background: "rgba(255,255,255,0.1)",
+                        backdropFilter: "blur(8px)",
+                        WebkitBackdropFilter: "blur(8px)",
+                        color: app.accent,
+                        border: `1px solid ${app.accent}33`,
+                        letterSpacing: 0.5,
+                        textTransform: "uppercase",
+                        display: "flex", alignItems: "center", gap: 6,
                       }}>
+                        <span style={{
+                          width: 6, height: 6, borderRadius: "50%",
+                          background: app.accent,
+                          boxShadow: `0 0 8px ${app.accent}`,
+                        }} />
                         {app.status}
                       </span>
                     </div>
 
+                    {/* Title + tagline */}
+                    <div style={{ position: "relative", zIndex: 1, marginBottom: 16 }}>
+                      <h3 style={{
+                        fontFamily: T.display, fontSize: 26, fontWeight: 700,
+                        color: "#FFFFFF", margin: "0 0 6px", letterSpacing: 0.3,
+                      }}>
+                        {app.title}
+                      </h3>
+                      <span style={{
+                        fontFamily: T.font, fontSize: 14, fontWeight: 500,
+                        color: app.accent, letterSpacing: 0.3,
+                      }}>
+                        {app.tagline}
+                      </span>
+                    </div>
+
+                    {/* Description */}
                     <p style={{
-                      fontFamily: T.font, fontSize: 14, color: T.textDim,
-                      lineHeight: 1.7, margin: "0 0 20px",
+                      fontFamily: T.font, fontSize: 14,
+                      color: "rgba(255,255,255,0.6)",
+                      lineHeight: 1.7, margin: "0 0 24px",
+                      position: "relative", zIndex: 1,
+                      flex: 1,
                     }}>
                       {app.description}
                     </p>
 
+                    {/* Divider */}
+                    <div style={{
+                      height: 1,
+                      background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)",
+                      marginBottom: 20,
+                      position: "relative", zIndex: 1,
+                    }} />
+
+                    {/* Tags + Launch */}
                     <div style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between",
+                      position: "relative", zIndex: 1,
                     }}>
                       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                         {app.tags.map((tag) => (
                           <span key={tag} style={{
                             fontFamily: T.font, fontSize: 11, fontWeight: 500,
-                            padding: "4px 10px", borderRadius: 6,
-                            background: T.surfaceAlt, color: T.textFaint,
-                            border: `1px solid ${T.border}`,
+                            padding: "4px 10px", borderRadius: 8,
+                            background: "rgba(255,255,255,0.06)",
+                            color: "rgba(255,255,255,0.45)",
+                            border: "1px solid rgba(255,255,255,0.08)",
                           }}>
                             {tag}
                           </span>
@@ -399,12 +462,15 @@ export default function Portfolio() {
                       {isLive && (
                         <span style={{
                           fontFamily: T.font, fontSize: 13, fontWeight: 600,
-                          color: app.hasSession ? T.gold : T.navy,
-                          display: "flex", alignItems: "center", gap: 4,
+                          color: app.accent,
+                          display: "flex", alignItems: "center", gap: 6,
+                          transition: "all 0.25s ease",
+                          transform: isHovered ? "translateX(4px)" : "none",
                         }}>
-                          {app.hasSession ? "Open Dashboard" : "Launch"}
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          {app.hasSession ? "Dashboard" : "Launch"}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                            style={{ transition: "transform 0.25s ease", transform: isHovered ? "translateX(2px)" : "none" }}>
                             <path d="M5 12h14M12 5l7 7-7 7" />
                           </svg>
                         </span>
