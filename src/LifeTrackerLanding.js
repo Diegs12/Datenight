@@ -256,7 +256,7 @@ function DashboardMockup() {
 export default function LifeTrackerLanding() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false); // eslint-disable-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {

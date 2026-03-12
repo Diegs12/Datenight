@@ -118,7 +118,7 @@ const FAQS = [
 ];
 
 // ─── ANIMATED TERMINAL ───
-function TerminalAnimation() {
+function TerminalAnimation() { // eslint-disable-line no-unused-vars
   const lines = [
     { color: TT.textDim, text: "$ vallota-bot --start" },
     { color: TT.textFaint, text: "" },
