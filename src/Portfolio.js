@@ -314,7 +314,7 @@ export default function Portfolio() {
               margin: "0 0 40px", maxWidth: 560,
             }}>
               I take on complex operational problems and build AI tools that fix them.
-              Everything below is something I designed, built, and shipped — each for a
+              Everything below is something I designed, built, and shipped, each for a
               different reason. Some were built for clients, some for curiosity, some just
               because the problem bugged me. They're all live and working right now. Click
               into any project to see the thinking, the product, and a demo.
