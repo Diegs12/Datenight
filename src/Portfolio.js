@@ -310,11 +310,14 @@ export default function Portfolio() {
             </h1>
 
             <p style={{
-              fontFamily: T.font, fontSize: 18, color: T.textDim, lineHeight: 1.8,
-              margin: "0 0 40px", maxWidth: 520,
+              fontFamily: T.font, fontSize: 17, color: T.textDim, lineHeight: 1.85,
+              margin: "0 0 40px", maxWidth: 560,
             }}>
-              I build practical AI tools that solve real operational problems for businesses.
-              This is the home for everything I'm building and shipping.
+              I take on complex operational problems and build AI tools that fix them.
+              Everything below is something I designed, built, and shipped — each for a
+              different reason. Some were built for clients, some for curiosity, some just
+              because the problem bugged me. They're all live and working right now. Click
+              into any project to see the thinking, the product, and a demo.
             </p>
 
             <button onClick={() => scrollTo("projects")} style={{
