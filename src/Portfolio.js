@@ -348,7 +348,7 @@ export default function Portfolio() {
 
           <div className="vv-projects-grid" style={{
             display: "grid",
-            gridTemplateColumns: `repeat(${apps.length}, 1fr)`,
+            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
             gap: 28,
           }}>
             {apps.map((app) => {

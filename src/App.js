@@ -2538,20 +2538,20 @@ export default function App() {
         } />
       </Routes>
       {exitOpen && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", padding: 24 }}>
-          <div style={{ background: T.surface, borderRadius: 14, padding: "40px 32px", maxWidth: 400, width: "100%", border: `1px solid ${T.border}`, boxShadow: "0 8px 40px rgba(0,0,0,0.5)", fontFamily: T.font }}>
-            <h2 style={{ color: T.text, fontSize: 22, margin: "0 0 12px", fontFamily: T.display, fontWeight: 700 }}>Don't lose your matches.</h2>
-            <p style={{ color: T.textDim, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>Enter your email and we'll save your personalized date plan.</p>
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)", padding: 24 }}>
+          <div style={{ background: "#FAF7F2", borderRadius: 16, padding: "44px 36px", maxWidth: 420, width: "100%", border: "1px solid #E2DDD4", boxShadow: "0 12px 48px rgba(27,42,74,0.18)", fontFamily: "'Inter', sans-serif" }}>
+            <h2 style={{ color: "#1B2A4A", fontSize: 24, margin: "0 0 10px", fontFamily: "'Playfair Display', serif", fontWeight: 700 }}>Before you go —</h2>
+            <p style={{ color: "#4A5876", fontSize: 15, margin: "0 0 22px", lineHeight: 1.7 }}>I build custom AI tools and automation for businesses. If that's something you need, drop your email and I'll reach out personally.</p>
             {exitDone ? (
-              <p style={{ color: T.primary, fontSize: 15, fontWeight: 600, textAlign: "center", margin: 0 }}>Saved! Check your inbox.</p>
+              <p style={{ color: "#B8963E", fontSize: 15, fontWeight: 600, textAlign: "center", margin: 0 }}>Got it — I'll be in touch.</p>
             ) : (
               <>
-                <input type="email" placeholder="you@email.com" value={exitEmail} onChange={e => setExitEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleExitSubmit()} style={inp({ marginBottom: 12 })} />
-                <button onClick={handleExitSubmit} style={btn(T.primary, "#141414", { width: "100%", fontSize: 15, padding: "13px 22px", fontWeight: 700 })}>Save My Matches</button>
+                <input type="email" placeholder="you@email.com" value={exitEmail} onChange={e => setExitEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleExitSubmit()} style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, padding: "13px 16px", borderRadius: 10, border: "1px solid #E2DDD4", background: "#FFFFFF", color: "#1B2A4A", outline: "none", width: "100%", boxSizing: "border-box", marginBottom: 12 }} />
+                <button onClick={handleExitSubmit} style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, fontWeight: 700, border: "none", borderRadius: 10, cursor: "pointer", padding: "14px 22px", background: "#1B2A4A", color: "#FAF7F2", width: "100%", boxShadow: "0 4px 12px rgba(27,42,74,0.2)" }}>Let's Talk</button>
               </>
             )}
             <div style={{ textAlign: "center", marginTop: 14 }}>
-              <button onClick={handleExitDismiss} style={{ background: "none", border: "none", color: T.textFaint, fontSize: 13, cursor: "pointer", fontFamily: T.font }}>No thanks</button>
+              <button onClick={handleExitDismiss} style={{ background: "none", border: "none", color: "#8B95A5", fontSize: 13, cursor: "pointer", fontFamily: "'Inter', sans-serif" }}>No thanks</button>
             </div>
           </div>
         </div>
