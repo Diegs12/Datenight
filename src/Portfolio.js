@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const T = {
-  bg: "#0A0A0B", surface: "#141416", surfaceAlt: "#1C1C1F", border: "#2A2A2E",
-  primary: "#D68853", accent: "#D68853", text: "#F5F0EB", textDim: "#A39E98",
-  textFaint: "#6B6560", font: "'Inter', sans-serif", display: "'Playfair Display', serif",
+  bg: "#FAF7F2", surface: "#FFFFFF", surfaceAlt: "#F0EDE6", border: "#E2DDD4",
+  navy: "#1B2A4A", gold: "#B8963E", text: "#1B2A4A", textDim: "#4A5876",
+  textFaint: "#8B95A5", font: "'Inter', sans-serif", display: "'Playfair Display', serif",
 };
 
 export default function Portfolio() {
@@ -24,17 +24,15 @@ export default function Portfolio() {
         "Take a 2-minute quiz about your partner. Vela scores 154+ date ideas to their personality, plans every detail, and sends a beautiful invite — all for free.",
       tags: ["React", "Vercel", "PWA"],
       status: "Live",
-      statusColor: "#4ADE80",
       link: sessions.vela ? "/vela" : "/vela",
       dashboardLink: "/vela",
       hasSession: sessions.vela,
       external: false,
-      gradient: "linear-gradient(135deg, #D68853 0%, #8B4A28 100%)",
       icon: (
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="10" fill="#D68853" fillOpacity="0.15" />
-          <path d="M20 10C20 10 14 18 14 24C14 27.3 16.7 30 20 30C23.3 30 26 27.3 26 24C26 18 20 10 20 10Z" fill="#D68853" />
-          <path d="M20 16C20 16 17 21 17 24.5C17 26.2 18.3 27.5 20 27.5C21.7 27.5 23 26.2 23 24.5C23 21 20 16 20 16Z" fill="#FFD0A1" fillOpacity="0.5" />
+          <rect width="40" height="40" rx="10" fill={T.navy} fillOpacity="0.08" />
+          <path d="M20 10C20 10 14 18 14 24C14 27.3 16.7 30 20 30C23.3 30 26 27.3 26 24C26 18 20 10 20 10Z" fill={T.navy} />
+          <path d="M20 16C20 16 17 21 17 24.5C17 26.2 18.3 27.5 20 27.5C21.7 27.5 23 26.2 23 24.5C23 21 20 16 20 16Z" fill={T.gold} fillOpacity="0.5" />
         </svg>
       ),
     },
@@ -46,19 +44,17 @@ export default function Portfolio() {
         "Full-stack personal dashboard for tracking finances, tasks, habits, workouts, and goals. AI-integrated API so any LLM can create tasks, log habits, and update progress.",
       tags: ["React", "Express", "Prisma", "AI API"],
       status: "Live",
-      statusColor: "#4ADE80",
       link: "/tracker",
       dashboardLink: null,
       hasSession: false,
       external: false,
-      gradient: "linear-gradient(135deg, #10B981 0%, #065F46 100%)",
       icon: (
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="10" fill="#10B981" fillOpacity="0.15" />
-          <rect x="12" y="12" width="7" height="7" rx="1.5" fill="#10B981" />
-          <rect x="21" y="12" width="7" height="7" rx="1.5" fill="#10B981" fillOpacity="0.6" />
-          <rect x="12" y="21" width="7" height="7" rx="1.5" fill="#10B981" fillOpacity="0.6" />
-          <rect x="21" y="21" width="7" height="7" rx="1.5" fill="#10B981" fillOpacity="0.3" />
+          <rect width="40" height="40" rx="10" fill={T.navy} fillOpacity="0.08" />
+          <rect x="12" y="12" width="7" height="7" rx="1.5" fill={T.navy} />
+          <rect x="21" y="12" width="7" height="7" rx="1.5" fill={T.navy} fillOpacity="0.6" />
+          <rect x="12" y="21" width="7" height="7" rx="1.5" fill={T.navy} fillOpacity="0.6" />
+          <rect x="21" y="21" width="7" height="7" rx="1.5" fill={T.navy} fillOpacity="0.3" />
         </svg>
       ),
     },
@@ -70,17 +66,15 @@ export default function Portfolio() {
         "Dual-AI trading bot powered by Claude + Grok. Computed technical analysis, self-improving AI, and multi-timeframe signals — all on Coinbase Base L2.",
       tags: ["Node.js", "Claude AI", "Grok", "Crypto"],
       status: "Live",
-      statusColor: "#4ADE80",
       link: sessions.trading ? "/trading/dashboard" : "/trading",
       dashboardLink: "/trading/dashboard",
       hasSession: sessions.trading,
       external: false,
-      gradient: "linear-gradient(135deg, #6366F1 0%, #4338CA 100%)",
       icon: (
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="10" fill="#6366F1" fillOpacity="0.15" />
-          <path d="M12 26L17 20L21 23L28 14" stroke="#6366F1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M24 14H28V18" stroke="#6366F1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <rect width="40" height="40" rx="10" fill={T.navy} fillOpacity="0.08" />
+          <path d="M12 26L17 20L21 23L28 14" stroke={T.navy} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M24 14H28V18" stroke={T.navy} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
     },
@@ -94,12 +88,27 @@ export default function Portfolio() {
         padding: "20px 24px", maxWidth: 1040, margin: "0 auto",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <span style={{
-          fontFamily: T.display, fontSize: 20, fontWeight: 700,
-          color: T.text, letterSpacing: 0.5,
-        }}>
-          Vallota Ventures
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <img
+            src="/vv-logo.png"
+            alt="Vallota Ventures"
+            style={{ height: 44, width: "auto" }}
+          />
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+            <span style={{
+              fontFamily: T.display, fontSize: 19, fontWeight: 700,
+              color: T.navy, letterSpacing: 0.5,
+            }}>
+              VALLOTA
+            </span>
+            <span style={{
+              fontFamily: T.font, fontSize: 10, fontWeight: 500,
+              color: T.textDim, letterSpacing: 4, textTransform: "uppercase",
+            }}>
+              VENTURES
+            </span>
+          </div>
+        </div>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <button onClick={() => { const el = document.getElementById("projects"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{
             background: "none", border: "none", cursor: "pointer",
@@ -133,22 +142,19 @@ export default function Portfolio() {
           <div style={{
             display: "inline-block", marginBottom: 24,
             padding: "6px 14px", borderRadius: 20,
-            background: "rgba(214,136,83,0.08)", border: "1px solid rgba(214,136,83,0.12)",
+            background: "rgba(184,150,62,0.08)", border: "1px solid rgba(184,150,62,0.18)",
             fontFamily: T.font, fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
-            color: T.primary, textTransform: "uppercase",
+            color: T.gold, textTransform: "uppercase",
           }}>
             Builder &middot; Strategist
           </div>
 
           <h1 style={{
             fontFamily: T.display, fontSize: "clamp(40px, 7vw, 64px)",
-            fontWeight: 700, lineHeight: 1.1, margin: "0 0 24px", color: T.text,
+            fontWeight: 700, lineHeight: 1.1, margin: "0 0 24px", color: T.navy,
           }}>
             Hi, I'm{" "}
-            <span style={{
-              background: "linear-gradient(90deg, #FFD0A1, #D68853)",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            }}>
+            <span style={{ color: T.gold }}>
               Diego
             </span>
           </h1>
@@ -165,9 +171,9 @@ export default function Portfolio() {
             <button onClick={() => { const el = document.getElementById("projects"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{
               fontFamily: T.font, fontSize: 15, fontWeight: 700, cursor: "pointer",
               padding: "14px 32px", borderRadius: 8, border: "none",
-              background: "linear-gradient(180deg, #FFD0A1 0%, #D68853 40%, #8B4A28 100%)",
-              color: "#141414",
-              boxShadow: "0 4px 12px rgba(139,74,40,0.25), inset 0 1px 0 rgba(255,208,161,0.3)",
+              background: T.navy,
+              color: "#FAF7F2",
+              boxShadow: "0 4px 12px rgba(27,42,74,0.2)",
             }}>
               View Projects
             </button>
@@ -211,7 +217,7 @@ export default function Portfolio() {
         <div style={{ marginBottom: 48 }}>
           <h2 style={{
             fontFamily: T.display, fontSize: "clamp(28px, 5vw, 40px)",
-            fontWeight: 700, lineHeight: 1.15, margin: "0 0 12px", color: T.text,
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 12px", color: T.navy,
           }}>
             Projects
           </h2>
@@ -239,33 +245,32 @@ export default function Portfolio() {
                 style={{
                   background: T.surface,
                   borderRadius: 16,
-                  border: `1px solid ${isHovered && isLive ? T.primary : T.border}`,
+                  border: `1px solid ${isHovered && isLive ? T.navy : T.border}`,
                   overflow: "hidden",
                   transition: "all 0.25s ease",
                   transform: isHovered && isLive ? "translateY(-4px)" : "none",
                   boxShadow: isHovered && isLive
-                    ? "0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(214,136,83,0.1)"
-                    : "0 2px 8px rgba(0,0,0,0.2)",
+                    ? "0 12px 40px rgba(27,42,74,0.12), 0 0 0 1px rgba(27,42,74,0.08)"
+                    : "0 2px 8px rgba(27,42,74,0.06)",
                   cursor: isLive ? "pointer" : "default",
                   textDecoration: "none",
                   color: "inherit",
                   display: "block",
                 }}
               >
-                {/* Card Header / Preview Area */}
+                {/* Card Header */}
                 <div style={{
-                  height: 160, background: app.gradient,
+                  height: 160, background: T.navy,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   position: "relative", overflow: "hidden",
                 }}>
                   <div style={{
                     position: "absolute", inset: 0,
-                    background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 60%)",
+                    background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)",
                   }} />
                   <span style={{
                     fontFamily: T.display, fontSize: 32, fontWeight: 700,
-                    color: "rgba(255,255,255,0.9)", letterSpacing: 1,
-                    textShadow: "0 2px 12px rgba(0,0,0,0.3)",
+                    color: "rgba(250,247,242,0.9)", letterSpacing: 1,
                   }}>
                     {app.title}
                   </span>
@@ -280,7 +285,7 @@ export default function Portfolio() {
                     <div>
                       <h3 style={{
                         fontFamily: T.font, fontSize: 18, fontWeight: 700,
-                        color: T.text, margin: 0,
+                        color: T.navy, margin: 0,
                       }}>
                         {app.title}
                       </h3>
@@ -294,9 +299,9 @@ export default function Portfolio() {
                       marginLeft: "auto",
                       fontFamily: T.font, fontSize: 11, fontWeight: 600,
                       padding: "4px 10px", borderRadius: 12,
-                      background: `${app.statusColor}15`,
-                      color: app.statusColor,
-                      border: `1px solid ${app.statusColor}30`,
+                      background: "rgba(27,42,74,0.06)",
+                      color: T.navy,
+                      border: `1px solid rgba(27,42,74,0.12)`,
                       letterSpacing: 0.3,
                     }}>
                       {app.status}
@@ -328,7 +333,7 @@ export default function Portfolio() {
                     {isLive && (
                       <span style={{
                         fontFamily: T.font, fontSize: 13, fontWeight: 600,
-                        color: app.hasSession ? "#4ADE80" : T.primary,
+                        color: app.hasSession ? T.gold : T.navy,
                         display: "flex", alignItems: "center", gap: 4,
                       }}>
                         {app.hasSession ? "Open Dashboard" : "Launch"}
@@ -379,7 +384,7 @@ export default function Portfolio() {
           <div style={{ flex: 1, minWidth: 280 }}>
             <h2 style={{
               fontFamily: T.display, fontSize: "clamp(24px, 4vw, 32px)",
-              fontWeight: 700, lineHeight: 1.15, margin: "0 0 20px", color: T.text,
+              fontWeight: 700, lineHeight: 1.15, margin: "0 0 20px", color: T.navy,
             }}>
               About Me
             </h2>
@@ -410,7 +415,7 @@ export default function Portfolio() {
             }}>
               <a href="mailto:diego@vallotaventures.com" style={{
                 fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                color: T.primary, textDecoration: "none",
+                color: T.navy, textDecoration: "none",
                 display: "flex", alignItems: "center", gap: 6,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -422,7 +427,7 @@ export default function Portfolio() {
               </a>
               <a href="https://github.com/Diegs12" target="_blank" rel="noopener noreferrer" style={{
                 fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                color: T.primary, textDecoration: "none",
+                color: T.navy, textDecoration: "none",
                 display: "flex", alignItems: "center", gap: 6,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -432,7 +437,7 @@ export default function Portfolio() {
               </a>
               <a href="https://substack.com/@diegovallota" target="_blank" rel="noopener noreferrer" style={{
                 fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                color: T.primary, textDecoration: "none",
+                color: T.navy, textDecoration: "none",
                 display: "flex", alignItems: "center", gap: 6,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
