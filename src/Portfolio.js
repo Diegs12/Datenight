@@ -346,9 +346,9 @@ export default function Portfolio() {
             </p>
           </div>
 
-          <div style={{
+          <div className="vv-projects-grid" style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gridTemplateColumns: `repeat(${apps.length}, 1fr)`,
             gap: 28,
           }}>
             {apps.map((app) => {
@@ -743,6 +743,7 @@ export default function Portfolio() {
           .vv-mobile-header { display: flex !important; }
           .vv-main { margin-left: 0 !important; padding-top: 60px; }
           .vv-main section, .vv-main footer, .vv-main > div { padding-left: 20px !important; padding-right: 20px !important; }
+          .vv-projects-grid { grid-template-columns: 1fr !important; }
         }
         @media (min-width: 769px) {
           .vv-mobile-header { display: none !important; }
