@@ -74,21 +74,21 @@ const PROFILES = {
     label: "Conservative",
     color: "#00d4ff",
     emoji: "🛡️",
-    desc: "You prefer stability over high returns. Your bot will use tighter stop-losses, smaller position sizes, and focus on high-confidence setups only. It'll trade less frequently but with more precision.",
+    desc: "You prefer stability over high returns. In this mode, the bot uses tighter stop-losses, smaller position sizes, and focuses on high-confidence setups only. It trades less frequently but with more precision.",
     config: "Tight stop-losses (2-3%), smaller positions, high-confidence signals only, lower trade frequency.",
   },
   moderate: {
     label: "Moderate",
     color: "#ffd93d",
     emoji: "⚖️",
-    desc: "You're comfortable with some risk for better returns. Your bot will balance opportunity with protection,moderate position sizes, standard stop-losses, and a mix of conservative and opportunistic trades.",
+    desc: "You're comfortable with some risk for better returns. In this mode, the bot balances opportunity with protection: moderate position sizes, standard stop-losses, and a mix of conservative and opportunistic trades.",
     config: "Standard stop-losses (3-5%), balanced position sizes, mixed signal confidence levels.",
   },
   aggressive: {
     label: "Aggressive",
     color: "#00ff88",
     emoji: "🚀",
-    desc: "You're here for maximum upside and understand the risk. Your bot will take more positions, use wider stop-losses to avoid getting shaken out, and act on a broader range of signals including sentiment-driven plays.",
+    desc: "You're here for maximum upside and understand the risk. In this mode, the bot takes more positions, uses wider stop-losses to avoid getting shaken out, and acts on a broader range of signals including sentiment-driven plays.",
     config: "Wider stop-losses (5-8%), larger positions, broader signal range including sentiment plays.",
   },
 };
@@ -290,7 +290,7 @@ export default function RiskQuiz() {
 
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
-                Create Your Account &rarr;
+                Explore the Demo &rarr;
               </Link>
               <button
                 onClick={() => { setResult(null); setCurrent(0); setAnswers({}); }}

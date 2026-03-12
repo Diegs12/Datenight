@@ -129,10 +129,10 @@ export default function TradingSignup() {
                 fontFamily: TT.font, fontSize: "clamp(28px, 5vw, 36px)",
                 fontWeight: 800, margin: "0 0 12px", color: TT.text,
               }}>
-                Create Your Account
+                Create Demo Account
               </h1>
               <p style={{ fontFamily: TT.font, fontSize: 16, color: TT.textDim, margin: 0 }}>
-                Free signup. No credit card required.
+                Free demo access. No credit card required.
               </p>
             </div>
 
@@ -172,7 +172,7 @@ export default function TradingSignup() {
                       Take the Risk Quiz first
                     </div>
                     <div style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim }}>
-                      We'll calibrate your bot to your risk tolerance
+                      See how the bot would trade for your risk level
                     </div>
                   </div>
                   <span style={{ color: TT.primary, fontSize: 18 }}>&rarr;</span>
@@ -240,7 +240,7 @@ export default function TradingSignup() {
                     opacity: loading ? 0.6 : 1,
                   }}
                 >
-                  {loading ? "Creating Account..." : "Create Account"}
+                  {loading ? "Creating Demo Account..." : "Create Demo Account"}
                 </button>
               </div>
             </form>
@@ -249,8 +249,8 @@ export default function TradingSignup() {
               fontFamily: TT.font, fontSize: 12, color: TT.textFaint,
               textAlign: "center", marginTop: 20, lineHeight: 1.6,
             }}>
-              By signing up, you agree that cryptocurrency trading involves risk.
-              Only invest what you can afford to lose.
+              This is a demo account. No real money is involved. The bot trades with
+              simulated paper funds only.
             </p>
           </>
         ) : (
@@ -271,10 +271,10 @@ export default function TradingSignup() {
                 fontFamily: TT.font, fontSize: "clamp(24px, 4vw, 32px)",
                 fontWeight: 800, margin: "0 0 12px", color: TT.text,
               }}>
-                Account Created
+                Demo Account Created
               </h1>
               <p style={{ fontFamily: TT.font, fontSize: 16, color: TT.textDim, margin: 0 }}>
-                Let's configure your bot.
+                Set up your demo preferences.
               </p>
             </div>
 
@@ -285,13 +285,13 @@ export default function TradingSignup() {
                   fontFamily: TT.font, fontSize: 14, fontWeight: 700,
                   color: TT.text, display: "block", marginBottom: 4,
                 }}>
-                  Trading Capital
+                  Demo Capital
                 </label>
                 <p style={{
                   fontFamily: TT.font, fontSize: 13, color: TT.textDim,
                   margin: "0 0 14px", lineHeight: 1.5,
                 }}>
-                  How much USD are you starting with? You can change this later.
+                  How much simulated USD should the demo bot start with?
                 </p>
                 <div style={{ position: "relative" }}>
                   <span style={{
@@ -320,7 +320,7 @@ export default function TradingSignup() {
                   fontFamily: TT.font, fontSize: 13, color: TT.textDim,
                   margin: "0 0 14px", lineHeight: 1.5,
                 }}>
-                  This determines how aggressively your bot trades.
+                  This determines how aggressively the demo bot trades.
                 </p>
                 <div style={{ display: "flex", gap: 8 }}>
                   {["conservative", "moderate", "aggressive"].map((p) => {
@@ -356,58 +356,25 @@ export default function TradingSignup() {
                 </div>
               </div>
 
-              {/* Coinbase Setup Instructions */}
+              {/* Demo Info */}
               <div style={{ ...card(), marginBottom: 24, padding: 28 }}>
                 <label style={{
                   fontFamily: TT.font, fontSize: 14, fontWeight: 700,
                   color: TT.text, display: "block", marginBottom: 12,
                 }}>
-                  Required Accounts
+                  Demo Mode
                 </label>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {[
-                    {
-                      title: "Coinbase CDP Account",
-                      desc: "Create a Coinbase Developer Platform account for API access.",
-                      url: "https://portal.cdp.coinbase.com",
-                    },
-                    {
-                      title: "Anthropic API Key",
-                      desc: "Get an API key from Anthropic to power the Claude AI engine.",
-                      url: "https://console.anthropic.com",
-                    },
-                  ].map((item, i) => (
-                    <div key={i} style={{
-                      padding: "14px 16px",
-                      borderRadius: 8,
-                      background: TT.surfaceAlt,
-                      border: `1px solid ${TT.border}`,
-                    }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontFamily: TT.font, fontSize: 14, fontWeight: 600, color: TT.text }}>
-                          {item.title}
-                        </span>
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ fontFamily: TT.mono, fontSize: 12, color: TT.primary, textDecoration: "none" }}
-                        >
-                          Open &rarr;
-                        </a>
-                      </div>
-                      <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim }}>
-                        {item.desc}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <p style={{
-                  fontFamily: TT.font, fontSize: 12, color: TT.textFaint,
-                  margin: "14px 0 0", lineHeight: 1.5,
+                <div style={{
+                  padding: "14px 16px",
+                  borderRadius: 8,
+                  background: TT.primaryDim,
+                  border: `1px solid rgba(0,212,255,0.2)`,
                 }}>
-                  You can set these up later. We'll guide you through the process in your dashboard.
-                </p>
+                  <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
+                    You'll have full access to the live demo dashboard where you can watch the AI bot
+                    make real-time trading decisions with paper funds. No API keys or real accounts needed.
+                  </p>
+                </div>
               </div>
 
               {error && (

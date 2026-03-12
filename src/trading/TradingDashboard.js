@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { TT, btnPrimary, btnOutline, inp, card } from "./theme";
+import { TT, btnOutline, card } from "./theme"; // eslint-disable-line no-unused-vars
 
 // In production, use the Vercel proxy (handles auth server-side).
 // Locally, hit the bot directly for development.
@@ -34,77 +34,8 @@ function fmtDate(iso) {
   return d.toLocaleDateString([], { month: "short", day: "numeric" });
 }
 
-// ─── SETTINGS TAB WITH SECURE KEY ENTRY ───
-function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfile, profileColors, handleLogout, fmtDate, fmtTime }) {
-  const [cdpKey, setCdpKey] = useState("");
-  const [cdpSecret, setCdpSecret] = useState("");
-  const [anthropicKey, setAnthropicKey] = useState("");
-  const [keyStatus, setKeyStatus] = useState({ coinbase_connected: false, anthropic_connected: false });
-  const [saving, setSaving] = useState(false);
-  const [saveMsg, setSaveMsg] = useState("");
-
-  useEffect(() => {
-    // Check which keys are already stored
-    try {
-      const session = JSON.parse(localStorage.getItem("vt_session") || "{}");
-      if (session.id) {
-        fetch(`/api/trading-keys?user_id=${encodeURIComponent(session.id)}`)
-          .then((r) => r.json())
-          .then((data) => setKeyStatus(data))
-          .catch(() => {});
-      }
-    } catch {}
-  }, []);
-
-  const handleSaveKeys = async () => {
-    setSaving(true);
-    setSaveMsg("");
-    try {
-      const session = JSON.parse(localStorage.getItem("vt_session") || "{}");
-      const body = { user_id: session.id || "anonymous" };
-      if (cdpKey.trim()) body.coinbase_cdp_key = cdpKey.trim();
-      if (cdpSecret.trim()) body.coinbase_cdp_secret = cdpSecret.trim();
-      if (anthropicKey.trim()) body.anthropic_key = anthropicKey.trim();
-
-      if (!body.coinbase_cdp_key && !body.coinbase_cdp_secret && !body.anthropic_key) {
-        setSaveMsg("Enter at least one key.");
-        setSaving(false);
-        return;
-      }
-
-      const res = await fetch("/api/trading-keys", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setSaveMsg("Keys encrypted and saved securely.");
-        setCdpKey("");
-        setCdpSecret("");
-        setAnthropicKey("");
-        // Refresh status
-        if (body.coinbase_cdp_key) setKeyStatus((s) => ({ ...s, coinbase_connected: true }));
-        if (body.anthropic_key) setKeyStatus((s) => ({ ...s, anthropic_connected: true }));
-      } else {
-        setSaveMsg(data.error || "Failed to save.");
-      }
-    } catch {
-      setSaveMsg("Network error. Try again.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const inputStyle = {
-    ...inp(),
-    fontFamily: TT.mono,
-    fontSize: 13,
-    padding: "10px 14px",
-    letterSpacing: 0.3,
-  };
-
+// ─── SETTINGS TAB (DEMO MODE) ───
+function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfile, profileColors, handleLogout, fmtDate, fmtTime }) { // eslint-disable-line no-unused-vars
   return (
     <div style={{ maxWidth: 600 }}>
       {/* Bot Status */}
@@ -120,7 +51,7 @@ function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfil
             </div>
             <div>
               <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim }}>Mode: </span>
-              <span style={{ fontFamily: TT.mono, fontSize: 13, color: TT.primary }}>{status.mode}</span>
+              <span style={{ fontFamily: TT.mono, fontSize: 13, color: TT.primary }}>Demo (Paper Trading)</span>
             </div>
             <div>
               <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim }}>Cycles: </span>
@@ -142,153 +73,26 @@ function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfil
         )}
       </div>
 
-      {/* Connect Your Accounts,Secure Key Entry */}
+      {/* Demo Notice */}
       <div style={{ ...card(), marginBottom: 20, padding: 28 }}>
         <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 6px" }}>
-          Connect Your Accounts
+          Demo Mode
         </h3>
         <p style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim, margin: "0 0 20px", lineHeight: 1.5 }}>
-          Your keys are encrypted with AES-256 before storage. They never touch your browser after submission.
+          You are viewing a live demo. All trades are executed with paper (simulated) funds.
+          No real money is involved and no API keys are needed.
         </p>
-
-        {/* Status indicators */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
-          <div style={{
-            flex: 1, padding: "12px 16px", borderRadius: 8,
-            background: keyStatus.coinbase_connected ? TT.greenDim : TT.surfaceAlt,
-            border: `1px solid ${keyStatus.coinbase_connected ? "rgba(0,255,136,0.2)" : TT.border}`,
-            display: "flex", alignItems: "center", gap: 10,
-          }}>
-            <span style={{
-              width: 8, height: 8, borderRadius: "50%",
-              background: keyStatus.coinbase_connected ? TT.green : TT.textFaint,
-            }} />
-            <div>
-              <div style={{ fontFamily: TT.font, fontSize: 13, fontWeight: 600, color: TT.text }}>Coinbase CDP</div>
-              <div style={{ fontFamily: TT.mono, fontSize: 11, color: keyStatus.coinbase_connected ? TT.green : TT.textFaint }}>
-                {keyStatus.coinbase_connected ? "Connected" : "Not connected"}
-              </div>
-            </div>
-          </div>
-          <div style={{
-            flex: 1, padding: "12px 16px", borderRadius: 8,
-            background: keyStatus.anthropic_connected ? TT.greenDim : TT.surfaceAlt,
-            border: `1px solid ${keyStatus.anthropic_connected ? "rgba(0,255,136,0.2)" : TT.border}`,
-            display: "flex", alignItems: "center", gap: 10,
-          }}>
-            <span style={{
-              width: 8, height: 8, borderRadius: "50%",
-              background: keyStatus.anthropic_connected ? TT.green : TT.textFaint,
-            }} />
-            <div>
-              <div style={{ fontFamily: TT.font, fontSize: 13, fontWeight: 600, color: TT.text }}>Anthropic</div>
-              <div style={{ fontFamily: TT.mono, fontSize: 11, color: keyStatus.anthropic_connected ? TT.green : TT.textFaint }}>
-                {keyStatus.anthropic_connected ? "Connected" : "Not connected"}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Coinbase CDP */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <label style={{ fontFamily: TT.font, fontSize: 13, fontWeight: 600, color: TT.textDim }}>
-              Coinbase CDP API Key Name
-            </label>
-            <a href="https://portal.cdp.coinbase.com" target="_blank" rel="noopener noreferrer"
-              style={{ fontFamily: TT.mono, fontSize: 11, color: TT.primary, textDecoration: "none" }}>
-              Get key &rarr;
-            </a>
-          </div>
-          <input
-            type="password"
-            value={cdpKey}
-            onChange={(e) => setCdpKey(e.target.value)}
-            placeholder="organizations/xxx/apiKeys/xxx"
-            autoComplete="off"
-            style={inputStyle}
-          />
-        </div>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ fontFamily: TT.font, fontSize: 13, fontWeight: 600, color: TT.textDim, display: "block", marginBottom: 8 }}>
-            Coinbase CDP Private Key
-          </label>
-          <input
-            type="password"
-            value={cdpSecret}
-            onChange={(e) => setCdpSecret(e.target.value)}
-            placeholder="-----BEGIN EC PRIVATE KEY-----"
-            autoComplete="off"
-            style={inputStyle}
-          />
-        </div>
-
-        {/* Anthropic */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <label style={{ fontFamily: TT.font, fontSize: 13, fontWeight: 600, color: TT.textDim }}>
-              Anthropic API Key
-            </label>
-            <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer"
-              style={{ fontFamily: TT.mono, fontSize: 11, color: TT.primary, textDecoration: "none" }}>
-              Get key &rarr;
-            </a>
-          </div>
-          <input
-            type="password"
-            value={anthropicKey}
-            onChange={(e) => setAnthropicKey(e.target.value)}
-            placeholder="sk-ant-..."
-            autoComplete="off"
-            style={inputStyle}
-          />
-        </div>
-
-        {saveMsg && (
-          <div style={{
-            fontFamily: TT.font, fontSize: 13,
-            color: saveMsg.includes("securely") ? TT.green : TT.red,
-            background: saveMsg.includes("securely") ? TT.greenDim : TT.redDim,
-            padding: "10px 14px", borderRadius: 8, marginBottom: 16,
-          }}>
-            {saveMsg}
-          </div>
-        )}
-
-        <button
-          onClick={handleSaveKeys}
-          disabled={saving}
-          style={{
-            ...btnPrimary({ width: "100%", fontSize: 15, padding: "14px 24px" }),
-            opacity: saving ? 0.6 : 1,
-          }}
-        >
-          {saving ? "Encrypting & Saving..." : "Save Keys Securely"}
-        </button>
-
         <div style={{
-          marginTop: 16, padding: "14px 16px", borderRadius: 8,
-          background: TT.surfaceAlt, border: `1px solid ${TT.border}`,
+          padding: "14px 16px", borderRadius: 8,
+          background: TT.primaryDim, border: `1px solid rgba(0,212,255,0.2)`,
         }}>
           <div style={{ fontFamily: TT.mono, fontSize: 11, fontWeight: 600, color: TT.primary, marginBottom: 8, letterSpacing: 0.5 }}>
-            HOW YOUR KEYS ARE PROTECTED
+            REAL TRADING COMING SOON
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {[
-              "Encrypted with AES-256-GCM before storage",
-              "Encryption key lives only on the server,never in your browser",
-              "Keys are sent over HTTPS (TLS 1.3)",
-              "We never store or log your raw keys",
-              "You can update or overwrite keys at any time",
-            ].map((item, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: TT.font, fontSize: 12, color: TT.textDim }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="3" strokeLinecap="round">
-                  <path d="M20 6L9 17L4 12" />
-                </svg>
-                {item}
-              </div>
-            ))}
-          </div>
+          <p style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
+            We're working through legal and compliance requirements to offer live trading.
+            Your demo account will be notified when it's available.
+          </p>
         </div>
       </div>
 
@@ -515,24 +319,23 @@ export default function TradingDashboard() {
         </div>
       </nav>
 
-      {/* ─── CONNECTION BANNER ─── */}
+      {/* ─── DEMO BANNER ─── */}
+      <div style={{
+        background: "rgba(0,212,255,0.08)", borderBottom: `1px solid rgba(0,212,255,0.15)`,
+        padding: "10px 24px", textAlign: "center",
+      }}>
+        <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.primary }}>
+          DEMO MODE: All trades use simulated paper funds. No real money is involved.
+          {connected && status ? ` Cycle ${status.cycleCount || 0} | Last: ${fmtTime(status.lastCycle)}` : ""}
+        </span>
+      </div>
       {!connected && !loading && (
         <div style={{
           background: TT.redDim, borderBottom: `1px solid rgba(255,71,87,0.15)`,
           padding: "10px 24px", textAlign: "center",
         }}>
           <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.red }}>
-            NOT CONNECTED,Cannot reach bot. Make sure your trading bot is running.
-          </span>
-        </div>
-      )}
-      {connected && status?.mode === "paper" && (
-        <div style={{
-          background: TT.primaryDim, borderBottom: `1px solid rgba(0,212,255,0.15)`,
-          padding: "10px 24px", textAlign: "center",
-        }}>
-          <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.primary }}>
-            PAPER TRADING,Bot is running with simulated funds. Cycle {status.cycleCount || 0} | Last: {fmtTime(status.lastCycle)}
+            NOT CONNECTED: Cannot reach bot. The demo bot may be restarting.
           </span>
         </div>
       )}

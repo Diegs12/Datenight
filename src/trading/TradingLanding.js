@@ -77,43 +77,39 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: "01", title: "Sign Up", desc: "Create your account, take the risk quiz, and tell us your trading capital." },
-  { num: "02", title: "Configure", desc: "Connect your Coinbase account and set your risk preferences. We walk you through every step." },
-  { num: "03", title: "Deploy", desc: "Your personal AI bot goes live on Coinbase Base L2. Monitor everything from your dashboard." },
+  { num: "01", title: "Sign Up", desc: "Create a free demo account and take the risk quiz to see how the bot would trade for you." },
+  { num: "02", title: "Explore", desc: "Browse the live dashboard and see real trades, AI decisions, and technical analysis in action." },
+  { num: "03", title: "Watch It Trade", desc: "Follow along as the bot runs on paper funds. See every decision and the reasoning behind it." },
 ];
 
 const FAQS = [
   {
-    q: "How does pricing work?",
-    a: "Setup is free. We take 2% of your daily realized profits only. If you don't make money, we don't make money. No monthly fees, no hidden costs.",
+    q: "Is this a live trading platform?",
+    a: "Not yet. Right now, Vallota Trading is a live demo. The bot runs 24/7 on paper funds so you can see exactly how it trades, what decisions it makes, and how it performs. We're working on making it available for real trading in the future.",
   },
   {
-    q: "What exchanges do you support?",
-    a: "We trade on Coinbase Base L2 network. You'll need a Coinbase account with CDP (Coinbase Developer Platform) access. We'll walk you through the setup.",
-  },
-  {
-    q: "How much capital do I need to start?",
-    a: "There's no minimum, but we recommend starting with at least $500 to see meaningful results. The bot works with any amount.",
-  },
-  {
-    q: "Can I lose money?",
-    a: "Yes. Crypto trading carries real risk. While our bot uses hard stop-losses and failsafe modes to limit downside, no trading system can guarantee profits. Only invest what you can afford to lose.",
+    q: "What exchanges does the bot trade on?",
+    a: "The demo bot trades on the Coinbase Base L2 network using simulated paper funds. No real money is involved.",
   },
   {
     q: "How does the dual AI system work?",
-    a: "Claude (by Anthropic) is the decision engine,it analyzes technicals, reviews past trades, and decides when to buy/sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they catch signals that neither could alone.",
+    a: "Claude (by Anthropic) is the decision engine. It analyzes technicals, reviews past trades, and decides when to buy or sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they catch signals that neither could alone.",
   },
   {
     q: "What does the self-review loop do?",
-    a: "After each trade closes, the AI reviews its reasoning, the outcome, and market conditions. It identifies patterns in its own mistakes and successes, then adjusts its future strategy. Your bot literally gets smarter over time.",
+    a: "After each trade closes, the AI reviews its reasoning, the outcome, and market conditions. It identifies patterns in its own mistakes and successes, then adjusts its future strategy. The bot literally gets smarter over time.",
   },
   {
     q: "Can I see what the bot is doing?",
-    a: "Yes. Your dashboard shows every trade, every AI decision with its reasoning, your portfolio performance, and real-time market data. Full transparency.",
+    a: "Yes. The demo dashboard shows every trade, every AI decision with its reasoning, portfolio performance, and real-time market data. Full transparency.",
   },
   {
-    q: "Can I stop trading at any time?",
-    a: "Absolutely. You can pause or stop your bot from the dashboard at any time. Your funds stay in your Coinbase account,we never have custody of your money.",
+    q: "When will real trading be available?",
+    a: "We're working through the legal and compliance requirements to offer real trading. Join the waitlist by creating a demo account and we'll notify you as soon as it's ready.",
+  },
+  {
+    q: "Does it cost anything?",
+    a: "The demo is completely free. When real trading launches, pricing details will be announced.",
   },
 ];
 
@@ -467,7 +463,7 @@ function StatsBar() {
     { label: "Timeframes", value: "4" },
     { label: "Indicators", value: "3+" },
     { label: "AI Models", value: "2" },
-    { label: "Profit Fee", value: "2%" },
+    { label: "Mode", value: "Demo" },
   ];
   return (
     <div style={{
@@ -533,7 +529,7 @@ export default function TradingLanding() {
         </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
-          <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Pricing</button>
+          <button onClick={() => { const el = document.getElementById("how-it-works"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>How It Works</button>
           <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
           <Link to="/trading/login" style={{
             fontFamily: TT.font, fontSize: 14, fontWeight: 500, textDecoration: "none",
@@ -567,7 +563,7 @@ export default function TradingLanding() {
           color: TT.green,
         }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: TT.green }} />
-          LIVE ON COINBASE BASE L2
+          LIVE DEMO
         </div>
 
         <h1 style={{
@@ -635,7 +631,7 @@ export default function TradingLanding() {
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 560, marginLeft: "auto", marginRight: "auto",
           }}>
-            No coding. No complicated setup. We handle the infrastructure,you just connect your account.
+            No coding. No complicated setup. Create a demo account and start exploring in minutes.
           </p>
         </div>
 
@@ -789,7 +785,7 @@ export default function TradingLanding() {
             fontFamily: TT.font, fontSize: 16, color: TT.textDim,
             lineHeight: 1.7, margin: "0 0 32px", maxWidth: 520, marginLeft: "auto", marginRight: "auto",
           }}>
-            Answer 6 quick questions. We'll calibrate your bot to match your risk tolerance,
+            Answer 6 quick questions. See how the bot would be calibrated to match your risk tolerance,
             timeline, and experience level.
           </p>
           <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 40px" }) }}>
@@ -798,8 +794,8 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── PRICING ─── */}
-      <section id="pricing" style={{
+      {/* ─── DEMO NOTICE ─── */}
+      <section id="demo-notice" style={{
         padding: "80px 24px 100px",
         background: TT.surface,
         borderTop: `1px solid ${TT.border}`,
@@ -813,12 +809,12 @@ export default function TradingLanding() {
             margin: "0 0 16px",
             color: TT.text,
           }}>
-            Simple, Aligned Pricing
+            Free Demo, Live Data
           </h2>
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 48px",
           }}>
-            We only make money when you do.
+            Watch the bot trade with paper funds in real time. No money required.
           </p>
 
           <div style={{
@@ -830,31 +826,17 @@ export default function TradingLanding() {
               color: TT.primary, letterSpacing: 1.5,
               marginBottom: 24, textTransform: "uppercase",
             }}>
-              PERFORMANCE FEE
-            </div>
-            <div style={{
-              fontFamily: TT.mono,
-              fontSize: "clamp(48px, 8vw, 72px)",
-              fontWeight: 800,
-              color: TT.text,
-              lineHeight: 1,
-              marginBottom: 8,
-            }}>
-              2<span style={{ color: TT.primary }}>%</span>
-            </div>
-            <div style={{
-              fontFamily: TT.font, fontSize: 16, color: TT.textDim, marginBottom: 36,
-            }}>
-              of daily realized profits only
+              WHAT YOU GET
             </div>
 
-            <div style={{ borderTop: `1px solid ${TT.border}`, paddingTop: 28, textAlign: "left" }}>
+            <div style={{ textAlign: "left" }}>
               {[
-                "Free setup,no upfront cost",
-                "No monthly subscription",
-                "No fee on losing days",
-                "Your funds stay in YOUR Coinbase account",
-                "Cancel anytime",
+                "Full access to the live demo dashboard",
+                "Real-time AI trade decisions and reasoning",
+                "Technical indicators and market analysis",
+                "Portfolio tracking with paper funds",
+                "Risk quiz to see your ideal strategy",
+                "No signup fee, no credit card",
               ].map((item, i) => (
                 <div key={i} style={{
                   display: "flex", alignItems: "center", gap: 12,
@@ -875,7 +857,7 @@ export default function TradingLanding() {
               marginTop: 32,
               ...btnPrimary({ width: "100%", fontSize: 16, padding: "16px 28px" }),
             }}>
-              Start Trading
+              Explore the Demo
             </Link>
           </div>
         </div>
@@ -969,16 +951,16 @@ export default function TradingLanding() {
             margin: "0 0 16px",
             color: TT.text,
           }}>
-            Ready to Deploy Your AI?
+            See the AI in Action
           </h2>
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 36px",
           }}>
-            Free setup. You only pay when you profit.
+            Explore the live demo. No money, no risk, full transparency.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
-              Get Started
+              Explore Demo
             </Link>
             <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 36px" }) }}>
               Take the Risk Quiz
@@ -1022,9 +1004,9 @@ export default function TradingLanding() {
           fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
           lineHeight: 1.6, margin: 0, textAlign: "center",
         }}>
-          Trading cryptocurrency involves substantial risk of loss and is not suitable for every investor. Past performance
-          is not indicative of future results. Vallota Trading does not guarantee profits. Only trade with capital you can
-          afford to lose. This is not financial advice.
+          This is a technology demo. No real money is traded on this platform. The bot operates with paper
+          (simulated) funds only. Past demo performance is not indicative of future results. This is not financial advice
+          and does not constitute an offer to trade real assets.
         </p>
       </div>
     </div>
