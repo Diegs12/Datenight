@@ -150,6 +150,14 @@ export default function RiskQuiz() {
 
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "60px 24px 100px" }}>
 
+        <p style={{
+          fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
+          textAlign: "center", marginBottom: 24, lineHeight: 1.6,
+        }}>
+          This quiz is for educational and demonstration purposes only. It does not constitute
+          investment advice or a recommendation to trade. All trading involves risk.
+        </p>
+
         {!result ? (
           <>
             {/* ─── PROGRESS ─── */}

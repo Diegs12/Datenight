@@ -47,7 +47,7 @@ const FEATURES = [
   {
     icon: <IconBrain />,
     title: "Dual AI Engine",
-    desc: "Claude handles trade decisions. Grok scans X/Twitter for real-time market sentiment. Two AI systems working together,no other bot does this.",
+    desc: "Claude handles trade decisions. Grok scans X/Twitter for real-time market sentiment. Two AI systems working together for broader market coverage.",
   },
   {
     icon: <IconChart />,
@@ -57,7 +57,7 @@ const FEATURES = [
   {
     icon: <IconLoop />,
     title: "Self-Improving AI",
-    desc: "After every trade, the AI reviews what it did right and wrong. It learns from its own history and adapts its strategy over time.",
+    desc: "After every trade, the AI reviews what it did right and wrong. It analyzes its own history and attempts to refine its approach over time.",
   },
   {
     icon: <IconClock />,
@@ -67,7 +67,7 @@ const FEATURES = [
   {
     icon: <IconShield />,
     title: "Hard Stop-Losses",
-    desc: "Every position has a hard stop-loss. If the AI makes a bad call, your downside is capped. Plus a failsafe mode that pauses trading in extreme conditions.",
+    desc: "Every position has a hard stop-loss to help limit losses. Plus a failsafe mode that pauses trading in extreme conditions. Stop-losses may not execute at exact prices during high volatility.",
   },
   {
     icon: <IconTarget />,
@@ -213,6 +213,7 @@ function TradingDashboardMockup() {
 
   const renderOverview = () => (
     <>
+      <div style={{ fontSize: 10, color: M.faint, textAlign: "center", marginBottom: 8, fontFamily: M.font, letterSpacing: 0.5, textTransform: "uppercase" }}>Simulated example data for illustration only</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 14 }}>
         <div style={cs}><div style={sl}>PORTFOLIO VALUE</div><div style={sv}>$12,847</div><div style={{ fontSize: 12, color: M.green, fontWeight: 600, marginTop: 4 }}>+28.47%</div></div>
         <div style={cs}><div style={sl}>TOTAL P&L</div><div style={sv}>$2,847</div><div style={{ fontSize: 12, color: M.dim, marginTop: 4 }}>47 trades</div></div>
@@ -329,6 +330,7 @@ function TradingDashboardMockup() {
 
   const renderPerformance = () => (
     <>
+      <div style={{ fontSize: 10, color: M.faint, textAlign: "center", marginBottom: 8, fontFamily: M.font, letterSpacing: 0.5, textTransform: "uppercase" }}>Hypothetical results for demonstration purposes only</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 14 }}>
         <div style={cs}><div style={{ ...sl, textAlign: "center" }}>WIN RATE</div><div style={{ ...sv, textAlign: "center" }}>67.2%</div></div>
         <div style={cs}><div style={{ ...sl, textAlign: "center" }}>PROFIT FACTOR</div><div style={{ ...sv, textAlign: "center" }}>2.14</div></div>
@@ -594,7 +596,7 @@ export default function TradingLanding() {
           maxWidth: 560,
         }}>
           One AI reads the charts. The other reads the room. Together they
-          find trades most humans miss,and they get smarter after every single one.
+          spot potential opportunities across charts and social sentiment, and refine their approach after every trade.
         </p>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
