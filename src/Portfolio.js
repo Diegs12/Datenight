@@ -381,6 +381,7 @@ export default function Portfolio() {
                     display: "flex",
                     flexDirection: "column",
                     position: "relative",
+                    width: "100%",
                   }}
                 >
                   {/* Full card gradient background */}
@@ -531,7 +532,7 @@ export default function Portfolio() {
 
               if (isLive) {
                 return (
-                  <Link key={app.id} to={app.link} style={{ textDecoration: "none", color: "inherit" }}>
+                  <Link key={app.id} to={app.link} style={{ textDecoration: "none", color: "inherit", display: "flex" }}>
                     {cardContent}
                   </Link>
                 );
