@@ -166,17 +166,66 @@ function TerminalAnimation() { // eslint-disable-line no-unused-vars
 }
 
 // ─── TRADING DASHBOARD MOCKUP ───
+const MOCKUP_THEMES = {
+  gold: {
+    bg: "#1a1f2e", card: "#212736", border: "#2a3344",
+    text: "#e8edf3", dim: "#8899aa", faint: "#4a5568",
+    green: "#10B981", red: "#ef4444", accent: "#fbbf24",
+    blue: "#60a5fa", cyan: "#67e8f9", purple: "#a78bfa",
+    font: "'Inter', sans-serif",
+  },
+  pink: {
+    bg: "#1f1520", card: "#2a1d2e", border: "#3d2a42",
+    text: "#f3e8ef", dim: "#aa8899", faint: "#68455c",
+    green: "#10B981", red: "#ef4444", accent: "#f472b6",
+    blue: "#60a5fa", cyan: "#67e8f9", purple: "#a78bfa",
+    font: "'Inter', sans-serif",
+  },
+  purple: {
+    bg: "#1a1530", card: "#221d38", border: "#332a4e",
+    text: "#ede8f3", dim: "#9988bb", faint: "#5a4878",
+    green: "#10B981", red: "#ef4444", accent: "#a78bfa",
+    blue: "#60a5fa", cyan: "#67e8f9", purple: "#a78bfa",
+    font: "'Inter', sans-serif",
+  },
+  emerald: {
+    bg: "#0f1f1a", card: "#152824", border: "#1e3d34",
+    text: "#e8f3ef", dim: "#88aa99", faint: "#456858",
+    green: "#10B981", red: "#ef4444", accent: "#10B981",
+    blue: "#60a5fa", cyan: "#67e8f9", purple: "#a78bfa",
+    font: "'Inter', sans-serif",
+  },
+  light: {
+    bg: "#f3f1ee", card: "#ffffff", border: "#e5e2dd",
+    text: "#1a1a1a", dim: "#6b7280", faint: "#9ca3af",
+    green: "#10B981", red: "#ef4444", accent: "#e8edf3",
+    blue: "#3b82f6", cyan: "#06b6d4", purple: "#8b5cf6",
+    font: "'Inter', sans-serif",
+  },
+  slate: {
+    bg: "#1e2127", card: "#282c34", border: "#3a3f4b",
+    text: "#abb2bf", dim: "#7f848e", faint: "#5c6370",
+    green: "#98c379", red: "#e06c75", accent: "#6b7280",
+    blue: "#61afef", cyan: "#56b6c2", purple: "#c678dd",
+    font: "'Inter', sans-serif",
+  },
+  midnight: {
+    bg: "#0a0e17", card: "#111827", border: "#1e293b",
+    text: "#f0f4f8", dim: "#94a3b8", faint: "#64748b",
+    green: "#10B981", red: "#ef4444", accent: "#1a1f2e",
+    blue: "#60a5fa", cyan: "#00d4ff", purple: "#a78bfa",
+    font: "'Inter', sans-serif",
+  },
+};
+const THEME_KEYS = ["gold", "pink", "purple", "emerald", "light", "slate", "midnight"];
+const THEME_DOTS = ["#fbbf24", "#f472b6", "#a78bfa", "#10B981", "#e8edf3", "#6b7280", "#1a1f2e"];
+
 function TradingDashboardMockup() {
   const [tab, setTab] = useState("overview");
   const [tradeFilter, setTradeFilter] = useState("all");
+  const [theme, setTheme] = useState("gold");
 
-  const M = {
-    bg: "#1a1f2e", card: "#212736", border: "#2a3344",
-    text: "#e8edf3", dim: "#8899aa", faint: "#4a5568",
-    green: "#10B981", red: "#ef4444", yellow: "#fbbf24",
-    blue: "#60a5fa", cyan: "#67e8f9", purple: "#a78bfa",
-    font: "'Inter', sans-serif",
-  };
+  const M = MOCKUP_THEMES[theme];
 
   const cs = { background: M.card, border: `1px solid ${M.border}`, borderRadius: 10, padding: "18px 22px" };
   const sl = { fontSize: 10, fontWeight: 600, color: M.dim, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 };
@@ -344,7 +393,7 @@ function TradingDashboardMockup() {
       <div style={cs}>
         <div style={sl}>PORTFOLIO GROWTH</div>
         <svg viewBox="0 0 500 120" style={{ width: "100%", height: 120, marginTop: 8 }}>
-          <polyline points="0,110 35,105 70,95 105,90 140,82 175,72 210,65 245,60 280,55 315,48 350,42 385,35 420,28 455,20 500,12" fill="none" stroke={M.yellow} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="0,110 35,105 70,95 105,90 140,82 175,72 210,65 245,60 280,55 315,48 350,42 385,35 420,28 455,20 500,12" fill="none" stroke={M.accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
     </>
@@ -399,15 +448,15 @@ function TradingDashboardMockup() {
   );
 
   return (
-    <div style={{ background: M.bg, borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)", maxWidth: 960, margin: "0 auto", fontFamily: M.font, textAlign: "left" }}>
+    <div style={{ background: M.bg, borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)", maxWidth: 960, margin: "0 auto", fontFamily: M.font, textAlign: "left", transition: "background 0.3s" }}>
       {/* Browser chrome */}
-      <div style={{ background: "#141824", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+      <div style={{ background: M.bg, borderBottom: `1px solid ${M.border}`, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", transition: "background 0.3s" }}>
         <div style={{ position: "absolute", left: 16, display: "flex", gap: 6 }}>
           <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#EF4444" }} />
           <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#FBBF24" }} />
           <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#22C55E" }} />
         </div>
-        <div style={{ background: "#2a3040", borderRadius: 20, padding: "6px 24px", fontSize: 12, color: M.dim, fontFamily: "'JetBrains Mono', monospace" }}>
+        <div style={{ background: M.card, borderRadius: 20, padding: "6px 24px", fontSize: 12, color: M.dim, fontFamily: "'JetBrains Mono', monospace", border: `1px solid ${M.border}` }}>
           vallotaventures.com/trading/dashboard
         </div>
       </div>
@@ -416,7 +465,7 @@ function TradingDashboardMockup() {
         {/* Sidebar */}
         <div style={{ width: 200, borderRight: `1px solid ${M.border}`, padding: "20px 0", display: "flex", flexDirection: "column", minHeight: 480 }}>
           <div style={{ padding: "0 20px 20px", display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", border: `2px solid ${M.yellow}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: M.yellow }}>VT</div>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", border: `2px solid ${M.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: M.accent }}>VT</div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: M.text }}>My Bot</div>
               <div style={{ fontSize: 11, color: M.dim }}>Trading Command</div>
@@ -440,14 +489,23 @@ function TradingDashboardMockup() {
           <div style={{ padding: "16px 20px", borderTop: `1px solid ${M.border}` }}>
             <div style={{ fontSize: 11, color: M.faint, marginBottom: 8 }}>Theme</div>
             <div style={{ display: "flex", gap: 6 }}>
-              {["#fbbf24", "#f472b6", "#a78bfa", "#10B981", "#e8edf3", "#6b7280", "#1a1f2e"].map((c, i) => (
-                <div key={i} style={{ width: 20, height: 20, borderRadius: "50%", background: c, border: i === 0 ? `2px solid ${M.yellow}` : `1px solid ${M.border}` }} />
+              {THEME_DOTS.map((c, i) => (
+                <div
+                  key={i}
+                  onClick={() => setTheme(THEME_KEYS[i])}
+                  style={{
+                    width: 20, height: 20, borderRadius: "50%", background: c, cursor: "pointer",
+                    border: theme === THEME_KEYS[i] ? `2px solid ${M.accent}` : `1px solid ${M.border}`,
+                    transition: "border 0.15s, transform 0.15s",
+                    transform: theme === THEME_KEYS[i] ? "scale(1.15)" : "scale(1)",
+                  }}
+                />
               ))}
             </div>
           </div>
         </div>
         {/* Content */}
-        <div style={{ flex: 1, padding: 20, background: "#212736" }}>
+        <div style={{ flex: 1, padding: 20, background: M.card, transition: "background 0.3s" }}>
           {tab === "overview" && renderOverview()}
           {tab === "trades" && renderTrades()}
           {tab === "payouts" && renderPayouts()}
