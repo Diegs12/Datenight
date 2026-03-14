@@ -1,5 +1,5 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
 
 const T = {
   bg: "#F8F6F3", surface: "#FFFFFF", surfaceAlt: "#F0EDE8", border: "#E5E2DD",
@@ -143,110 +143,454 @@ function DashboardMockup() {
       </div>
 
       {/* App content */}
-      <div style={{ padding: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        {/* The One Thing */}
-        <div style={{
-          gridColumn: "1 / -1", background: "#FEF3C7", borderRadius: 12,
-          padding: "16px 20px", border: "2px solid #F59E0B",
-        }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-            The One Thing
-          </div>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "#1E293B" }}>
-            Review Q1 budget forecast
-          </div>
-        </div>
+      <div style={{ padding: 20 }}>
 
-        {/* Habits */}
-        <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Today's Habits
-          </div>
-          {habits.map((h, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
-              <div style={{
-                width: 20, height: 20, borderRadius: 6,
-                background: h.done ? "#10B981" : "#E2E0DB",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {h.done && <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>&#10003;</span>}
-              </div>
-              <span style={{
-                fontSize: 13, color: h.done ? "#94A3B8" : "#1E293B",
-                textDecoration: h.done ? "line-through" : "none", fontWeight: 500,
-              }}>{h.name}</span>
-            </div>
-          ))}
-          <div style={{ marginTop: 8, fontSize: 11, color: "#10B981", fontWeight: 600 }}>
-            3/5 complete
-          </div>
-        </div>
-
-        {/* Tasks */}
-        <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Today's Tasks
-          </div>
-          {tasks.map((t, i) => (
-            <div key={i} style={{
-              padding: "8px 10px", borderRadius: 8, marginBottom: 6,
-              background: t.isOne ? "#FFFBEB" : "#F8F6F3",
-              border: t.isOne ? "1px solid #FDE68A" : "1px solid #E2E0DB",
+        {/* ── OVERVIEW TAB ── */}
+        {activeTab === "Overview" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{
+              gridColumn: "1 / -1", background: "#FEF3C7", borderRadius: 12,
+              padding: "16px 20px", border: "2px solid #F59E0B",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                <span style={{
-                  fontSize: 9, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
-                  background: domainColors[t.domain] + "20", color: domainColors[t.domain],
-                  textTransform: "uppercase", letterSpacing: 0.5,
-                }}>{t.domain}</span>
-                {t.isOne && <span style={{ fontSize: 9, fontWeight: 700, color: "#D97706" }}>#1</span>}
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                The One Thing
               </div>
-              <div style={{ fontSize: 13, fontWeight: 500, color: "#1E293B" }}>{t.title}</div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: "#1E293B" }}>
+                Review Q1 budget forecast
+              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Net Worth */}
-        <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Net Worth
-          </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#1E293B" }}>$47,250</div>
-          <div style={{ fontSize: 12, color: "#10B981", fontWeight: 600, marginTop: 2 }}>+$1,340 this month</div>
-          <div style={{ marginTop: 12, height: 40, display: "flex", alignItems: "end", gap: 3 }}>
-            {[28, 32, 30, 35, 33, 38, 36, 40, 42, 45, 43, 47].map((h, i) => (
-              <div key={i} style={{
-                flex: 1, height: `${h}px`, borderRadius: 3,
-                background: "linear-gradient(180deg, #10B981 0%, #065F46 100%)",
-                opacity: 0.3 + (i / 12) * 0.7,
-              }} />
-            ))}
-          </div>
-        </div>
-
-        {/* Weekly Workouts */}
-        <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            This Week
-          </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => {
-              const types = ["\u{1F3C3}", "\u{1F3CB}\u{FE0F}", "\u{1F6B4}", "\u{1F9D8}", "\u{1F3C3}", null, null];
-              const done = i < 4;
-              return (
-                <div key={i} style={{
-                  flex: 1, textAlign: "center", padding: "8px 0", borderRadius: 8,
-                  background: done ? "#F0FDF4" : "#F8F6F3",
-                  border: `1px solid ${done ? "#BBF7D0" : "#E2E0DB"}`,
-                }}>
-                  <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600, marginBottom: 4 }}>{d}</div>
-                  <div style={{ fontSize: 16 }}>{types[i] || "\u2014"}</div>
-                  {done && <div style={{ fontSize: 10, color: "#10B981", marginTop: 2 }}>&#10003;</div>}
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Today's Habits
+              </div>
+              {habits.map((h, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: 6,
+                    background: h.done ? "#10B981" : "#E2E0DB",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    {h.done && <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>&#10003;</span>}
+                  </div>
+                  <span style={{
+                    fontSize: 13, color: h.done ? "#94A3B8" : "#1E293B",
+                    textDecoration: h.done ? "line-through" : "none", fontWeight: 500,
+                  }}>{h.name}</span>
                 </div>
-              );
-            })}
+              ))}
+              <div style={{ marginTop: 8, fontSize: 11, color: "#10B981", fontWeight: 600 }}>3/5 complete</div>
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Today's Tasks
+              </div>
+              {tasks.map((t, i) => (
+                <div key={i} style={{
+                  padding: "8px 10px", borderRadius: 8, marginBottom: 6,
+                  background: t.isOne ? "#FFFBEB" : "#F8F6F3",
+                  border: t.isOne ? "1px solid #FDE68A" : "1px solid #E2E0DB",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <span style={{
+                      fontSize: 9, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
+                      background: domainColors[t.domain] + "20", color: domainColors[t.domain],
+                      textTransform: "uppercase", letterSpacing: 0.5,
+                    }}>{t.domain}</span>
+                    {t.isOne && <span style={{ fontSize: 9, fontWeight: 700, color: "#D97706" }}>#1</span>}
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#1E293B" }}>{t.title}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Net Worth
+              </div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#1E293B" }}>$47,250</div>
+              <div style={{ fontSize: 12, color: "#10B981", fontWeight: 600, marginTop: 2 }}>+$1,340 this month</div>
+              <div style={{ marginTop: 12, height: 40, display: "flex", alignItems: "end", gap: 3 }}>
+                {[28, 32, 30, 35, 33, 38, 36, 40, 42, 45, 43, 47].map((h, i) => (
+                  <div key={i} style={{
+                    flex: 1, height: `${h}px`, borderRadius: 3,
+                    background: "linear-gradient(180deg, #10B981 0%, #065F46 100%)",
+                    opacity: 0.3 + (i / 12) * 0.7,
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                This Week
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => {
+                  const types = ["\u{1F3C3}", "\u{1F3CB}\u{FE0F}", "\u{1F6B4}", "\u{1F9D8}", "\u{1F3C3}", null, null];
+                  const done = i < 4;
+                  return (
+                    <div key={i} style={{
+                      flex: 1, textAlign: "center", padding: "8px 0", borderRadius: 8,
+                      background: done ? "#F0FDF4" : "#F8F6F3",
+                      border: `1px solid ${done ? "#BBF7D0" : "#E2E0DB"}`,
+                    }}>
+                      <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600, marginBottom: 4 }}>{d}</div>
+                      <div style={{ fontSize: 16 }}>{types[i] || "\u2014"}</div>
+                      {done && <div style={{ fontSize: 10, color: "#10B981", marginTop: 2 }}>&#10003;</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* ── TASKS TAB ── */}
+        {activeTab === "Tasks" && (
+          <div>
+            <div style={{
+              background: "#FEF3C7", borderRadius: 12, padding: "14px 20px",
+              border: "2px solid #F59E0B", marginBottom: 16,
+              display: "flex", alignItems: "center", gap: 10,
+            }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1 }}>
+                #1 Today
+              </span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#1E293B" }}>
+                Review Q1 budget forecast
+              </span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
+              {[
+                { col: "Backlog", color: "#94A3B8", items: [
+                  { t: "Research competitor pricing", d: "business" },
+                  { t: "Update investor deck", d: "business" },
+                  { t: "Plan Q2 content calendar", d: "personal" },
+                ]},
+                { col: "This Week", color: "#FBBF24", items: [
+                  { t: "Finalize API documentation", d: "systems" },
+                  { t: "Call accountant re: taxes", d: "financial" },
+                ]},
+                { col: "Today", color: "#10B981", items: [
+                  { t: "Review Q1 budget forecast", d: "financial", one: true },
+                  { t: "Send proposal to client", d: "business" },
+                  { t: "Update portfolio site", d: "systems" },
+                ]},
+                { col: "Done", color: "#6B7280", items: [
+                  { t: "Set up CI/CD pipeline", d: "systems" },
+                  { t: "Weekly grocery order", d: "personal" },
+                ]},
+              ].map((column) => (
+                <div key={column.col}>
+                  <div style={{
+                    fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
+                    color: column.color, marginBottom: 10, display: "flex", alignItems: "center", gap: 6,
+                  }}>
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: column.color }} />
+                    {column.col}
+                    <span style={{ color: "#94A3B8", fontWeight: 500 }}>({column.items.length})</span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {column.items.map((item, j) => (
+                      <div key={j} style={{
+                        padding: "10px 12px", borderRadius: 8,
+                        background: item.one ? "#FFFBEB" : "#fff",
+                        border: `1px solid ${item.one ? "#FDE68A" : "#E2E0DB"}`,
+                        opacity: column.col === "Done" ? 0.6 : 1,
+                      }}>
+                        <span style={{
+                          fontSize: 8, fontWeight: 600, padding: "2px 5px", borderRadius: 3,
+                          background: (domainColors[item.d] || "#94A3B8") + "20",
+                          color: domainColors[item.d] || "#94A3B8",
+                          textTransform: "uppercase", letterSpacing: 0.5,
+                        }}>{item.d}</span>
+                        <div style={{
+                          fontSize: 12, fontWeight: 500, color: "#1E293B", marginTop: 6,
+                          textDecoration: column.col === "Done" ? "line-through" : "none",
+                        }}>{item.t}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── HABITS TAB ── */}
+        {activeTab === "Habits" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#1E293B" }}>Weekly Progress</div>
+                <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 2 }}>Mar 10 - Mar 16, 2026</div>
+              </div>
+              <div style={{
+                padding: "6px 14px", borderRadius: 8, background: "#F0FDF4",
+                border: "1px solid #BBF7D0", fontSize: 13, fontWeight: 600, color: "#10B981",
+              }}>
+                68% complete
+              </div>
+            </div>
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "120px repeat(7, 1fr) 60px", gap: 6, alignItems: "center" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase" }}></div>
+                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+                  <div key={d} style={{ fontSize: 10, fontWeight: 600, color: "#94A3B8", textAlign: "center" }}>{d}</div>
+                ))}
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#94A3B8", textAlign: "center" }}>Streak</div>
+
+                {[
+                  { name: "Workout", days: [1,1,1,1,0,0,0], streak: 12 },
+                  { name: "Deep Work", days: [1,1,1,1,1,0,0], streak: 8 },
+                  { name: "Outbound", days: [1,0,1,0,0,0,0], streak: 2 },
+                  { name: "Read 30min", days: [1,1,1,1,0,0,0], streak: 21 },
+                  { name: "Meditate", days: [0,1,0,1,0,0,0], streak: 1 },
+                  { name: "Journal", days: [1,1,1,0,0,0,0], streak: 5 },
+                  { name: "No Alcohol", days: [1,1,1,1,1,0,0], streak: 14 },
+                ].map((habit) => (
+                  <React.Fragment key={habit.name}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#1E293B" }}>{habit.name}</div>
+                    {habit.days.map((done, i) => (
+                      <div key={i} style={{ display: "flex", justifyContent: "center" }}>
+                        <div style={{
+                          width: 22, height: 22, borderRadius: 6,
+                          background: done ? "#10B981" : (i < 4 ? "#FEE2E2" : "#F3F4F6"),
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          {done ? <span style={{ color: "#fff", fontSize: 10, fontWeight: 700 }}>&#10003;</span>
+                            : i < 4 ? <span style={{ color: "#FCA5A5", fontSize: 10 }}>&#10005;</span>
+                            : null}
+                        </div>
+                      </div>
+                    ))}
+                    <div style={{ fontSize: 13, fontWeight: 700, color: habit.streak >= 10 ? "#10B981" : "#1E293B", textAlign: "center" }}>
+                      {habit.streak}d
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginTop: 16 }}>
+              {[
+                { label: "Best Streak", val: "21 days", sub: "Read 30min" },
+                { label: "Completion Rate", val: "68%", sub: "This week" },
+                { label: "Habits Tracked", val: "7", sub: "Active habits" },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB", textAlign: "center",
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#1E293B" }}>{s.val}</div>
+                  <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>{s.sub}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── FINANCES TAB ── */}
+        {activeTab === "Finances" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ gridColumn: "1 / -1", background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E2E0DB" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 0.5 }}>Net Worth</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: "#1E293B" }}>$47,250</div>
+                </div>
+                <div style={{
+                  padding: "6px 14px", borderRadius: 8, background: "#F0FDF4",
+                  border: "1px solid #BBF7D0", fontSize: 13, fontWeight: 600, color: "#10B981",
+                }}>
+                  +$1,340 this month
+                </div>
+              </div>
+              <div style={{ height: 60, display: "flex", alignItems: "end", gap: 4 }}>
+                {[28, 32, 30, 35, 33, 38, 36, 40, 42, 45, 43, 47].map((h, i) => (
+                  <div key={i} style={{
+                    flex: 1, height: `${h * 1.3}px`, borderRadius: 4,
+                    background: "linear-gradient(180deg, #10B981 0%, #065F46 100%)",
+                    opacity: 0.3 + (i / 12) * 0.7,
+                  }} />
+                ))}
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                <span style={{ fontSize: 10, color: "#94A3B8" }}>Apr '25</span>
+                <span style={{ fontSize: 10, color: "#94A3B8" }}>Mar '26</span>
+              </div>
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Accounts
+              </div>
+              {[
+                { name: "Checking", bal: "$8,420", icon: "\u{1F3E6}" },
+                { name: "Savings", bal: "$15,300", icon: "\u{1F4B0}" },
+                { name: "Brokerage", bal: "$18,200", icon: "\u{1F4C8}" },
+                { name: "Crypto", bal: "$5,330", icon: "\u26A1" },
+              ].map((a, i) => (
+                <div key={i} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "10px 0", borderBottom: i < 3 ? "1px solid #F3F4F6" : "none",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 16 }}>{a.icon}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#1E293B" }}>{a.name}</span>
+                  </div>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#1E293B" }}>{a.bal}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Recent Transactions
+              </div>
+              {[
+                { name: "Whole Foods", amt: "-$67.42", cat: "Groceries", color: "#10B981" },
+                { name: "Spotify", amt: "-$15.99", cat: "Subscriptions", color: "#8B5CF6" },
+                { name: "Deposit", amt: "+$3,200", cat: "Income", color: "#3B82F6" },
+                { name: "Electric Co", amt: "-$142.00", cat: "Utilities", color: "#F59E0B" },
+                { name: "Amazon", amt: "-$34.99", cat: "Shopping", color: "#EF4444" },
+              ].map((tx, i) => (
+                <div key={i} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "8px 0", borderBottom: i < 4 ? "1px solid #F3F4F6" : "none",
+                }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#1E293B" }}>{tx.name}</div>
+                    <span style={{
+                      fontSize: 9, fontWeight: 600, padding: "2px 6px", borderRadius: 3,
+                      background: tx.color + "15", color: tx.color, textTransform: "uppercase",
+                    }}>{tx.cat}</span>
+                  </div>
+                  <span style={{
+                    fontSize: 13, fontWeight: 700,
+                    color: tx.amt.startsWith("+") ? "#10B981" : "#1E293B",
+                  }}>{tx.amt}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ gridColumn: "1 / -1", background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Monthly Budget
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                {[
+                  { cat: "Housing", spent: 1800, budget: 1800, color: "#3B82F6" },
+                  { cat: "Food", spent: 420, budget: 600, color: "#10B981" },
+                  { cat: "Transport", spent: 180, budget: 300, color: "#F59E0B" },
+                  { cat: "Subscriptions", spent: 89, budget: 100, color: "#8B5CF6" },
+                  { cat: "Shopping", spent: 234, budget: 200, color: "#EF4444" },
+                  { cat: "Savings", spent: 500, budget: 500, color: "#06B6D4" },
+                ].map((b) => (
+                  <div key={b.cat}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: "#1E293B" }}>{b.cat}</span>
+                      <span style={{ fontSize: 10, color: b.spent > b.budget ? "#EF4444" : "#94A3B8" }}>
+                        ${b.spent}/${b.budget}
+                      </span>
+                    </div>
+                    <div style={{ height: 6, borderRadius: 3, background: "#F3F4F6" }}>
+                      <div style={{
+                        height: "100%", borderRadius: 3,
+                        width: `${Math.min((b.spent / b.budget) * 100, 100)}%`,
+                        background: b.spent > b.budget ? "#EF4444" : b.color,
+                      }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── WORKOUTS TAB ── */}
+        {activeTab === "Workouts" && (
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 16 }}>
+              {[
+                { label: "This Week", val: "4/5", sub: "workouts" },
+                { label: "Total Time", val: "3h 45m", sub: "this week" },
+                { label: "Avg Duration", val: "56 min", sub: "per session" },
+                { label: "30-Day", val: "18", sub: "workouts" },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  background: "#fff", borderRadius: 12, padding: 14, border: "1px solid #E2E0DB", textAlign: "center",
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: "#1E293B" }}>{s.val}</div>
+                  <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 2 }}>{s.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB", marginBottom: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                This Week
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[
+                  { d: "Mon", type: "\u{1F3C3}", label: "Run", dur: "45m", done: true },
+                  { d: "Tue", type: "\u{1F3CB}\u{FE0F}", label: "Lift", dur: "60m", done: true },
+                  { d: "Wed", type: "\u{1F6B4}", label: "Bike", dur: "50m", done: true },
+                  { d: "Thu", type: "\u{1F9D8}", label: "Yoga", dur: "30m", done: true },
+                  { d: "Fri", type: "\u{1F3C3}", label: "Run", dur: null, done: false },
+                  { d: "Sat", type: null, label: null, dur: null, done: false },
+                  { d: "Sun", type: null, label: "Rest", dur: null, done: false },
+                ].map((w, i) => (
+                  <div key={i} style={{
+                    flex: 1, textAlign: "center", padding: "12px 4px", borderRadius: 10,
+                    background: w.done ? "#F0FDF4" : "#F8F6F3",
+                    border: `1px solid ${w.done ? "#BBF7D0" : "#E2E0DB"}`,
+                  }}>
+                    <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600, marginBottom: 6 }}>{w.d}</div>
+                    <div style={{ fontSize: 22, marginBottom: 4 }}>{w.type || "\u2014"}</div>
+                    {w.label && <div style={{ fontSize: 10, fontWeight: 600, color: w.done ? "#1E293B" : "#94A3B8" }}>{w.label}</div>}
+                    {w.dur && <div style={{ fontSize: 10, color: "#10B981", fontWeight: 600, marginTop: 2 }}>{w.dur}</div>}
+                    {w.done && <div style={{ fontSize: 10, color: "#10B981", marginTop: 4 }}>&#10003;</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E2E0DB" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#1E293B", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Recent Workouts
+              </div>
+              {[
+                { date: "Thu, Mar 13", type: "\u{1F9D8}", label: "Yoga", dur: "30 min", notes: "Morning flow + hip openers" },
+                { date: "Wed, Mar 12", type: "\u{1F6B4}", label: "Cycling", dur: "50 min", notes: "Peloton HIIT ride, 18.2 mi" },
+                { date: "Tue, Mar 11", type: "\u{1F3CB}\u{FE0F}", label: "Lift", dur: "60 min", notes: "Upper body: bench 185x5, OHP 115x8" },
+                { date: "Mon, Mar 10", type: "\u{1F3C3}", label: "Run", dur: "45 min", notes: "Easy 5K, 8:45/mi pace" },
+              ].map((w, i) => (
+                <div key={i} style={{
+                  display: "flex", alignItems: "center", gap: 14, padding: "12px 0",
+                  borderBottom: i < 3 ? "1px solid #F3F4F6" : "none",
+                }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: 10, background: "#F0FDF4",
+                    border: "1px solid #BBF7D0", display: "flex", alignItems: "center",
+                    justifyContent: "center", fontSize: 20, flexShrink: 0,
+                  }}>{w.type}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: "#1E293B" }}>{w.label}</span>
+                      <span style={{ fontSize: 12, color: "#10B981", fontWeight: 600 }}>{w.dur}</span>
+                    </div>
+                    <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>{w.notes}</div>
+                    <div style={{ fontSize: 10, color: "#CBD5E1", marginTop: 2 }}>{w.date}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
