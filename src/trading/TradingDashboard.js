@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { TT, btnOutline, card } from "./theme"; // eslint-disable-line no-unused-vars
 
 // In production, use the Vercel proxy (handles auth server-side).
@@ -79,40 +79,26 @@ function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfil
           Demo Mode
         </h3>
         <p style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim, margin: "0 0 20px", lineHeight: 1.5 }}>
-          You are viewing a live demo. All trades are executed with paper (simulated) funds.
-          No real money is involved and no API keys are needed.
+          This is Diego's personal trading bot running on paper (simulated) funds.
+          No real money is involved. You're watching live results in real time.
         </p>
         <div style={{
           padding: "14px 16px", borderRadius: 8,
           background: TT.primaryDim, border: `1px solid rgba(0,212,255,0.2)`,
         }}>
           <div style={{ fontFamily: TT.mono, fontSize: 11, fontWeight: 600, color: TT.primary, marginBottom: 8, letterSpacing: 0.5 }}>
-            REAL TRADING COMING SOON
+            INTERESTED IN YOUR OWN BOT?
           </div>
           <p style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
-            We're working through legal and compliance requirements to offer live trading.
-            Your demo account will be notified when it's available.
+            If you want your own instance of this bot, <Link to="/trading" style={{ color: TT.primary, textDecoration: "none" }}>fill out the interest form</Link> and I'll reach out.
           </p>
         </div>
-      </div>
-
-      {/* Account */}
-      <div style={{ ...card(), padding: 28 }}>
-        <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 16px" }}>
-          Account
-        </h3>
-        <button onClick={handleLogout} style={{
-          ...btnOutline({ borderColor: TT.red, color: TT.red, fontSize: 14, padding: "10px 20px" }),
-        }}>
-          Log Out
-        </button>
       </div>
     </div>
   );
 }
 
 export default function TradingDashboard() {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [riskProfile, setRiskProfile] = useState("moderate");
   const [connected, setConnected] = useState(false);
@@ -132,15 +118,8 @@ export default function TradingDashboard() {
     try {
       const saved = localStorage.getItem("vt_risk_profile");
       if (saved) setRiskProfile(saved);
-      // Check session expiration
-      const session = JSON.parse(localStorage.getItem("vt_session") || "{}");
-      if (session.expiresAt && Date.now() > session.expiresAt) {
-        localStorage.removeItem("vt_session");
-        navigate("/trading");
-        return;
-      }
     } catch {}
-  }, [navigate]);
+  }, []);
 
   const fetchAll = useCallback(async () => {
     try {
@@ -176,11 +155,6 @@ export default function TradingDashboard() {
 
   const botRunning = status?.status === "running";
   const profileColors = { conservative: "#00d4ff", moderate: "#ffd93d", aggressive: "#00ff88" };
-
-  const handleLogout = () => {
-    try { localStorage.removeItem("vt_session"); } catch {}
-    navigate("/trading");
-  };
 
   const tabs = [
     { id: "overview", label: "Overview" },
@@ -310,12 +284,11 @@ export default function TradingDashboard() {
           }}>
             <span style={{ color: profileColors[status?.riskProfile || riskProfile] }}>●</span> {status?.riskProfile || riskProfile}
           </span>
-          <button onClick={handleLogout} style={{
-            background: "none", border: "none", cursor: "pointer",
-            fontFamily: TT.font, fontSize: 13, color: TT.textDim,
+          <Link to="/trading" style={{
+            fontFamily: TT.font, fontSize: 13, color: TT.textDim, textDecoration: "none",
           }}>
-            Log out
-          </button>
+            &larr; Back
+          </Link>
         </div>
       </nav>
 
@@ -325,7 +298,7 @@ export default function TradingDashboard() {
         padding: "10px 24px", textAlign: "center",
       }}>
         <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.primary }}>
-          DEMO MODE: All trades use simulated paper funds. No real money is involved.
+          PAPER TRADING: All trades use simulated funds. No real money is involved.
           {connected && status ? ` Cycle ${status.cycleCount || 0} | Last: ${fmtTime(status.lastCycle)}` : ""}
         </span>
       </div>
@@ -705,7 +678,6 @@ export default function TradingDashboard() {
             riskProfile={riskProfile}
             setRiskProfile={setRiskProfile}
             profileColors={profileColors}
-            handleLogout={handleLogout}
             fmtDate={fmtDate}
             fmtTime={fmtTime}
           />

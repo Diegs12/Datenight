@@ -77,39 +77,39 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: "01", title: "Sign Up", desc: "Create a free demo account and take the risk quiz to see how the bot would trade for you." },
-  { num: "02", title: "Explore", desc: "Browse the live dashboard and see real trades, AI decisions, and technical analysis in action." },
-  { num: "03", title: "Watch It Trade", desc: "Follow along as the bot runs on paper funds. See every decision and the reasoning behind it." },
+  { num: "01", title: "Watch It Live", desc: "The bot runs 24/7 on paper funds. Check the live dashboard anytime to see what it's doing right now." },
+  { num: "02", title: "See Every Decision", desc: "Every trade comes with the AI's full reasoning, technical indicators, and sentiment analysis. Nothing is hidden." },
+  { num: "03", title: "Want Your Own?", desc: "If you like what you see, reach out. I can set you up with your own instance of the bot, configured to your risk profile." },
 ];
 
 const FAQS = [
   {
     q: "Is this a live trading platform?",
-    a: "Not yet. Right now, Vallota Trading is a live demo. The bot runs 24/7 on paper funds so you can see exactly how it trades, what decisions it makes, and how it performs. We're working on making it available for real trading in the future.",
+    a: "No. This is my personal trading bot running on paper funds. You're watching it trade in real time, but no real money is involved. If you're interested in having your own instance, reach out and we can talk.",
   },
   {
     q: "What exchanges does the bot trade on?",
-    a: "The demo bot trades on the Coinbase Base L2 network using simulated paper funds. No real money is involved.",
+    a: "The bot trades on the Coinbase Base L2 network using simulated paper funds.",
   },
   {
     q: "How does the dual AI system work?",
-    a: "Claude (by Anthropic) is the decision engine. It analyzes technicals, reviews past trades, and decides when to buy or sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they catch signals that neither could alone.",
+    a: "Claude (by Anthropic) is the decision engine. It analyzes technicals, reviews past trades, and decides when to buy or sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they cover signals that neither could alone.",
   },
   {
     q: "What does the self-review loop do?",
-    a: "After each trade closes, the AI reviews its reasoning, the outcome, and market conditions. It identifies patterns in its own mistakes and successes, then adjusts its future strategy. The bot literally gets smarter over time.",
+    a: "After each trade closes, the AI reviews its reasoning, the outcome, and market conditions. It identifies patterns in its own decisions, then attempts to refine its future approach based on what it finds.",
   },
   {
-    q: "Can I see what the bot is doing?",
-    a: "Yes. The demo dashboard shows every trade, every AI decision with its reasoning, portfolio performance, and real-time market data. Full transparency.",
+    q: "Can I get my own bot?",
+    a: "Potentially. If you're interested, fill out the interest form and I'll reach out. You'd get your own instance of the bot configured to your risk profile. I am not liable for the bot's performance once it's in your hands.",
   },
   {
-    q: "When will real trading be available?",
-    a: "We're working through the legal and compliance requirements to offer real trading. Join the waitlist by creating a demo account and we'll notify you as soon as it's ready.",
+    q: "Does it cost anything to watch?",
+    a: "No. The live dashboard is free to view. You can watch the bot trade, see its reasoning, and review historical performance anytime.",
   },
   {
-    q: "Does it cost anything?",
-    a: "The demo is completely free. When real trading launches, pricing details will be announced.",
+    q: "Is this financial advice?",
+    a: "No. This is a personal technology project. Nothing on this page or dashboard constitutes financial advice, a recommendation to trade, or a solicitation of any kind. All results shown are from paper trading with simulated funds.",
   },
 ];
 
@@ -509,6 +509,7 @@ function StatsBar() {
 
 export default function TradingLanding() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [interestSent, setInterestSent] = useState(false);
   const hasSession = (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })(); // eslint-disable-line no-unused-vars
 
   return (
@@ -533,18 +534,12 @@ export default function TradingLanding() {
           <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
           <button onClick={() => { const el = document.getElementById("how-it-works"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>How It Works</button>
           <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
-          <Link to="/trading/login" style={{
-            fontFamily: TT.font, fontSize: 14, fontWeight: 500, textDecoration: "none",
-            color: TT.textDim,
-          }}>
-            Log In
-          </Link>
-          <Link to="/trading/signup" style={{
+          <Link to="/trading/dashboard" style={{
             fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
             padding: "8px 20px", borderRadius: 6,
             background: TT.primary, color: "#fff",
           }}>
-            Try Demo
+            Live Dashboard
           </Link>
         </div>
       </nav>
@@ -565,7 +560,7 @@ export default function TradingLanding() {
           color: TT.green,
         }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: TT.green }} />
-          LIVE DEMO
+          LIVE BOT
         </div>
 
         <h1 style={{
@@ -600,11 +595,11 @@ export default function TradingLanding() {
         </p>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
-          <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
-            Take the Risk Quiz
+          <Link to="/trading/dashboard" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
+            See Live Results
           </Link>
-          <a href="#how-it-works" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 32px" }) }}>
-            How It Works
+          <a href="#interested" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 32px" }) }}>
+            I'm Interested
           </a>
         </div>
 
@@ -628,12 +623,12 @@ export default function TradingLanding() {
             margin: "0 0 16px",
             color: TT.text,
           }}>
-            Up and Running in Minutes
+            How It Works
           </h2>
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 560, marginLeft: "auto", marginRight: "auto",
           }}>
-            No coding. No complicated setup. Create a demo account and start exploring in minutes.
+            The bot runs 24/7. You can watch everything it does in real time.
           </p>
         </div>
 
@@ -700,7 +695,7 @@ export default function TradingLanding() {
               color: TT.primary, letterSpacing: 2,
               marginBottom: 16, textTransform: "uppercase",
             }}>
-              WHAT MAKES US DIFFERENT
+              UNDER THE HOOD
             </div>
             <h2 style={{
               fontFamily: TT.font,
@@ -709,13 +704,12 @@ export default function TradingLanding() {
               margin: "0 0 16px",
               color: TT.text,
             }}>
-              Built Different. Trades Smarter.
+              What Powers the Bot
             </h2>
             <p style={{
               fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
             }}>
-              Most bots use one model and hope for the best. Vallota Trading combines two AI systems
-              with real computed analysis.
+              Two AI systems working alongside real computed technical analysis.
             </p>
           </div>
 
@@ -796,8 +790,8 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── DEMO NOTICE ─── */}
-      <section id="demo-notice" style={{
+      {/* ─── INTEREST FORM ─── */}
+      <section id="interested" style={{
         padding: "80px 24px 100px",
         background: TT.surface,
         borderTop: `1px solid ${TT.border}`,
@@ -811,12 +805,12 @@ export default function TradingLanding() {
             margin: "0 0 16px",
             color: TT.text,
           }}>
-            Free Demo, Live Data
+            Want Your Own Bot?
           </h2>
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 48px",
           }}>
-            Watch the bot trade with paper funds in real time. No money required.
+            I built this for myself, but if you want your own instance, let me know and I'll reach out.
           </p>
 
           <div style={{
@@ -828,17 +822,16 @@ export default function TradingLanding() {
               color: TT.primary, letterSpacing: 1.5,
               marginBottom: 24, textTransform: "uppercase",
             }}>
-              WHAT YOU GET
+              WHAT YOU'D GET
             </div>
 
             <div style={{ textAlign: "left" }}>
               {[
-                "Full access to the live demo dashboard",
-                "Real-time AI trade decisions and reasoning",
-                "Technical indicators and market analysis",
-                "Portfolio tracking with paper funds",
-                "Risk quiz to see your ideal strategy",
-                "No signup fee, no credit card",
+                "Your own instance of the bot, running 24/7",
+                "Configured to your risk profile",
+                "Live dashboard with full transparency",
+                "All the AI systems: Claude, Grok, computed TA",
+                "Paper trading to start, live trading when you're ready",
               ].map((item, i) => (
                 <div key={i} style={{
                   display: "flex", alignItems: "center", gap: 12,
@@ -853,14 +846,56 @@ export default function TradingLanding() {
               ))}
             </div>
 
-            <Link to="/trading/signup" style={{
-              textDecoration: "none",
-              display: "block",
-              marginTop: 32,
-              ...btnPrimary({ width: "100%", fontSize: 16, padding: "16px 28px" }),
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.target;
+              const emailVal = form.email.value;
+              if (!emailVal || !emailVal.includes("@")) return;
+              try {
+                await fetch("/api/capture-lead", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email: emailVal, source: "trading-interest" }),
+                });
+                form.reset();
+                setInterestSent(true);
+              } catch {}
+            }} style={{ marginTop: 32, display: "flex", gap: 10 }}>
+              {interestSent ? (
+                <div style={{
+                  width: "100%", padding: "16px 28px", borderRadius: 8,
+                  background: TT.greenDim, border: `1px solid rgba(0,255,136,0.2)`,
+                  fontFamily: TT.font, fontSize: 15, fontWeight: 600, color: TT.green,
+                  textAlign: "center",
+                }}>
+                  Got it! I'll be in touch.
+                </div>
+              ) : (
+                <>
+                  <input
+                    name="email" type="email" placeholder="Your email"
+                    required
+                    style={{
+                      flex: 1, padding: "14px 16px", borderRadius: 8,
+                      border: `1px solid ${TT.border}`, background: TT.bg,
+                      color: TT.text, fontSize: 15, fontFamily: TT.font,
+                      outline: "none",
+                    }}
+                  />
+                  <button type="submit" style={btnPrimary({ fontSize: 15, padding: "14px 28px", whiteSpace: "nowrap" })}>
+                    I'm Interested
+                  </button>
+                </>
+              )}
+            </form>
+
+            <p style={{
+              fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
+              marginTop: 16, lineHeight: 1.6,
             }}>
-              Explore the Demo
-            </Link>
+              By submitting, you're expressing interest only. This is not a purchase, subscription,
+              or agreement. I am not liable for the bot's trading performance.
+            </p>
           </div>
         </div>
       </section>
@@ -953,20 +988,20 @@ export default function TradingLanding() {
             margin: "0 0 16px",
             color: TT.text,
           }}>
-            See the AI in Action
+            See the Bot in Action
           </h2>
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 36px",
           }}>
-            Explore the live demo. No money, no risk, full transparency.
+            Watch real trades, real reasoning, real results. All paper funds, full transparency.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
-              Explore Demo
+            <Link to="/trading/dashboard" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
+              Live Dashboard
             </Link>
-            <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 36px" }) }}>
-              Take the Risk Quiz
-            </Link>
+            <a href="#interested" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 36px" }) }}>
+              I'm Interested
+            </a>
           </div>
         </div>
       </section>
@@ -1006,9 +1041,10 @@ export default function TradingLanding() {
           fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
           lineHeight: 1.6, margin: 0, textAlign: "center",
         }}>
-          This is a technology demo. No real money is traded on this platform. The bot operates with paper
-          (simulated) funds only. Past demo performance is not indicative of future results. This is not financial advice
-          and does not constitute an offer to trade real assets.
+          This is a personal technology project. The bot operates with paper (simulated) funds only. No real money
+          is traded. Past performance is not indicative of future results. Nothing on this page constitutes financial
+          advice, a recommendation to trade, or an offer to manage assets. If you purchase access to your own instance
+          of the bot, you assume full responsibility for its performance and any trading decisions made.
         </p>
       </div>
     </div>
