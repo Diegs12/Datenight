@@ -14,11 +14,11 @@ const themes = {
       </svg>
     ),
   },
-  tracker: {
+  pcc: {
     bg: "#0A0A0B", surface: "#141416", border: "#2A2A2E",
     primary: "#10B981", primaryGradient: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
     text: "#F5F0EB", textDim: "#A39E98", textFaint: "#6B6560",
-    name: "Life Tracker", backLink: "/tracker", demoLink: "/tracker/app",
+    name: "Personal Command Center", backLink: "/pcc", demoLink: "/pcc/app",
     icon: (
       <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
         <rect x="10" y="10" width="8" height="8" rx="2" fill="#10B981" />

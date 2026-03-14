@@ -876,14 +876,14 @@ function GoalsTab({ data, setData }) {
 // ═══════════════════════════════════════════
 // Main Dashboard
 // ═══════════════════════════════════════════
-export default function LifeTrackerDashboard() {
+export default function PCCDashboard() {
   const [tab, setTab] = useState("overview");
-  const [data, setData] = usePersistedState("lifetracker_data", getInitialData());
+  const [data, setData] = usePersistedState("pcc_data", getInitialData());
   const [showSignup, setShowSignup] = useState(false);
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupDone, setSignupDone] = useState(() => {
-    try { return !!localStorage.getItem("lifetracker_signup"); } catch { return false; }
+    try { return !!localStorage.getItem("pcc_signup"); } catch { return false; }
   });
 
   const tabs = [
@@ -895,13 +895,13 @@ export default function LifeTrackerDashboard() {
     { key: "goals", label: "Goals", icon: "\u{1F3AF}" },
   ];
 
-  const resetData = () => { localStorage.removeItem("lifetracker_data"); setData(getInitialData()); };
+  const resetData = () => { localStorage.removeItem("pcc_data"); setData(getInitialData()); };
 
   const handleSignup = (e) => {
     e.preventDefault();
     if (!signupEmail.trim()) return;
     try {
-      localStorage.setItem("lifetracker_signup", JSON.stringify({ name: signupName.trim(), email: signupEmail.trim(), date: new Date().toISOString() }));
+      localStorage.setItem("pcc_signup", JSON.stringify({ name: signupName.trim(), email: signupEmail.trim(), date: new Date().toISOString() }));
     } catch {}
     setSignupDone(true);
   };
@@ -981,8 +981,8 @@ export default function LifeTrackerDashboard() {
           </button>
         </div>
         <div style={{ padding: "12px 24px", borderTop: "1px solid #2A2A2E" }}>
-          <Link to="/tracker" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#6B6560", textDecoration: "none", fontFamily: D.font, marginBottom: 12 }}>
-            {"\u2190"} Back to Landing
+          <Link to="/pcc" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#6B6560", textDecoration: "none", fontFamily: D.font, marginBottom: 12 }}>
+            <img src="/vv-logo.png" alt="" style={{ width: 16, height: 16, borderRadius: 3, opacity: 0.6 }} /> Back to Landing
           </Link>
           <button onClick={resetData} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B6560", background: "none", border: "none", cursor: "pointer", fontFamily: D.font, padding: 0 }}>
             {"\u{1F501}"} Reset Demo Data

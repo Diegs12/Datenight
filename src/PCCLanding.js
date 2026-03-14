@@ -116,7 +116,7 @@ function DashboardMockup() {
         <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#FBBF24" }} />
         <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#22C55E" }} />
         <span style={{ marginLeft: 12, color: "#94A3B8", fontSize: 12, fontWeight: 500 }}>
-          Life Tracker,Personal Command Center
+          Personal Command Center by Vallota Ventures
         </span>
       </div>
 
@@ -253,7 +253,7 @@ function DashboardMockup() {
 }
 
 // ─── Main Landing Page ───
-export default function LifeTrackerLanding() {
+export default function PCCLanding() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false); // eslint-disable-line no-unused-vars
@@ -263,15 +263,15 @@ export default function LifeTrackerLanding() {
     e.preventDefault();
     if (!email.trim() || submitting) return;
     setSubmitting(true);
-    try { localStorage.setItem("lifetracker_email", email.trim()); } catch {}
+    try { localStorage.setItem("pcc_email", email.trim()); } catch {}
     try {
       await fetch("/api/capture-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), source: "life_tracker" }),
+        body: JSON.stringify({ email: email.trim(), source: "pcc" }),
       });
     } catch {}
-    setTimeout(() => { navigate("/tracker/app"); }, 400);
+    setTimeout(() => { navigate("/pcc/app"); }, 400);
   };
 
   return (
@@ -287,9 +287,10 @@ export default function LifeTrackerLanding() {
         <Link to="/" style={{
           fontFamily: T.display, fontSize: 18, fontWeight: 700,
           color: T.textDim, textDecoration: "none", letterSpacing: 0.5,
-          display: "flex", alignItems: "center", gap: 8,
+          display: "flex", alignItems: "center", gap: 10,
         }}>
-          <span style={{ color: T.textFaint }}>&#8592;</span> Vallota Ventures
+          <img src="/vv-logo.png" alt="Vallota Ventures" style={{ width: 28, height: 28, borderRadius: 6 }} />
+          Vallota Ventures
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
@@ -314,13 +315,13 @@ export default function LifeTrackerLanding() {
               {link.label}
             </button>
           ))}
-          <Link to="/tracker/login" style={{
+          <Link to="/pcc/login" style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 500,
             color: T.textDim, textDecoration: "none", transition: "color 0.2s",
           }}>
             Log In
           </Link>
-          <Link to="/tracker/app" style={{
+          <Link to="/pcc/app" style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 600,
             padding: "8px 20px", borderRadius: 6, textDecoration: "none",
             background: T.primary, color: "#fff",
@@ -356,7 +357,7 @@ export default function LifeTrackerLanding() {
         </p>
 
         <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 12 }}>
-          <Link to="/tracker/app" style={{
+          <Link to="/pcc/app" style={{
             fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
             padding: "14px 36px", borderRadius: 8, border: "none",
             background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
@@ -365,7 +366,7 @@ export default function LifeTrackerLanding() {
           }}>
             Try the Demo
           </Link>
-          <Link to="/tracker/login" style={{
+          <Link to="/pcc/login" style={{
             fontFamily: T.font, fontSize: 16, fontWeight: 600, cursor: "pointer",
             padding: "14px 36px", borderRadius: 8, textDecoration: "none",
             border: `1px solid ${T.border}`, color: T.textDim,
@@ -838,7 +839,7 @@ export default function LifeTrackerLanding() {
             ))}
           </div>
 
-          <Link to="/tracker/app" style={{
+          <Link to="/pcc/app" style={{
             width: "100%", fontFamily: T.font, fontSize: 16, fontWeight: 700,
             cursor: "pointer", padding: "14px 0", borderRadius: 8, border: "none",
             background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",

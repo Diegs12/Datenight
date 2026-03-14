@@ -41,13 +41,13 @@ export default function Portfolio() {
     },
     {
       id: "pcc",
-      title: "Life Tracker",
-      tagline: "Personal Command Center",
+      title: "Personal Command Center",
+      tagline: "PCC",
       description:
         "Full-stack personal dashboard for tracking finances, tasks, habits, workouts, and goals. AI-integrated API so any LLM can create tasks, log habits, and update progress.",
       tags: ["React", "Express", "Prisma", "AI API"],
       status: "Live",
-      link: "/tracker",
+      link: "/pcc",
       dashboardLink: null,
       hasSession: false,
       external: false,
@@ -620,7 +620,7 @@ export default function Portfolio() {
                   text: "A fully autonomous crypto trading bot running 24/7 on Railway. It pairs Claude for trade decisions with Grok for real-time sentiment analysis, layered on top of computed technical indicators (RSI, MACD, Bollinger Bands) across multiple timeframes. The bot reviews its own trades, learns from mistakes through a self-review loop, and syncs shared lessons to a knowledge base. This isn't a demo. It's executing paper trades on Coinbase Base L2 right now.",
                 },
                 {
-                  label: "Life Tracker",
+                  label: "Personal Command Center",
                   accent: "#10B981",
                   text: "A full-stack personal command center for tracking finances, tasks, habits, workouts, and goals in one place. The real differentiator: an AI-integrated API that lets any LLM create tasks, log habits, and update progress on your behalf. It turns your personal dashboard into something your AI tools can actually write to.",
                 },

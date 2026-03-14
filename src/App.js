@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Portfolio from "./Portfolio";
-import LifeTrackerLanding from "./LifeTrackerLanding";
-import LifeTrackerDashboard from "./LifeTrackerDashboard";
+import PCCLanding from "./PCCLanding";
+import PCCDashboard from "./PCCDashboard";
 import TradingApp from "./trading/TradingApp";
 import UnchartedLanding from "./UnchartedLanding";
 import VelaLanding from "./VelaLanding";
@@ -2500,7 +2500,7 @@ export default function App() {
       try {
         if (localStorage.getItem("vela_quiz")) return;
         if (localStorage.getItem("vt_session")) return;
-        if (localStorage.getItem("lifetracker_email")) return;
+        if (localStorage.getItem("pcc_email")) return;
       } catch {}
       sessionStorage.setItem("vela_exit_shown", "true");
       setExitOpen(true);
@@ -2532,9 +2532,13 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Portfolio />} />
-        <Route path="/tracker" element={<LifeTrackerLanding />} />
-        <Route path="/tracker/app" element={<LifeTrackerDashboard />} />
-        <Route path="/tracker/login" element={<LoginPage product="tracker" />} />
+        <Route path="/pcc" element={<PCCLanding />} />
+        <Route path="/pcc/app" element={<PCCDashboard />} />
+        <Route path="/pcc/login" element={<LoginPage product="pcc" />} />
+        {/* Keep old /tracker routes as redirects */}
+        <Route path="/tracker" element={<PCCLanding />} />
+        <Route path="/tracker/app" element={<PCCDashboard />} />
+        <Route path="/tracker/login" element={<LoginPage product="pcc" />} />
         <Route path="/trading/*" element={<TradingApp />} />
         <Route path="/uncharted" element={<UnchartedLanding />} />
         <Route path="/vela" element={<VelaLanding />} />
