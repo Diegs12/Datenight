@@ -350,22 +350,41 @@ function TasksTab({ data, setData }) {
   const [newTitle, setNewTitle] = useState("");
   const [newDomain, setNewDomain] = useState("personal");
   const [newColumn, setNewColumn] = useState("backlog");
+  const [dragId, setDragId] = useState(null);
+  const [dropTarget, setDropTarget] = useState(null);
   const columns = [
     { key: "backlog", label: "Backlog" }, { key: "thisWeek", label: "This Week" },
     { key: "today", label: "Today" }, { key: "done", label: "Done" },
   ];
-  const colOrder = columns.map(c => c.key);
 
   const addTask = () => {
     if (!newTitle.trim()) return;
     setData(prev => ({ ...prev, tasks: [...prev.tasks, { id: Math.max(0, ...prev.tasks.map(t => t.id)) + 1, title: newTitle.trim(), domain: newDomain, column: newColumn, isOne: false, createdAt: todayStr() }] }));
     setNewTitle(""); setShowAdd(false);
   };
-  const moveTask = (id, dir) => {
-    setData(prev => ({ ...prev, tasks: prev.tasks.map(t => { if (t.id !== id) return t; const idx = colOrder.indexOf(t.column) + dir; if (idx < 0 || idx >= colOrder.length) return t; return { ...t, column: colOrder[idx] }; }) }));
+  const moveTaskTo = (id, column) => {
+    setData(prev => ({ ...prev, tasks: prev.tasks.map(t => t.id === id ? { ...t, column } : t) }));
   };
   const setTheOne = (id) => setData(prev => ({ ...prev, tasks: prev.tasks.map(t => ({ ...t, isOne: t.id === id })) }));
   const deleteTask = (id) => setData(prev => ({ ...prev, tasks: prev.tasks.filter(t => t.id !== id) }));
+
+  const handleDragStart = (e, id) => {
+    setDragId(id);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", id);
+  };
+  const handleDragOver = (e, colKey) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dropTarget !== colKey) setDropTarget(colKey);
+  };
+  const handleDrop = (e, colKey) => {
+    e.preventDefault();
+    if (dragId != null) moveTaskTo(dragId, colKey);
+    setDragId(null);
+    setDropTarget(null);
+  };
+  const handleDragEnd = () => { setDragId(null); setDropTarget(null); };
 
   return (
     <div>
@@ -401,23 +420,46 @@ function TasksTab({ data, setData }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
         {columns.map(col => {
           const tasks = data.tasks.filter(t => t.column === col.key);
+          const isOver = dropTarget === col.key;
           return (
-            <div key={col.key}>
+            <div
+              key={col.key}
+              onDragOver={e => handleDragOver(e, col.key)}
+              onDragLeave={() => { if (dropTarget === col.key) setDropTarget(null); }}
+              onDrop={e => handleDrop(e, col.key)}
+              style={{
+                borderRadius: 12, padding: 8,
+                transition: "all 0.2s ease",
+                background: isOver ? D.primaryGhost : "transparent",
+                border: isOver ? `2px dashed ${D.primary}` : "2px dashed transparent",
+              }}
+            >
               <div style={{ fontSize: 12, fontWeight: 700, color: D.textDim, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12, display: "flex", justifyContent: "space-between" }}>
                 <span>{col.label}</span>
                 <span style={{ background: D.surfaceAlt, borderRadius: 10, padding: "2px 8px", fontSize: 11, color: D.textFaint }}>{tasks.length}</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, minHeight: 100 }}>
                 {tasks.map(t => (
-                  <div key={t.id} style={{ background: D.surface, borderRadius: 10, padding: "12px 14px", border: t.isOne ? "2px solid #F59E0B" : `1px solid ${D.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                  <div
+                    key={t.id}
+                    draggable
+                    onDragStart={e => handleDragStart(e, t.id)}
+                    onDragEnd={handleDragEnd}
+                    style={{
+                      background: D.surface, borderRadius: 10, padding: "12px 14px",
+                      border: t.isOne ? "2px solid #F59E0B" : `1px solid ${D.border}`,
+                      boxShadow: dragId === t.id ? "0 8px 24px rgba(0,0,0,0.15)" : "0 1px 3px rgba(0,0,0,0.04)",
+                      opacity: dragId === t.id ? 0.5 : 1,
+                      cursor: "grab",
+                      transition: "box-shadow 0.2s ease, opacity 0.2s ease",
+                    }}
+                  >
                     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                       <span style={{ fontSize: 9, fontWeight: 600, padding: "2px 6px", borderRadius: 4, background: (domainColors[t.domain] || domainColors.personal).bg, color: (domainColors[t.domain] || domainColors.personal).text, textTransform: "uppercase", letterSpacing: 0.5 }}>{t.domain}</span>
                       {t.isOne && <span style={{ fontSize: 9, fontWeight: 700, color: "#D97706" }}>#1</span>}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 500, color: col.key === "done" ? D.textFaint : D.text, textDecoration: col.key === "done" ? "line-through" : "none", marginBottom: 8 }}>{t.title}</div>
                     <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                      {colOrder.indexOf(col.key) > 0 && <button onClick={() => moveTask(t.id, -1)} style={miniBtn}>{"\u2190"}</button>}
-                      {colOrder.indexOf(col.key) < colOrder.length - 1 && <button onClick={() => moveTask(t.id, 1)} style={miniBtn}>{"\u2192"}</button>}
                       {col.key !== "done" && !t.isOne && <button onClick={() => setTheOne(t.id)} style={{ ...miniBtn, color: "#D97706" }} title="Set as #1">{"\u2605"}</button>}
                       <button onClick={() => deleteTask(t.id)} style={{ ...miniBtn, color: D.danger }} title="Delete">{"\u00D7"}</button>
                     </div>
