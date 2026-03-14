@@ -2,9 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
 const T = {
-  bg: "#0A0A0B", surface: "#141416", surfaceAlt: "#1C1C1F", border: "#2A2A2E",
-  primary: "#10B981", accent: "#10B981", text: "#F5F0EB", textDim: "#A39E98",
-  textFaint: "#6B6560", font: "'Inter', sans-serif", display: "'Playfair Display', serif",
+  bg: "#F8F6F3", surface: "#FFFFFF", surfaceAlt: "#F0EDE8", border: "#E5E2DD",
+  primary: "#10B981", accent: "#10B981", text: "#1A1A1A", textDim: "#6B7280",
+  textFaint: "#9CA3AF", font: "'Inter', sans-serif", display: "'Playfair Display', serif",
 };
 
 const section = { padding: "80px 24px", maxWidth: 1080, margin: "0 auto" };
@@ -282,7 +282,7 @@ export default function PCCLanding() {
         padding: "16px 24px", maxWidth: 1080, margin: "0 auto",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         position: "sticky", top: 0, zIndex: 50,
-        background: "rgba(10,10,11,0.85)", backdropFilter: "blur(12px)",
+        background: "rgba(248,246,243,0.9)", backdropFilter: "blur(12px)",
       }}>
         <Link to="/" style={{
           fontFamily: T.display, fontSize: 18, fontWeight: 700,
