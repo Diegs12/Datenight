@@ -270,7 +270,7 @@ function DashboardMockup() {
                   { t: "Plan Q2 content calendar", d: "personal" },
                 ]},
                 { col: "This Week", color: "#FBBF24", items: [
-                  { t: "Finalize API documentation", d: "systems" },
+                  { t: "Finalize project documentation", d: "systems" },
                   { t: "Call accountant re: taxes", d: "financial" },
                 ]},
                 { col: "Today", color: "#10B981", items: [
@@ -697,7 +697,7 @@ export default function PCCLanding() {
           maxWidth: 560, margin: "0 auto 32px",
         }}>
           Track finances, tasks, habits, workouts, and goals in one place.
-          AI-integrated so your tools can talk to your life system.
+          Stop context-switching between five apps. Run your life from one dashboard.
         </p>
 
         <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 12 }}>
@@ -722,7 +722,7 @@ export default function PCCLanding() {
         <p style={{
           fontFamily: T.font, fontSize: 14, color: T.textFaint, margin: "0 0 60px",
         }}>
-          Free to set up &middot; Your data stays yours &middot; AI-ready from day one
+          Free to set up &middot; Your data stays yours &middot; Works on any device
         </p>
 
         {/* Dashboard Preview */}
@@ -740,9 +740,9 @@ export default function PCCLanding() {
         }}>
           {[
             { val: <Counter target={6} />, label: "Modules" },
-            { val: <Counter target={30} suffix="+" />, label: "API Endpoints" },
+            { val: <Counter target={5} />, label: "Life Domains" },
             { val: <Counter target={0} prefix="$" />, label: "Cost" },
-            { val: "AI", label: "Integrated" },
+            { val: "100%", label: "Your Data" },
           ].map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{ fontFamily: T.display, fontSize: 28, fontWeight: 700, color: T.primary }}>
@@ -789,9 +789,9 @@ export default function PCCLanding() {
               details: ["Pre-loaded defaults", "6 life domains", "Budget categories ready"],
             },
             {
-              step: "3", title: "Track & Connect AI",
-              desc: "Start logging everything from one dashboard. Grab your API key to let Claude, ChatGPT, or any agent update your system.",
-              details: ["One dashboard for all", "REST API access", "Bearer token auth"],
+              step: "3", title: "Start Tracking Everything",
+              desc: "Log tasks, habits, workouts, finances, and goals from one dashboard. See your whole life at a glance and build momentum daily.",
+              details: ["One dashboard for all", "Daily progress view", "Net worth tracking"],
             },
           ].map((s, i) => (
             <div key={i} style={{
@@ -919,105 +919,6 @@ export default function PCCLanding() {
         </div>
       </section>
 
-      {/* ═══════════ AI INTEGRATION / TECHNICAL DEEP DIVE ═══════════ */}
-      <section style={{ ...section, paddingTop: 100 }}>
-        <div style={{
-          background: T.surface, borderRadius: 20, border: `1px solid ${T.border}`,
-          padding: "56px 40px", maxWidth: 800, margin: "0 auto",
-          position: "relative", overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", top: -60, right: -60, width: 200, height: 200,
-            borderRadius: "50%", background: "rgba(16,185,129,0.05)",
-            filter: "blur(40px)",
-          }} />
-
-          <div style={{
-            display: "inline-block", marginBottom: 20,
-            padding: "6px 14px", borderRadius: 20,
-            background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.15)",
-            fontFamily: T.font, fontSize: 11, fontWeight: 600, letterSpacing: 1.5,
-            color: T.primary, textTransform: "uppercase",
-          }}>
-            Built for the AI Era
-          </div>
-
-          <h2 style={{
-            fontFamily: T.display, fontSize: "clamp(24px, 4vw, 34px)",
-            fontWeight: 700, lineHeight: 1.2, margin: "0 0 20px", color: T.text,
-          }}>
-            Your AI Can Update Your Life System
-          </h2>
-
-          <p style={{
-            fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8,
-            margin: "0 0 28px", maxWidth: 560,
-          }}>
-            Every module is accessible through a REST API with Bearer token auth.
-            Claude Code, ChatGPT, custom agents,anything that can make an HTTP request
-            can create tasks, log habits, track goals, and update your finances.
-          </p>
-
-          {/* Code example */}
-          <div style={{
-            background: "#0D1117", borderRadius: 12, padding: "20px 24px",
-            fontFamily: "'SF Mono', 'Fira Code', monospace", fontSize: 13,
-            lineHeight: 1.8, overflow: "auto",
-            border: "1px solid #21262D",
-          }}>
-            <div style={{ color: "#8B949E" }}>{"// Ask any AI to add a task to your system"}</div>
-            <div>
-              <span style={{ color: "#FF7B72" }}>curl</span>
-              <span style={{ color: "#C9D1D9" }}> -X POST </span>
-              <span style={{ color: "#A5D6FF" }}>your-api.com/api/tasks</span>
-            </div>
-            <div>
-              <span style={{ color: "#C9D1D9" }}>  -H </span>
-              <span style={{ color: "#A5D6FF" }}>"Authorization: Bearer YOUR_KEY"</span>
-            </div>
-            <div>
-              <span style={{ color: "#C9D1D9" }}>  -d </span>
-              <span style={{ color: "#A5D6FF" }}>{"'{"}</span>
-              <span style={{ color: "#7EE787" }}>"title"</span>
-              <span style={{ color: "#C9D1D9" }}>: </span>
-              <span style={{ color: "#A5D6FF" }}>"Ship the new feature"</span>
-              <span style={{ color: "#A5D6FF" }}>{"}'  "}</span>
-              <span style={{ color: "#10B981" }}>&#10003; 201 Created</span>
-            </div>
-          </div>
-
-          <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            {["Claude Code", "ChatGPT", "Custom Agents", "Zapier", "Make"].map((tool) => (
-              <span key={tool} style={{
-                fontFamily: T.font, fontSize: 12, fontWeight: 500,
-                padding: "6px 14px", borderRadius: 8,
-                background: T.surfaceAlt, color: T.textDim,
-                border: `1px solid ${T.border}`,
-              }}>
-                {tool}
-              </span>
-            ))}
-          </div>
-
-          {/* API Capabilities */}
-          <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {[
-              "Create & update tasks",
-              "Log habit completions",
-              "Track goal progress",
-              "Record transactions",
-              "Add workout logs",
-              "Query net worth",
-            ].map((cap, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: T.primary, fontSize: 14 }}>&#10003;</span>
-                <span style={{ fontFamily: T.font, fontSize: 13, color: T.textDim }}>{cap}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══════════ TRUST & SECURITY ═══════════ */}
       <section style={{ ...section, paddingTop: 100 }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -1042,15 +943,15 @@ export default function PCCLanding() {
           {[
             {
               icon: "\u{1F512}", title: "Private by Default",
-              desc: "Your financial data, habits, and goals are never shared. API keys are hashed and stored securely.",
+              desc: "Your financial data, habits, and goals are never shared. No third-party tracking, no analytics, no ads.",
             },
             {
-              icon: "\u{1F6E1}\u{FE0F}", title: "Rate-Limited API",
-              desc: "Built-in rate limiting protects your endpoints. 200 requests per 15 minutes for general use, 20 for auth.",
+              icon: "\u{1F6E1}\u{FE0F}", title: "Secure & Protected",
+              desc: "Passwords are securely hashed. Rate limiting protects your account. Your sensitive data is always encrypted.",
             },
             {
-              icon: "\u{1F4E6}", title: "Self-Hostable",
-              desc: "Run it on your own infrastructure. SQLite database means no external dependencies. Your data never leaves your server.",
+              icon: "\u{1F4E6}", title: "Your Data, Your Control",
+              desc: "Everything stays on your account. Export your data anytime. No vendor lock-in, no hidden fees.",
             },
           ].map((item, i) => (
             <div key={i} style={{
@@ -1100,7 +1001,7 @@ export default function PCCLanding() {
             "Founders who need to track revenue, habits, and goals in one place",
             "Analysts who want their personal data as organized as their work data",
             "Athletes tracking training alongside life and career goals",
-            "Anyone building AI workflows that need a personal data layer",
+            "Anyone tired of tracking their life across five different apps",
           ].map((item, i) => (
             <div key={i} style={{
               display: "flex", alignItems: "flex-start", gap: 12,
@@ -1163,13 +1064,13 @@ export default function PCCLanding() {
           }}>
             {[
               "All 6 modules included",
-              "Full REST API access",
-              "AI integration ready",
+              "Net worth + budget tracking",
+              "Works on desktop and mobile",
               "Unlimited tasks, habits, goals",
               "Net worth & budget tracking",
               "iCal calendar sync",
-              "Self-hostable (SQLite)",
-              "Rate-limited endpoints",
+              "Works on any device",
+              "Export your data anytime",
             ].map((feature, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{
@@ -1212,16 +1113,16 @@ export default function PCCLanding() {
             answer="It's a single dashboard that combines task management (kanban board), habit tracking, workout logging, goal tracking, financial management (accounts, transactions, net worth, budgets), and calendar integration. Instead of using five different apps, you use one."
           />
           <FaqItem
-            question="How does the AI integration work?"
-            answer="Every module has a REST API with Bearer token authentication. You get an API key, and any AI tool,Claude Code, ChatGPT, custom agents, Zapier, Make,can create tasks, log habits, update goals, and record transactions by making HTTP requests. Your AI tools become part of your life system."
+            question="How is this different from Notion or a spreadsheet?"
+            answer="PCC is purpose-built for life tracking. It's not a blank canvas you have to build yourself. Habits, tasks, finances, workouts, and goals all come pre-wired with the right views, progress tracking, and daily workflows out of the box."
           />
           <FaqItem
             question="Is my data private?"
-            answer="Yes. Your data is stored in a SQLite database on your server. There are no third-party analytics, no data sharing, and no ads. API keys are securely hashed. You own everything."
+            answer="Yes. There are no third-party analytics, no data sharing, and no ads. Your passwords are securely hashed and your data is yours alone."
           />
           <FaqItem
-            question="Can I self-host this?"
-            answer="Yes. The backend is Express + Prisma + SQLite and the frontend is React + Vite + Tailwind. Clone the repo, run npm install, and you're live. No external database dependencies."
+            question="Can I access this on my phone?"
+            answer="Yes. The web app is fully responsive and works great on mobile browsers. Open it on any device and your data syncs automatically."
           />
           <FaqItem
             question="What does 'The One Thing' mean?"
@@ -1236,8 +1137,8 @@ export default function PCCLanding() {
             answer="You add your accounts (checking, savings, brokerage, crypto, etc.) and log balance snapshots to track net worth over time. Record transactions with categories to see monthly budget breakdowns. No bank linking required,you're in full control."
           />
           <FaqItem
-            question="Is there a mobile app?"
-            answer="Not yet. The web app is fully responsive and works well on mobile browsers. A native mobile app is on the roadmap."
+            question="Can I connect my bank accounts?"
+            answer="Bank account linking through Plaid is coming soon. For now, you can manually track your accounts, balances, and transactions to see your full financial picture."
           />
         </div>
       </section>
