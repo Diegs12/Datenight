@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { TT, btnOutline, card } from "./theme"; // eslint-disable-line no-unused-vars
+import { TT, btnOutline, card, setTheme, getCurrentThemeName, onThemeChange, getTheme, THEME_NAMES } from "./theme"; // eslint-disable-line no-unused-vars
 
 // In production, use the Vercel proxy (handles auth server-side).
 // Locally, hit the bot directly for development.
@@ -35,9 +35,53 @@ function fmtDate(iso) {
 }
 
 // ─── SETTINGS TAB (DEMO MODE) ───
-function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfile, profileColors, handleLogout, fmtDate, fmtTime }) { // eslint-disable-line no-unused-vars
+function SettingsTab({ status, botRunning, connected, riskProfile, setRiskProfile, profileColors, handleLogout, fmtDate, fmtTime, themeName, onThemeSelect }) { // eslint-disable-line no-unused-vars
+  const swatches = THEME_NAMES.map((name) => {
+    const t = getTheme(name);
+    return { name, bg: t.bg, accent: t.primary, surface: t.surface };
+  });
+
   return (
     <div style={{ maxWidth: 600 }}>
+      {/* Theme Picker */}
+      <div style={{ ...card(), marginBottom: 20, padding: 28 }}>
+        <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 16px" }}>
+          Theme
+        </h3>
+        <div style={{ display: "flex", gap: 12 }}>
+          {swatches.map((s) => (
+            <button
+              key={s.name}
+              onClick={() => onThemeSelect(s.name)}
+              style={{
+                width: 80,
+                height: 60,
+                borderRadius: 10,
+                border: themeName === s.name ? `2px solid ${s.accent}` : `1px solid ${TT.border}`,
+                background: s.bg,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                padding: 0,
+                boxShadow: themeName === s.name ? `0 0 12px ${s.accent}44` : "none",
+                transition: "all 0.15s",
+              }}
+            >
+              <div style={{ display: "flex", gap: 4 }}>
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: s.accent }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: s.surface, border: `1px solid ${s.accent}33` }} />
+              </div>
+              <span style={{ fontFamily: TT.font, fontSize: 10, fontWeight: 600, color: s.accent, textTransform: "capitalize" }}>
+                {s.name}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Bot Status */}
       <div style={{ ...card(), marginBottom: 20, padding: 28 }}>
         <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 16px" }}>
@@ -103,6 +147,7 @@ export default function TradingDashboard() {
   const [riskProfile, setRiskProfile] = useState("moderate");
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [themeName, setThemeName] = useState(getCurrentThemeName);
 
   // Live data from bot API
   const [status, setStatus] = useState(null);
@@ -113,6 +158,14 @@ export default function TradingDashboard() {
   const [reviews, setReviews] = useState([]);
   const [indicators, setIndicators] = useState(null);
   const [research, setResearch] = useState(null);
+
+  useEffect(() => {
+    return onThemeChange((name) => setThemeName(name));
+  }, []);
+
+  const handleThemeSelect = useCallback((name) => {
+    setTheme(name);
+  }, []);
 
   useEffect(() => {
     try {
@@ -565,7 +618,7 @@ export default function TradingDashboard() {
               AI Decision Log
             </h3>
             <div style={{
-              background: "#060a10", borderRadius: 8,
+              background: TT.surfaceAlt, borderRadius: 8,
               padding: "16px 20px", fontFamily: TT.mono, fontSize: 13, lineHeight: 2,
             }}>
               {aiLog.length === 0 && (
@@ -680,6 +733,8 @@ export default function TradingDashboard() {
             profileColors={profileColors}
             fmtDate={fmtDate}
             fmtTime={fmtTime}
+            themeName={themeName}
+            onThemeSelect={handleThemeSelect}
           />
         )}
       </div>
