@@ -86,11 +86,6 @@ const IconYield = () => (
     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
   </svg>
 );
-const IconChat = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-  </svg>
-);
 const IconCheck = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={L.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 6L9 17L4 12" />
@@ -106,27 +101,27 @@ const FEATURES = [
   {
     icon: <IconCloud />,
     title: "Computed Technical Analysis",
-    desc: "RSI, MACD, Bollinger Bands calculated mathematically on real price data across 18 tokens. Not guessed by an LLM.",
-  },
-  {
-    icon: <IconWallet />,
-    title: "Automated Profit Distribution",
-    desc: "Each morning, realized profits are calculated and distributed automatically. No manual intervention required.",
+    desc: "RSI, MACD, Bollinger Bands, SMAs, and EMAs calculated mathematically on real price data across 30+ tokens. Not guessed by an LLM.",
   },
   {
     icon: <IconNetwork />,
     title: "Multi-Timeframe Analysis",
-    desc: "The desk analyzes 5-minute, 1-hour, 4-hour, and daily charts simultaneously. It catches scalps and macro trends.",
+    desc: "The desk analyzes 5-minute, 1-hour, 4-hour, and daily charts simultaneously. It catches short-term moves and macro trends.",
   },
   {
     icon: <IconShield />,
-    title: "Hard Stop-Losses & Risk Controls",
-    desc: "Every position has a hard stop-loss. The desk runs at a specific risk tolerance level: conservative, moderate, or aggressive.",
+    title: "Risk-Profile Trading",
+    desc: "The desk runs at a configured risk tolerance level: conservative, moderate, or aggressive. Position sizing adjusts accordingly.",
   },
   {
     icon: <IconYield />,
     title: "Self-Improving AI",
-    desc: "After every trade, the AI reviews what it did right and wrong. It studies its own history and refines its approach over time.",
+    desc: "Every 30 minutes, the AI reviews its recent trades, analyzes what worked and what didn't, and adjusts its approach. It gets sharper over time.",
+  },
+  {
+    icon: <IconWallet />,
+    title: "Shared Learning",
+    desc: "Trade reviews and lessons sync to a shared knowledge base. The desk feeds its own history back into future decisions.",
   },
 ];
 
@@ -139,35 +134,43 @@ const STEPS = [
 const UNDER_THE_HOOD = [
   {
     title: "Real-Time Market Data",
-    desc: "Price feeds, trading volume, and liquidity from CoinGecko, DexScreener, and Binance every cycle.",
+    desc: "Price feeds, 24-hour changes, market caps, and trading volume from CoinGecko across 30+ tokens every cycle.",
   },
   {
-    title: "Technical Analysis",
-    desc: "RSI, MACD, Bollinger Bands, moving averages, and volume analysis across 18 tokens. Signals scored for confluence.",
+    title: "Historical Price Data",
+    desc: "Candle data from CryptoCompare across four timeframes (5m, 1h, 4h, 1d). Feeds directly into the technical analysis engine.",
   },
   {
-    title: "Macro Intelligence",
-    desc: "Fed interest rates, inflation data, treasury yields, dollar strength, oil, gold, and the S&P 500. Pulled directly from the Federal Reserve.",
+    title: "Computed Technical Analysis",
+    desc: "RSI, MACD, Bollinger Bands, SMA, and EMA calculated with pure math on every timeframe. No LLM guessing. Real indicators on real data.",
   },
   {
     title: "DeFi Capital Flows",
-    desc: "Total value locked, DEX volumes, protocol momentum, and stablecoin supply trends via DefiLlama.",
+    desc: "Top protocol TVL, daily changes, and chain distribution pulled from DefiLlama. Tracks where capital is moving in DeFi.",
   },
   {
-    title: "News & Sentiment",
-    desc: "Real-time crypto news sentiment scoring. Fear & Greed Index. Bullish and bearish headline detection.",
+    title: "Market Sentiment & News",
+    desc: "Fear & Greed Index from Alternative.me. Grok scans X/Twitter for breaking news, whale activity, trending narratives, and regulatory risk.",
   },
   {
-    title: "Derivatives & Smart Money",
-    desc: "Binance funding rates, open interest, and long/short ratios. Detects when smart money diverges from retail.",
+    title: "Derivatives Intelligence",
+    desc: "Funding rates, open interest trends, long/short ratios, and recent liquidation data for BTC, ETH, and SOL. Sourced via Grok from derivatives markets.",
+  },
+  {
+    title: "Macro & Dominance Signals",
+    desc: "BTC dominance, stablecoin supply trends, and broad market risk appetite indicators. Helps the AI read the macro environment.",
+  },
+  {
+    title: "Trending Token Detection",
+    desc: "DexScreener trending tokens plus Grok-sourced meme coin and pump detection. The desk watches for momentum before the crowd arrives.",
   },
   {
     title: "AI Decision Engine",
-    desc: "All signals feed into Claude AI with full market context. Not rules. Judgment. Every decision includes reasoning and confidence.",
+    desc: "All signals feed into Claude AI with full market context. Not rules. Judgment. Every decision includes reasoning and a confidence score.",
   },
   {
-    title: "Self-Learning & Auto-Updates",
-    desc: "The bot tunes its own thresholds based on what is working. Cron jobs audit for new technology and market shifts every 6 hours. This is not a static tool.",
+    title: "Self-Review Loop",
+    desc: "Every 30 minutes, Claude reviews recent trades against outcomes. Lessons learned feed back into future decisions via a shared knowledge base synced to Supabase.",
   },
 ];
 
@@ -271,7 +274,6 @@ function TradingDashboardMockup() {
   const navItems = [
     { key: "overview", label: "Overview", d: "M3 3h6v6H3zM13 3h6v6h-6zM3 13h6v6H3zM13 13h6v6h-6z" },
     { key: "trades", label: "Trades", d: "M4 6h14M15 3l3 3-3 3M20 18H6M9 15l-3 3 3 3" },
-    { key: "payouts", label: "Payouts", d: "M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM8 8h8M8 12h8M8 16h4" },
     { key: "performance", label: "Performance", d: "M3 18l5-6 4 3 8-10" },
     { key: "holdings", label: "Holdings", d: "M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6h5" },
   ];
@@ -302,7 +304,7 @@ function TradingDashboardMockup() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 14 }}>
         <div style={cs}><div style={sl}>PORTFOLIO VALUE</div><div style={sv}>$12,847</div><div style={{ fontSize: 12, color: M.green, fontWeight: 600, marginTop: 4 }}>+28.47%</div></div>
         <div style={cs}><div style={sl}>TOTAL P&L</div><div style={sv}>$2,847</div><div style={{ fontSize: 12, color: M.dim, marginTop: 4 }}>47 trades</div></div>
-        <div style={cs}><div style={sl}>TODAY'S PAYOUTS</div><div style={sv}>$64.20</div><div style={{ fontSize: 12, color: M.green, marginTop: 4 }}>Deposited</div></div>
+        <div style={cs}><div style={sl}>WIN RATE</div><div style={sv}>67.2%</div><div style={{ fontSize: 12, color: M.green, marginTop: 4 }}>Last 30 trades</div></div>
         <div style={cs}><div style={sl}>MAX DRAWDOWN</div><div style={{ ...sv, color: M.red }}>-4.21%</div><div style={{ fontSize: 12, color: M.red, marginTop: 4 }}>Within limits</div></div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -371,29 +373,6 @@ function TradingDashboardMockup() {
       </div>
     );
   };
-
-  const renderPayouts = () => (
-    <>
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 14, marginBottom: 14 }}>
-        <div style={cs}><div style={sl}>TOTAL PAID OUT</div><div style={sv}>$2,418.60</div></div>
-        <div style={cs}><div style={sl}>PAYOUT COUNT</div><div style={sv}>42</div></div>
-        <div style={cs}><div style={sl}>REINVEST RATE</div><div style={sv}>70%</div></div>
-      </div>
-      <div style={cs}>
-        <div style={{ ...sl, color: M.purple }}>AAVE YIELD</div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: M.text }}>$2,000 deposited</div>
-            <div style={{ fontSize: 12, color: M.dim }}>Earning 4.2% APY</div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: M.green }}>+$18.42</div>
-            <div style={{ fontSize: 11, color: M.dim }}>yield earned</div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
 
   const renderPerformance = () => (
     <>
@@ -526,7 +505,6 @@ function TradingDashboardMockup() {
         <div style={{ flex: 1, padding: 20, background: M.card, transition: "background 0.3s" }}>
           {tab === "overview" && renderOverview()}
           {tab === "trades" && renderTrades()}
-          {tab === "payouts" && renderPayouts()}
           {tab === "performance" && renderPerformance()}
           {tab === "holdings" && renderHoldings()}
         </div>
@@ -616,9 +594,9 @@ export default function TradingLanding() {
           margin: "0 auto 12px",
           maxWidth: 560,
         }}>
-          Two AI systems. Real technical analysis. A self-improving trading bot
-          that runs 24/7, learns from every trade, and operates autonomously
-          on the Coinbase Base network.
+          Dual AI. Computed technical analysis across 30+ tokens and four
+          timeframes. A self-reviewing trading bot that runs 24/7 on the
+          Coinbase Base network and gets smarter after every trade.
         </p>
 
         <div style={{
@@ -762,62 +740,6 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── ASK YOUR BOT ─── */}
-      <section style={{
-        padding: "80px 24px 100px",
-        background: L.surface,
-        borderTop: `1px solid ${L.border}`,
-        borderBottom: `1px solid ${L.border}`,
-      }}>
-        <div style={sectionWrap}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={sectionLabel}>CONVERSATIONAL AI</div>
-            <h2 style={sectionTitle}>Ask It Why</h2>
-            <p style={sectionDesc}>
-              Most bots are black boxes. This one is not. Ask why it bought, why it sold, what it sees in the market right now. It answers with the same data it trades on.
-            </p>
-          </div>
-
-          <div style={{
-            ...lCard({ padding: "32px", maxWidth: 640, margin: "0 auto 40px" }),
-          }}>
-            <div style={{
-              display: "flex", alignItems: "center", gap: 12,
-              padding: "14px 18px",
-              borderRadius: 10,
-              border: `1px solid ${L.border}`,
-              background: L.bg,
-            }}>
-              <IconChat />
-              <span style={{ fontFamily: L.font, fontSize: 15, color: L.textFaint }}>
-                Ask your bot anything...
-              </span>
-            </div>
-          </div>
-
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-          }}>
-            {[
-              { title: "Grounded in Data", desc: "Every answer pulls from the live portfolio, open positions, and current market conditions." },
-              { title: "No Jargon", desc: "It explains in plain language. You do not need a finance degree to understand what it is doing." },
-              { title: "24/7", desc: "The desk never clocks out. Neither does its ability to explain itself." },
-            ].map((item, i) => (
-              <div key={i} style={{ textAlign: "center" }}>
-                <h3 style={{ fontFamily: L.display, fontSize: 16, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
-                  {item.title}
-                </h3>
-                <p style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0, lineHeight: 1.6 }}>
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ─── UNDER THE HOOD ─── */}
       <section style={{
         padding: "100px 24px",
@@ -825,9 +747,9 @@ export default function TradingLanding() {
       }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <div style={sectionLabel}>UNDER THE HOOD</div>
-          <h2 style={sectionTitle}>Nine Data Sources. Every Two Minutes.</h2>
+          <h2 style={sectionTitle}>Ten Data Sources. Every Five Minutes.</h2>
           <p style={{ ...sectionDesc, marginBottom: 48 }}>
-            The desk does not guess. It pulls live data from nine sources, runs real math on it, and feeds everything into Claude AI for a judgment call. Every cycle. All day.
+            The desk does not guess. It pulls live data from ten sources, runs real math on it, and feeds everything into Claude AI for a judgment call. Every cycle. All day.
           </p>
         </div>
 
