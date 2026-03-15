@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Portfolio from "./Portfolio";
 import About from "./About";
 import PCCLanding from "./PCCLanding";
@@ -2530,6 +2530,9 @@ export default function App() {
     sessionStorage.setItem("vela_exit_shown", "true");
     setExitOpen(false);
   };
+
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
 
   return (
     <>
