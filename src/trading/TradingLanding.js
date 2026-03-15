@@ -110,18 +110,18 @@ const FEATURES = [
   },
   {
     icon: <IconWallet />,
-    title: "Daily Profit Payouts",
-    desc: "Each morning, realized profits are calculated and deposited directly into your personal wallet. Automatic.",
+    title: "Automated Profit Distribution",
+    desc: "Each morning, realized profits are calculated and distributed automatically. No manual intervention required.",
   },
   {
     icon: <IconNetwork />,
     title: "Multi-Timeframe Analysis",
-    desc: "Your desk analyzes 5-minute, 1-hour, 4-hour, and daily charts simultaneously. It catches scalps and macro trends.",
+    desc: "The desk analyzes 5-minute, 1-hour, 4-hour, and daily charts simultaneously. It catches scalps and macro trends.",
   },
   {
     icon: <IconShield />,
-    title: "Hard Stop-Losses & Risk Profiles",
-    desc: "Every position has a hard stop-loss. Take our risk quiz and your desk is calibrated to your comfort level. Conservative, moderate, or aggressive.",
+    title: "Hard Stop-Losses & Risk Controls",
+    desc: "Every position has a hard stop-loss. The desk runs at a specific risk tolerance level: conservative, moderate, or aggressive.",
   },
   {
     icon: <IconYield />,
@@ -131,15 +131,9 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: "01", title: "Set Up Your Desk", desc: "Create your accounts, paste in your API keys, and pick your risk profile. The whole thing takes about five minutes." },
-  { num: "02", title: "Let It Learn", desc: "Your bot starts analyzing markets across multiple timeframes, building conviction from real data. Two AI systems cross-check every signal before it acts." },
-  { num: "03", title: "Collect Daily Payouts", desc: "Profits are calculated each morning and deposited directly into your wallet. You watch, or you don't. The desk is always open." },
-];
-
-const PREREQUISITES = [
-  { name: "Coinbase", desc: "API key + auto-created wallet" },
-  { name: "Anthropic", desc: "Your bot's brain" },
-  { name: "Railway", desc: "Keeps your bot running 24/7" },
+  { num: "01", title: "It Watches the Market", desc: "Every two minutes, the desk pulls live data from 9+ sources: prices, volume, sentiment, macro indicators, DeFi flows, and derivatives data." },
+  { num: "02", title: "Two AIs Cross-Check", desc: "Claude analyzes the full picture and makes a judgment call. Grok independently scans X/Twitter for breaking sentiment. They have to agree before the desk acts." },
+  { num: "03", title: "It Trades, Then Reviews Itself", desc: "After every trade closes, the AI reviews its own reasoning against the outcome. It identifies what worked, what didn't, and adjusts. The desk gets smarter over time." },
 ];
 
 const UNDER_THE_HOOD = [
@@ -177,58 +171,34 @@ const UNDER_THE_HOOD = [
   },
 ];
 
-const UPGRADE_ITEMS = [
-  "New DeFi data source integrated",
-  "Risk model v3.2 deployed",
-  "Smarter entry timing logic",
-  "Gas optimization update",
-  "New token added to watchlist",
-  "Payout algorithm refined",
-  "Pushed to all deployed bots",
-];
-
-const SECURITY_POINTS = [
-  "Coinbase CDP custody",
-  "Non-custodial architecture",
-  "No withdrawal permissions",
-  "Real-time dashboard access",
-  "Transparent 2% fee structure",
-  "Full control to pause or stop anytime",
-];
-
-const PRICING_FEATURES = [
-  "AI-powered autonomous trading",
-  "24/7 cloud operation",
-  "Daily profit payouts",
-  "Real-time dashboard",
-  "Aave yield integration",
-  "Risk profile customization",
-];
-
 const FAQS = [
   {
-    q: "How much capital do I need to start?",
-    a: "There is no strict minimum, but we recommend starting with at least $500 in USDC to give the bot enough room to trade effectively across multiple positions.",
+    q: "Is this trading real money?",
+    a: "The desk currently runs on paper (simulated) funds. No real money is being traded. You are watching the AI make decisions and execute on simulated capital in real time.",
   },
   {
-    q: "What accounts do I need?",
-    a: "You need three accounts: Coinbase (for the trading wallet and API key), Anthropic (for Claude AI, which powers the decision engine), and Railway (to host your bot 24/7 in the cloud). All are free to create and we walk you through every step.",
+    q: "What exchanges does it trade on?",
+    a: "The desk trades on the Coinbase Base L2 network using simulated paper funds.",
   },
   {
-    q: "How does the 2% fee work?",
-    a: "Each morning, realized profits from the previous day are calculated. 2% of those profits are sent as a fee. If your bot did not profit that day, you pay nothing. There are no monthly subscriptions, no hidden charges.",
+    q: "How does the dual AI system work?",
+    a: "Claude (by Anthropic) is the decision engine. It analyzes technicals, reviews past trades, and decides when to buy or sell. Grok (by xAI) monitors X/Twitter in real time for market sentiment and breaking news. Together they cover signals that neither could catch alone.",
   },
   {
-    q: "Can the bot lose money?",
-    a: "Yes. Trading crypto involves risk and the bot can lose money. The risk management system uses stop-losses and position sizing to limit downside, but no system can guarantee profits. Only trade with capital you can afford to lose.",
+    q: "What does the self-review loop do?",
+    a: "After each trade closes, the AI reviews its reasoning, the outcome, and market conditions at the time. It identifies patterns in its own decisions and attempts to refine its future approach based on what it finds.",
   },
   {
-    q: "What is the Base network?",
-    a: "Base is a Layer 2 blockchain built by Coinbase. It offers low transaction fees and fast settlement times compared to Ethereum mainnet, making it ideal for frequent trading.",
+    q: "Can I get my own trading desk?",
+    a: "Not at this time. This is a personal technology project. If you are interested in commissioning a custom-built trading system, you can reach out to discuss a development engagement. This would be a software development service, not an investment product.",
   },
   {
-    q: "Can I stop the bot at any time?",
-    a: "Yes. You have full control. You can pause or stop your bot at any time through your dashboard. Your funds stay in your wallet at all times.",
+    q: "Is this financial advice?",
+    a: "No. This is a personal technology project and engineering demonstration. Nothing on this page or dashboard constitutes financial advice, a recommendation to trade, or a solicitation of any kind. All results shown are from paper trading with simulated funds. I am not a registered investment adviser.",
+  },
+  {
+    q: "Does it cost anything to watch?",
+    a: "No. The live dashboard is free to view. You can watch the desk trade, see its reasoning, and review historical performance anytime.",
   },
 ];
 
@@ -606,14 +576,12 @@ export default function TradingLanding() {
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <button onClick={() => { const el = document.getElementById("how-it-works"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>How It Works</button>
           <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>Features</button>
-          <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>Pricing</button>
           <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>FAQ</button>
-          <Link to="/trading/dashboard" style={{ fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, textDecoration: "none" }}>Dashboard</Link>
-          <Link to="/trading/signup" style={{
+          <Link to="/trading/dashboard" style={{
             ...lBtn({ fontSize: 14, padding: "8px 20px" }),
             display: "inline-block",
           }}>
-            Get Your Desk
+            Live Dashboard
           </Link>
         </div>
       </nav>
@@ -649,20 +617,25 @@ export default function TradingLanding() {
           maxWidth: 560,
         }}>
           Two AI systems. Real technical analysis. A self-improving trading bot
-          that runs 24/7, learns from every trade, and deposits profits
-          directly to your wallet.
+          that runs 24/7, learns from every trade, and operates autonomously
+          on the Coinbase Base network.
         </p>
 
-        <p style={{
-          fontFamily: L.font, fontSize: 14, color: L.textFaint,
-          margin: "0 auto 36px",
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          marginTop: 20, marginBottom: 36,
+          padding: "6px 14px", borderRadius: 20,
+          background: L.greenDim, border: `1px solid rgba(16,185,129,0.2)`,
+          fontFamily: L.mono, fontSize: 12, fontWeight: 600,
+          color: L.green,
         }}>
-          Free to set up &middot; 2% of realized profits
-        </p>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: L.green }} />
+          LIVE ON PAPER FUNDS
+        </div>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
-          <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 32px", display: "inline-block" })}>
-            Get Your Desk
+          <Link to="/trading/dashboard" style={lBtn({ fontSize: 16, padding: "16px 32px", display: "inline-block" })}>
+            Watch It Trade Live
           </Link>
         </div>
       </section>
@@ -670,73 +643,19 @@ export default function TradingLanding() {
       {/* ─── COMMAND CENTER (Dashboard Mockup) ─── */}
       <section style={{ padding: "0 24px 80px", ...sectionWrap }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2 style={sectionTitle}>Your Live Trading Floor</h2>
+          <h2 style={sectionTitle}>The Live Dashboard</h2>
           <p style={sectionDesc}>
-            Every desk comes with a real-time dashboard. Watch your bot think, trade, and learn. Full transparency into every position, every payout, every decision it makes.
+            This is what the desk looks like from the inside. Real-time positions, AI reasoning behind every trade, performance metrics, and full trade history. Nothing is hidden.
           </p>
         </div>
         <TradingDashboardMockup />
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <p style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>
-            7 themes included. This is your real dashboard.
+            7 themes included. This is the real dashboard.
           </p>
           <Link to="/trading/dashboard" style={lBtnOutline({ fontSize: 14, padding: "10px 24px", marginTop: 12, display: "inline-block" })}>
             Try the Live Demo
           </Link>
-        </div>
-      </section>
-
-      {/* ─── PREREQUISITES ─── */}
-      <section style={{
-        padding: "80px 24px",
-        background: L.surface,
-        borderTop: `1px solid ${L.border}`,
-        borderBottom: `1px solid ${L.border}`,
-      }}>
-        <div style={sectionWrap}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={sectionTitle}>Three Accounts, Five Minutes</h2>
-          </div>
-
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-            marginBottom: 32,
-          }}>
-            {PREREQUISITES.map((p, i) => (
-              <div key={i} style={{
-                ...lCard({ background: L.bg }),
-                textAlign: "center",
-                padding: "36px 28px",
-              }}>
-                <div style={{
-                  width: 56, height: 56, borderRadius: "50%",
-                  background: L.goldDim,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  margin: "0 auto 16px",
-                  fontFamily: L.display, fontSize: 22, fontWeight: 700, color: L.gold,
-                }}>
-                  {i + 1}
-                </div>
-                <h3 style={{ fontFamily: L.display, fontSize: 20, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
-                  {p.name}
-                </h3>
-                <p style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0 }}>
-                  {p.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <p style={{
-            fontFamily: L.font, fontSize: 14, color: L.textDim,
-            lineHeight: 1.7, maxWidth: 640, margin: "0 auto", textAlign: "center",
-          }}>
-            All free to create. We walk you through every step. Each service gives you an "API key,"
-            which is basically a password that lets your bot access that service. You will just copy and paste
-            them during setup.
-          </p>
         </div>
       </section>
 
@@ -746,7 +665,7 @@ export default function TradingLanding() {
         ...sectionWrap,
       }}>
         <div style={{ textAlign: "center", marginBottom: 60 }}>
-          <h2 style={sectionTitle}>How Your Desk Works</h2>
+          <h2 style={sectionTitle}>How the Desk Works</h2>
         </div>
 
         <div style={{
@@ -798,77 +717,13 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── UPGRADE FLOW ─── */}
-      <section style={{
-        padding: "80px 24px 100px",
-        background: L.surface,
-        borderTop: `1px solid ${L.border}`,
-        borderBottom: `1px solid ${L.border}`,
-      }}>
-        <div style={sectionWrap}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={sectionTitle}>We Improve It. Your Desk Gets It.</h2>
-            <p style={sectionDesc}>
-              Every time we ship a smarter model, a new data source, or a better risk algorithm, your desk gets the update automatically. You never fall behind.
-            </p>
-          </div>
-
-          <div style={{
-            ...lCard({ padding: "32px 36px" }),
-            maxWidth: 560,
-            margin: "0 auto 40px",
-          }}>
-            {UPGRADE_ITEMS.map((item, i) => (
-              <div key={i} style={{
-                display: "flex", alignItems: "center", gap: 12,
-                padding: "10px 0",
-                borderBottom: i < UPGRADE_ITEMS.length - 1 ? `1px solid ${L.border}` : "none",
-              }}>
-                <div style={{
-                  width: 6, height: 6, borderRadius: "50%",
-                  background: i === UPGRADE_ITEMS.length - 1 ? L.green : L.gold,
-                }} />
-                <span style={{
-                  fontFamily: L.font, fontSize: 14,
-                  color: i === UPGRADE_ITEMS.length - 1 ? L.green : L.textDim,
-                  fontWeight: i === UPGRADE_ITEMS.length - 1 ? 600 : 400,
-                }}>
-                  {item}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-          }}>
-            {[
-              { title: "Zero Downtime", desc: "Automatic. Same day." },
-              { title: "Zero Action Required", desc: "Your bot receives every upgrade without you lifting a finger." },
-              { title: "Same System, Every Bot", desc: "Everyone runs the latest version. No tiers. No feature gates." },
-            ].map((item, i) => (
-              <div key={i} style={{ ...lCard({ background: L.bg }), textAlign: "center" }}>
-                <h3 style={{ fontFamily: L.display, fontSize: 18, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
-                  {item.title}
-                </h3>
-                <p style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0, lineHeight: 1.6 }}>
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ─── FEATURES ─── */}
       <section id="features" style={{
         padding: "100px 24px",
         ...sectionWrap,
       }}>
         <div style={{ textAlign: "center", marginBottom: 60 }}>
-          <h2 style={sectionTitle}>What Sits on Your Desk</h2>
+          <h2 style={sectionTitle}>What Powers the Desk</h2>
         </div>
 
         <div style={{
@@ -916,10 +771,10 @@ export default function TradingLanding() {
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={sectionLabel}>TALK TO YOUR DESK</div>
+            <div style={sectionLabel}>CONVERSATIONAL AI</div>
             <h2 style={sectionTitle}>Ask It Why</h2>
             <p style={sectionDesc}>
-              Most bots are black boxes. Yours is not. Ask why it bought, why it sold, what it sees in the market right now. Get real answers backed by the same data it trades on.
+              Most bots are black boxes. This one is not. Ask why it bought, why it sold, what it sees in the market right now. It answers with the same data it trades on.
             </p>
           </div>
 
@@ -946,9 +801,9 @@ export default function TradingLanding() {
             gap: 24,
           }}>
             {[
-              { title: "Grounded in Data", desc: "Every answer pulls from your live portfolio, open positions, and current market conditions." },
-              { title: "No Jargon", desc: "It explains in plain language. You do not need a finance degree to understand your own desk." },
-              { title: "24/7", desc: "Your desk never clocks out. Neither does its ability to explain itself." },
+              { title: "Grounded in Data", desc: "Every answer pulls from the live portfolio, open positions, and current market conditions." },
+              { title: "No Jargon", desc: "It explains in plain language. You do not need a finance degree to understand what it is doing." },
+              { title: "24/7", desc: "The desk never clocks out. Neither does its ability to explain itself." },
             ].map((item, i) => (
               <div key={i} style={{ textAlign: "center" }}>
                 <h3 style={{ fontFamily: L.display, fontSize: 16, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
@@ -972,7 +827,7 @@ export default function TradingLanding() {
           <div style={sectionLabel}>UNDER THE HOOD</div>
           <h2 style={sectionTitle}>Nine Data Sources. Every Two Minutes.</h2>
           <p style={{ ...sectionDesc, marginBottom: 48 }}>
-            Your desk does not guess. It pulls live data from nine sources, runs real math on it, and feeds everything into Claude AI for a judgment call. Every cycle. All day.
+            The desk does not guess. It pulls live data from nine sources, runs real math on it, and feeds everything into Claude AI for a judgment call. Every cycle. All day.
           </p>
         </div>
 
@@ -1015,7 +870,7 @@ export default function TradingLanding() {
           textAlign: "center", marginTop: 40, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
           lineHeight: 1.7,
         }}>
-          Could you wire all this up yourself? Probably. But keeping it sharp requires constant research, auditing, and engineering. That is what the 2% covers.
+          Could you wire all this up yourself? Probably. But keeping it sharp requires constant research, auditing, and engineering. That is what I spend my time on.
         </p>
       </section>
 
@@ -1029,8 +884,8 @@ export default function TradingLanding() {
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={sectionLabel}>OUR STORY</div>
-            <h2 style={sectionTitle}>I Built This for Myself First</h2>
-            <p style={sectionDesc}>Then people asked for their own.</p>
+            <h2 style={sectionTitle}>I Built This for Myself</h2>
+            <p style={sectionDesc}>This is the story of why.</p>
           </div>
 
           <div style={{ maxWidth: 700, margin: "0 auto" }}>
@@ -1051,9 +906,9 @@ export default function TradingLanding() {
                 desc: "On February 11, 2026, Coinbase released programmable, non-custodial wallets for AI agents. That was the missing piece. Now the bot could hold its own wallet, execute trades, and deposit profits directly. No middleman. No custody risk. A real autonomous trading desk.",
               },
               {
-                label: "WHERE WE ARE",
-                title: "Now you can have the same desk I run.",
-                desc: "Same AI. Same data sources. Same self-improving loop. Calibrated to your risk profile. Your capital works while you do whatever you want. No returns are guaranteed, but the system is built to give your money a real shot at growing.",
+                label: "WHERE IT IS NOW",
+                title: "The desk runs every day. I watch it learn.",
+                desc: "It trades on paper funds while I continue improving it. New data sources, better risk models, smarter entry logic. The dashboard is open so you can watch it work in real time and see every decision it makes.",
               },
             ].map((block, i) => (
               <div key={i} style={{ marginBottom: i < 3 ? 48 : 0 }}>
@@ -1088,116 +943,13 @@ export default function TradingLanding() {
               fontFamily: L.display, fontSize: 18, color: L.navy,
               lineHeight: 1.7, margin: "0 0 12px", fontStyle: "italic",
             }}>
-              "I built the desk I wished existed. Then I realized other people needed it too."
+              "I wanted a trading desk that could think, learn, and run without me. So I built one."
             </p>
             <p style={{
               fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0,
             }}>
               - Diego Vallota, Founder
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── TRUST & SECURITY ─── */}
-      <section style={{
-        padding: "100px 24px",
-        ...sectionWrap,
-      }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div style={sectionLabel}>SECURITY</div>
-          <h2 style={sectionTitle}>Your Keys. Your Wallet. Your Rules.</h2>
-        </div>
-
-        <div style={{ maxWidth: 700, margin: "0 auto" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 40 }}>
-            {[
-              "Your wallet is created through Coinbase Developer Platform. You hold the keys. We never do.",
-              "Your desk can trade, but it cannot withdraw to external addresses. Your capital stays in your wallet at all times.",
-              "A flat 2% of daily realized profits. No subscription. No markup. If your desk does not profit, you pay nothing.",
-            ].map((text, i) => (
-              <div key={i} style={{
-                display: "flex", alignItems: "flex-start", gap: 14,
-                fontFamily: L.font, fontSize: 15, color: L.textDim, lineHeight: 1.7,
-              }}>
-                <div style={{ marginTop: 4, flexShrink: 0 }}><IconCheck /></div>
-                {text}
-              </div>
-            ))}
-          </div>
-
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 16,
-          }}>
-            {SECURITY_POINTS.map((point, i) => (
-              <div key={i} style={{
-                ...lCard({ padding: "16px 20px", textAlign: "center" }),
-              }}>
-                <span style={{ fontFamily: L.font, fontSize: 13, color: L.textDim }}>
-                  {point}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── PRICING ─── */}
-      <section id="pricing" style={{
-        padding: "80px 24px 100px",
-        background: L.surface,
-        borderTop: `1px solid ${L.border}`,
-        borderBottom: `1px solid ${L.border}`,
-      }}>
-        <div style={sectionWrap}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={sectionTitle}>Simple, Transparent Pricing</h2>
-          </div>
-
-          <div style={{
-            ...lCard({ padding: "48px 40px" }),
-            maxWidth: 520,
-            margin: "0 auto",
-            textAlign: "center",
-            border: `1px solid ${L.borderLight}`,
-          }}>
-            <div style={{ marginBottom: 32 }}>
-              <div style={{ display: "flex", justifyContent: "center", gap: 40, marginBottom: 32 }}>
-                <div>
-                  <div style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, marginBottom: 8 }}>Setup Cost</div>
-                  <div style={{ fontFamily: L.display, fontSize: 36, fontWeight: 700, color: L.navy }}>$0</div>
-                </div>
-                <div>
-                  <div style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, marginBottom: 8 }}>Profit Fee</div>
-                  <div style={{ fontFamily: L.display, fontSize: 36, fontWeight: 700, color: L.navy }}>2%</div>
-                  <div style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>of daily realized profits</div>
-                </div>
-              </div>
-              <p style={{
-                fontFamily: L.font, fontSize: 16, color: L.green, fontWeight: 600, margin: "0 0 32px",
-              }}>
-                You only pay when you make money
-              </p>
-            </div>
-
-            <div style={{ textAlign: "left", marginBottom: 32 }}>
-              {PRICING_FEATURES.map((feature, i) => (
-                <div key={i} style={{
-                  display: "flex", alignItems: "center", gap: 12,
-                  padding: "8px 0",
-                  fontFamily: L.font, fontSize: 15, color: L.textDim,
-                }}>
-                  <IconCheck />
-                  {feature}
-                </div>
-              ))}
-            </div>
-
-            <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 40px", width: "100%", display: "block", textAlign: "center", boxSizing: "border-box" })}>
-              Get Your Desk
-            </Link>
           </div>
         </div>
       </section>
@@ -1272,7 +1024,7 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── BOTTOM CTA ─── */}
+      {/* ─── INTERESTED ─── */}
       <section style={{
         padding: "80px 24px",
         background: L.surface,
@@ -1281,16 +1033,23 @@ export default function TradingLanding() {
       }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <h2 style={sectionTitle}>
-            Open Your Desk
+            Interested in a Custom Build?
           </h2>
           <p style={{
-            fontFamily: L.font, fontSize: 17, color: L.textDim, margin: "0 0 36px",
+            fontFamily: L.font, fontSize: 17, color: L.textDim, margin: "0 0 16px", lineHeight: 1.7,
           }}>
-            Five minutes to set up. Then it runs on its own.
+            I am not selling access to my desk or managing anyone's capital.
+            But if you want a custom trading system built for you as a software
+            development project, reach out and we can talk scope.
           </p>
-          <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 36px", display: "inline-block" })}>
-            Get Your Desk
-          </Link>
+          <p style={{
+            fontFamily: L.font, fontSize: 14, color: L.textFaint, margin: "0 0 36px", lineHeight: 1.7,
+          }}>
+            This would be a paid development engagement. You own the code. You run it yourself. I do not manage funds or provide investment advice.
+          </p>
+          <a href="mailto:diego@vallotaventures.com" style={lBtn({ fontSize: 16, padding: "16px 36px", display: "inline-block" })}>
+            Get in Touch
+          </a>
         </div>
       </section>
 
@@ -1329,10 +1088,13 @@ export default function TradingLanding() {
           fontFamily: L.font, fontSize: 11, color: L.textFaint,
           lineHeight: 1.6, margin: 0, textAlign: "center",
         }}>
-          Trading crypto involves risk. Your desk can lose money and past performance is not indicative of future results.
-          Nothing on this page constitutes financial advice, a recommendation to trade, or an offer to manage assets.
-          You maintain full control of your funds at all times. The 2% fee applies only to realized daily profits.
-          By opening a desk, you accept full responsibility for its performance and any trading decisions made.
+          This is a personal technology project and engineering demonstration. The trading desk shown on this page
+          operates exclusively with paper (simulated) funds. No real money is traded. Nothing on this page constitutes
+          financial advice, a recommendation to trade, a solicitation of investment, or an offer to manage assets.
+          Past simulated performance is not indicative of future results. The creator of this project is not a
+          registered investment adviser, broker-dealer, or financial planner. Any inquiry about custom software
+          development is for a software engineering service only and does not constitute an investment product,
+          managed account, or securities offering.
         </p>
       </div>
     </div>
