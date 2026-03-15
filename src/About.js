@@ -200,7 +200,7 @@ export default function About() {
                 of Vallota Ventures. My day job sits at the intersection of marketing, finance,
                 and operations. My nights and weekends go into training for the Chicago and NYC
                 marathons this fall (donate{" "}
-                <a href="mailto:diego@vallotaventures.com" style={{ color: T.gold, textDecoration: "underline" }}>here</a>{" "}
+                <a href="https://fundraising.stjude.org/site/TR?px=9035194&fr_id=163500&pg=personal" target="_blank" rel="noopener noreferrer" style={{ color: T.gold, textDecoration: "underline" }}>here</a>{" "}
                 if you're looking to support a good cause and grab a tax writeoff. Shameless
                 plugs are always allowed on personal websites, right?).
               </p>
