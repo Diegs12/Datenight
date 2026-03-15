@@ -100,40 +100,40 @@ const IconCheck = () => (
 const FEATURES = [
   {
     icon: <IconBrain />,
-    title: "AI-Powered Decisions",
-    desc: "Claude AI analyzes market conditions, sentiment, and technical indicators every 2 minutes.",
+    title: "Dual AI Engine",
+    desc: "Claude handles trade decisions. Grok scans X/Twitter for real-time sentiment. Two AI systems working together so nothing slips through the cracks.",
   },
   {
     icon: <IconCloud />,
-    title: "24/7 Cloud Operation",
-    desc: "Your bot runs in the cloud, never sleeps, never misses an opportunity.",
+    title: "Computed Technical Analysis",
+    desc: "RSI, MACD, Bollinger Bands calculated mathematically on real price data across 18 tokens. Not guessed by an LLM.",
   },
   {
     icon: <IconWallet />,
     title: "Daily Profit Payouts",
-    desc: "Every morning, realized profits are automatically distributed to your personal wallet.",
+    desc: "Each morning, realized profits are calculated and deposited directly into your personal wallet. Automatic.",
   },
   {
     icon: <IconNetwork />,
-    title: "Base Network Native",
-    desc: "Trades on Coinbase's Base L2 network. Low fees, fast settlement.",
+    title: "Multi-Timeframe Analysis",
+    desc: "Your desk analyzes 5-minute, 1-hour, 4-hour, and daily charts simultaneously. It catches scalps and macro trends.",
   },
   {
     icon: <IconShield />,
-    title: "Adaptive Risk Management",
-    desc: "Choose Conservative, Moderate, or Aggressive. Protection calibrated to your preference.",
+    title: "Hard Stop-Losses & Risk Profiles",
+    desc: "Every position has a hard stop-loss. Take our risk quiz and your desk is calibrated to your comfort level. Conservative, moderate, or aggressive.",
   },
   {
     icon: <IconYield />,
-    title: "Aave Yield Integration",
-    desc: "Idle USDC earns 2-5% APY in Aave V3 automatically while waiting for trades.",
+    title: "Self-Improving AI",
+    desc: "After every trade, the AI reviews what it did right and wrong. It studies its own history and refines its approach over time.",
   },
 ];
 
 const STEPS = [
-  { num: "01", title: "Create Your Accounts", desc: "Set up Coinbase CDP, Anthropic, and Railway accounts. We guide you through each one." },
-  { num: "02", title: "Configure Your Bot", desc: "Choose your risk profile, set trading capital, and configure daily profit payouts." },
-  { num: "03", title: "Deploy & Earn", desc: "Your bot goes live in the cloud and begins trading autonomously. Watch it work." },
+  { num: "01", title: "Set Up Your Desk", desc: "Create your accounts, paste in your API keys, and pick your risk profile. The whole thing takes about five minutes." },
+  { num: "02", title: "Let It Learn", desc: "Your bot starts analyzing markets across multiple timeframes, building conviction from real data. Two AI systems cross-check every signal before it acts." },
+  { num: "03", title: "Collect Daily Payouts", desc: "Profits are calculated each morning and deposited directly into your wallet. You watch, or you don't. The desk is always open." },
 ];
 
 const PREREQUISITES = [
@@ -600,7 +600,7 @@ export default function TradingLanding() {
       }}>
         <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ fontFamily: L.display, fontSize: 18, fontWeight: 700, color: L.navy, letterSpacing: 0.3 }}>
-            Vallota Trading Command
+            Vallota Trading Desk
           </span>
         </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
@@ -613,7 +613,7 @@ export default function TradingLanding() {
             ...lBtn({ fontSize: 14, padding: "8px 20px" }),
             display: "inline-block",
           }}>
-            Deploy Your Bot
+            Get Your Desk
           </Link>
         </div>
       </nav>
@@ -633,10 +633,10 @@ export default function TradingLanding() {
           margin: "0 0 24px",
           color: L.navy,
         }}>
-          Intelligent Money{" "}
+          A Trading Desk{" "}
           <br />
           <span style={{ color: L.gold }}>
-            Working for You
+            That Never Closes
           </span>
         </h1>
 
@@ -648,8 +648,9 @@ export default function TradingLanding() {
           margin: "0 auto 12px",
           maxWidth: 560,
         }}>
-          Your money loses value every day it sits idle. Put it to work with an
-          AI trading bot that earns while you sleep.
+          Two AI systems. Real technical analysis. A self-improving trading bot
+          that runs 24/7, learns from every trade, and deposits profits
+          directly to your wallet.
         </p>
 
         <p style={{
@@ -661,7 +662,7 @@ export default function TradingLanding() {
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
           <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 32px", display: "inline-block" })}>
-            Deploy Your Bot
+            Get Your Desk
           </Link>
         </div>
       </section>
@@ -669,15 +670,15 @@ export default function TradingLanding() {
       {/* ─── COMMAND CENTER (Dashboard Mockup) ─── */}
       <section style={{ padding: "0 24px 80px", ...sectionWrap }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2 style={sectionTitle}>Your Command Center</h2>
+          <h2 style={sectionTitle}>Your Live Trading Floor</h2>
           <p style={sectionDesc}>
-            Every bot owner gets a personalized dashboard. Real-time portfolio tracking, trade history with AI reasoning, and automated payout details.
+            Every desk comes with a real-time dashboard. Watch your bot think, trade, and learn. Full transparency into every position, every payout, every decision it makes.
           </p>
         </div>
         <TradingDashboardMockup />
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <p style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>
-            7 themes included. Tap to switch. This is your real dashboard.
+            7 themes included. This is your real dashboard.
           </p>
           <Link to="/trading/dashboard" style={lBtnOutline({ fontSize: 14, padding: "10px 24px", marginTop: 12, display: "inline-block" })}>
             Try the Live Demo
@@ -694,7 +695,7 @@ export default function TradingLanding() {
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={sectionTitle}>What you'll need to get started</h2>
+            <h2 style={sectionTitle}>Three Accounts, Five Minutes</h2>
           </div>
 
           <div style={{
@@ -732,9 +733,9 @@ export default function TradingLanding() {
             fontFamily: L.font, fontSize: 14, color: L.textDim,
             lineHeight: 1.7, maxWidth: 640, margin: "0 auto", textAlign: "center",
           }}>
-            All free to create. We walk you through every step. Each service gives you an "API key" -
-            think of it like a hotel key card for your bot. It unlocks access to that service, and only your
-            bot can use it. You'll just copy and paste them during setup.
+            All free to create. We walk you through every step. Each service gives you an "API key,"
+            which is basically a password that lets your bot access that service. You will just copy and paste
+            them during setup.
           </p>
         </div>
       </section>
@@ -745,7 +746,7 @@ export default function TradingLanding() {
         ...sectionWrap,
       }}>
         <div style={{ textAlign: "center", marginBottom: 60 }}>
-          <h2 style={sectionTitle}>Three Steps to Financial Autonomy</h2>
+          <h2 style={sectionTitle}>How Your Desk Works</h2>
         </div>
 
         <div style={{
@@ -806,9 +807,9 @@ export default function TradingLanding() {
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={sectionTitle}>Every Upgrade. Every Bot. Automatically.</h2>
+            <h2 style={sectionTitle}>We Improve It. Your Desk Gets It.</h2>
             <p style={sectionDesc}>
-              When we improve the system, your bot gets the same upgrade. No action required. No extra cost. You stay on the cutting edge because we never stop pushing.
+              Every time we ship a smarter model, a new data source, or a better risk algorithm, your desk gets the update automatically. You never fall behind.
             </p>
           </div>
 
@@ -867,7 +868,7 @@ export default function TradingLanding() {
         ...sectionWrap,
       }}>
         <div style={{ textAlign: "center", marginBottom: 60 }}>
-          <h2 style={sectionTitle}>Built for Autonomous Performance</h2>
+          <h2 style={sectionTitle}>What Sits on Your Desk</h2>
         </div>
 
         <div style={{
@@ -915,10 +916,10 @@ export default function TradingLanding() {
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={sectionLabel}>CONVERSATIONAL AI</div>
-            <h2 style={sectionTitle}>Ask Your Bot Anything</h2>
+            <div style={sectionLabel}>TALK TO YOUR DESK</div>
+            <h2 style={sectionTitle}>Ask It Why</h2>
             <p style={sectionDesc}>
-              Your bot doesn't just trade. It explains. Ask about strategy, reasoning, positions, or market outlook. Get answers grounded in real data.
+              Most bots are black boxes. Yours is not. Ask why it bought, why it sold, what it sees in the market right now. Get real answers backed by the same data it trades on.
             </p>
           </div>
 
@@ -945,9 +946,9 @@ export default function TradingLanding() {
             gap: 24,
           }}>
             {[
-              { title: "Real-Time Context", desc: "Answers based on your live portfolio and market data." },
-              { title: "Plain English", desc: "No jargon. Clear explanations of every decision." },
-              { title: "Always Available", desc: "Ask anything, anytime. Your bot is always running." },
+              { title: "Grounded in Data", desc: "Every answer pulls from your live portfolio, open positions, and current market conditions." },
+              { title: "No Jargon", desc: "It explains in plain language. You do not need a finance degree to understand your own desk." },
+              { title: "24/7", desc: "Your desk never clocks out. Neither does its ability to explain itself." },
             ].map((item, i) => (
               <div key={i} style={{ textAlign: "center" }}>
                 <h3 style={{ fontFamily: L.display, fontSize: 16, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
@@ -969,9 +970,9 @@ export default function TradingLanding() {
       }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <div style={sectionLabel}>UNDER THE HOOD</div>
-          <h2 style={sectionTitle}>What Powers Your Bot</h2>
+          <h2 style={sectionTitle}>Nine Data Sources. Every Two Minutes.</h2>
           <p style={{ ...sectionDesc, marginBottom: 48 }}>
-            This is not "tell an AI to trade for you." This is a multi-layered intelligence system pulling from 9+ live data sources every cycle.
+            Your desk does not guess. It pulls live data from nine sources, runs real math on it, and feeds everything into Claude AI for a judgment call. Every cycle. All day.
           </p>
         </div>
 
@@ -1014,7 +1015,7 @@ export default function TradingLanding() {
           textAlign: "center", marginTop: 40, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
           lineHeight: 1.7,
         }}>
-          Could you build this yourself? Maybe. But staying on the cutting edge requires constant research, auditing, and engineering. That is what the 2% covers.
+          Could you wire all this up yourself? Probably. But keeping it sharp requires constant research, auditing, and engineering. That is what the 2% covers.
         </p>
       </section>
 
@@ -1028,31 +1029,31 @@ export default function TradingLanding() {
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             <div style={sectionLabel}>OUR STORY</div>
-            <h2 style={sectionTitle}>Born from Necessity</h2>
-            <p style={sectionDesc}>The economy demanded a better way. We built it.</p>
+            <h2 style={sectionTitle}>I Built This for Myself First</h2>
+            <p style={sectionDesc}>Then people asked for their own.</p>
           </div>
 
           <div style={{ maxWidth: 700, margin: "0 auto" }}>
             {[
               {
-                label: "THE PROBLEM",
-                title: "The dollar is being devalued. Savings are losing purchasing power every day.",
-                desc: "Inflation. Constant money printing. The slow erosion of value sitting in a bank account. The economy made one thing clear: keeping money idle is no longer a neutral decision. It is an active loss.",
+                label: "THE FRUSTRATION",
+                title: "I watched my savings lose purchasing power every month.",
+                desc: "Sitting in a bank account earning next to nothing while inflation eats away at it. I knew there were opportunities in crypto markets every single day. But I had a full-time job. I could not sit at a screen and trade.",
               },
               {
-                label: "THE REALIZATION",
-                title: "Markets move daily. But most people cannot trade them.",
-                desc: "There is daily volatility worth capturing. Real opportunity in every 24-hour cycle. But being an active trader requires constant attention, emotional discipline, and time most people do not have. The market rewards those who show up. It punishes those who cannot.",
+                label: "THE BUILD",
+                title: "So I built something that could.",
+                desc: "I wired together Claude AI for decisions, Grok for real-time sentiment off X, and computed technical analysis on actual price data. RSI, MACD, Bollinger Bands. Not vibes. Math. Then I added a self-review loop so the bot could study its own trades and get better.",
               },
               {
-                label: "THE BREAKTHROUGH",
-                title: "Then the right pieces came together at the right moment.",
-                desc: "On February 11, 2026, Coinbase launched agent wallets. Programmable, non-custodial, institutional-grade. AI intelligence reached the point where it could analyze markets and execute with judgment, not just rules. The technology to build a truly autonomous trading agent didn't exist before that. Now it does.",
+                label: "THE MOMENT",
+                title: "Coinbase launched agent wallets. Everything clicked.",
+                desc: "On February 11, 2026, Coinbase released programmable, non-custodial wallets for AI agents. That was the missing piece. Now the bot could hold its own wallet, execute trades, and deposit profits directly. No middleman. No custody risk. A real autonomous trading desk.",
               },
               {
-                label: "THE VISION",
-                title: "Your bot works. You live. Your wealth has a chance to grow.",
-                desc: "Imagine a system designed to capture daily market opportunities and deposit gains directly to your wallet. While no returns are guaranteed, the architecture is built to let your capital work around the clock so you don't have to.",
+                label: "WHERE WE ARE",
+                title: "Now you can have the same desk I run.",
+                desc: "Same AI. Same data sources. Same self-improving loop. Calibrated to your risk profile. Your capital works while you do whatever you want. No returns are guaranteed, but the system is built to give your money a real shot at growing.",
               },
             ].map((block, i) => (
               <div key={i} style={{ marginBottom: i < 3 ? 48 : 0 }}>
@@ -1087,7 +1088,7 @@ export default function TradingLanding() {
               fontFamily: L.display, fontSize: 18, color: L.navy,
               lineHeight: 1.7, margin: "0 0 12px", fontStyle: "italic",
             }}>
-              "If one day your bot can help generate the daily income you need while your wealth has room to grow... that is the way."
+              "I built the desk I wished existed. Then I realized other people needed it too."
             </p>
             <p style={{
               fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0,
@@ -1105,15 +1106,15 @@ export default function TradingLanding() {
       }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={sectionLabel}>SECURITY</div>
-          <h2 style={sectionTitle}>Your Funds, Your Control</h2>
+          <h2 style={sectionTitle}>Your Keys. Your Wallet. Your Rules.</h2>
         </div>
 
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 40 }}>
             {[
-              "Your trading wallet is created through Coinbase Developer Platform. Only you hold the API keys.",
-              "The bot can execute trades but cannot withdraw to external addresses. Your funds stay in your wallet at all times.",
-              "A flat 2% of daily realized profits. No hidden fees, no markup, no monthly subscription.",
+              "Your wallet is created through Coinbase Developer Platform. You hold the keys. We never do.",
+              "Your desk can trade, but it cannot withdraw to external addresses. Your capital stays in your wallet at all times.",
+              "A flat 2% of daily realized profits. No subscription. No markup. If your desk does not profit, you pay nothing.",
             ].map((text, i) => (
               <div key={i} style={{
                 display: "flex", alignItems: "flex-start", gap: 14,
@@ -1195,7 +1196,7 @@ export default function TradingLanding() {
             </div>
 
             <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 40px", width: "100%", display: "block", textAlign: "center", boxSizing: "border-box" })}>
-              Start Free
+              Get Your Desk
             </Link>
           </div>
         </div>
@@ -1280,15 +1281,15 @@ export default function TradingLanding() {
       }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <h2 style={sectionTitle}>
-            Ready to Put Your Money to Work?
+            Open Your Desk
           </h2>
           <p style={{
             fontFamily: L.font, fontSize: 17, color: L.textDim, margin: "0 0 36px",
           }}>
-            Deploy your autonomous trading bot in 5 minutes.
+            Five minutes to set up. Then it runs on its own.
           </p>
           <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 36px", display: "inline-block" })}>
-            Deploy Your Bot
+            Get Your Desk
           </Link>
         </div>
       </section>
@@ -1306,7 +1307,7 @@ export default function TradingLanding() {
         gap: 12,
       }}>
         <span style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>
-          &copy; 2026 Vallota Trading Command
+          &copy; 2026 Vallota Trading Desk
         </span>
         <div style={{ display: "flex", gap: 20 }}>
           <Link to="/" style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint, textDecoration: "none" }}>
@@ -1328,10 +1329,10 @@ export default function TradingLanding() {
           fontFamily: L.font, fontSize: 11, color: L.textFaint,
           lineHeight: 1.6, margin: 0, textAlign: "center",
         }}>
-          Trading crypto involves risk. The bot can lose money and past performance is not indicative of future results.
+          Trading crypto involves risk. Your desk can lose money and past performance is not indicative of future results.
           Nothing on this page constitutes financial advice, a recommendation to trade, or an offer to manage assets.
           You maintain full control of your funds at all times. The 2% fee applies only to realized daily profits.
-          By deploying a bot, you accept full responsibility for its performance and any trading decisions made.
+          By opening a desk, you accept full responsibility for its performance and any trading decisions made.
         </p>
       </div>
     </div>
