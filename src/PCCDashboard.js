@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { usePccAuth } from "./auth/PccAuthContext";
 
 // ═══════════════════════════════════════════
 // Theme
@@ -190,6 +191,18 @@ function getInitialData() {
       { month: "Dec 25", value: 42300 }, { month: "Jan 26", value: 43900 },
       { month: "Feb 26", value: 45600 }, { month: "Mar 26", value: 47250.77 },
     ],
+  };
+}
+
+function getSecureWorkspaceData() {
+  return {
+    tasks: [],
+    habits: [],
+    accounts: [],
+    transactions: [],
+    workouts: [],
+    goals: [],
+    netWorthHistory: [],
   };
 }
 
@@ -568,12 +581,449 @@ function HabitsTab({ data, setData }) {
 // ═══════════════════════════════════════════
 // Finances Tab
 // ═══════════════════════════════════════════
-function FinancesTab({ data, setData }) {
+function AdvisorFinancesTab() {
+  const { session } = usePccAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [clients, setClients] = useState([]);
+  const [selectedClientId, setSelectedClientId] = useState(null);
+  const [inviteName, setInviteName] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteState, setInviteState] = useState({ loading: false, notice: "" });
+  const [syncState, setSyncState] = useState({ loading: false, notice: "" });
+  const [plaidLinkState, setPlaidLinkState] = useState({ loading: false, notice: "" });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadClients() {
+      if (!session?.access_token) return;
+      setLoading(true);
+      setError("");
+      try {
+        const res = await fetch("/api/pcc-clients", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Failed to load advisor clients");
+        if (cancelled) return;
+        setClients(Array.isArray(json.clients) ? json.clients : []);
+        setSelectedClientId((current) => current || json.clients?.[0]?.id || null);
+      } catch (err) {
+        if (!cancelled) setError(err.message || "Failed to load advisor clients");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadClients();
+    return () => { cancelled = true; };
+  }, [session?.access_token]);
+
+  const selectedClient = clients.find((client) => client.id === selectedClientId) || null;
+  const totalNetWorth = clients.reduce((sum, client) => sum + Number(client.net_worth || 0), 0);
+  const totalAccounts = clients.reduce((sum, client) => sum + (client.accounts?.length || 0), 0);
+  const staleClients = clients.filter((client) => client.plaid_items?.some((item) => item.health && item.health !== "healthy"));
+
+  const handleInviteClient = async (e) => {
+    e.preventDefault();
+    if (!inviteName.trim() || !inviteEmail.trim()) return;
+    if (!session?.access_token) {
+      setInviteState({ loading: false, notice: "Sign in again before inviting clients." });
+      return;
+    }
+
+    setInviteState({ loading: true, notice: "" });
+    try {
+      const res = await fetch("/api/pcc-clients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          full_name: inviteName.trim(),
+          email: inviteEmail.trim(),
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to create client invite");
+
+      setClients((prev) => [{
+        ...json.client,
+        accounts: [],
+        transactions: [],
+        plaid_items: [],
+        latest_sync_run: null,
+        net_worth: 0,
+      }, ...prev]);
+      setSelectedClientId(json.client.id);
+      setInviteName("");
+      setInviteEmail("");
+      setInviteState({ loading: false, notice: `Invite ready for ${json.client.full_name}.` });
+    } catch (err) {
+      setInviteState({ loading: false, notice: err.message || "Failed to create client invite." });
+    }
+  };
+
+  const handleSyncClient = async (clientIdToSync) => {
+    if (!session?.access_token || !clientIdToSync) return;
+    setSyncState({ loading: true, notice: "" });
+    try {
+      const res = await fetch(`/api/pcc-plaid-sync?client_id=${clientIdToSync}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Sync failed");
+
+      if (!json.synced) {
+        setSyncState({ loading: false, notice: json.message || "No connections to sync." });
+        return;
+      }
+
+      const completed = json.results?.filter((r) => r.status === "completed") || [];
+      const failed = json.results?.filter((r) => r.status === "failed") || [];
+      let msg = `Synced ${completed.length} connection(s).`;
+      if (completed.length > 0) {
+        const totalTxn = completed.reduce((s, r) => s + (r.transactions_added || 0), 0);
+        msg += ` ${totalTxn} new transaction(s).`;
+      }
+      if (failed.length > 0) msg += ` ${failed.length} failed.`;
+      setSyncState({ loading: false, notice: msg });
+
+      // Reload client data
+      const refreshRes = await fetch("/api/pcc-clients", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const refreshJson = await refreshRes.json();
+      if (refreshRes.ok && Array.isArray(refreshJson.clients)) {
+        setClients(refreshJson.clients);
+      }
+    } catch (err) {
+      setSyncState({ loading: false, notice: err.message || "Sync failed." });
+    }
+  };
+
+  const handleConnectBank = async (clientIdToConnect) => {
+    if (!session?.access_token || !clientIdToConnect) return;
+    setPlaidLinkState({ loading: true, notice: "" });
+    try {
+      // Get link token from backend
+      const tokenRes = await fetch("/api/pcc-plaid-link-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({}),
+      });
+      const tokenJson = await tokenRes.json();
+      if (!tokenRes.ok) throw new Error(tokenJson.error || "Failed to create link token");
+
+      // Load Plaid Link script if not already loaded
+      if (!window.Plaid) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://cdn.plaid.com/link/v2/stable/link-initialize.js";
+          script.onload = resolve;
+          script.onerror = () => reject(new Error("Failed to load Plaid Link"));
+          document.head.appendChild(script);
+        });
+      }
+
+      // Open Plaid Link
+      const handler = window.Plaid.create({
+        token: tokenJson.link_token,
+        onSuccess: async (publicToken, metadata) => {
+          setPlaidLinkState({ loading: true, notice: "Connecting account..." });
+          try {
+            const exchangeRes = await fetch("/api/pcc-plaid-exchange", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({
+                public_token: publicToken,
+                client_id: clientIdToConnect,
+                institution_id: metadata.institution?.institution_id || null,
+                institution_name: metadata.institution?.name || null,
+                accounts: metadata.accounts || [],
+              }),
+            });
+            const exchangeJson = await exchangeRes.json();
+            if (!exchangeRes.ok) throw new Error(exchangeJson.error || "Exchange failed");
+
+            setPlaidLinkState({
+              loading: false,
+              notice: `Connected ${metadata.institution?.name || "bank"}. ${exchangeJson.accounts_synced || 0} account(s) synced.`,
+            });
+
+            // Reload client data
+            const refreshRes = await fetch("/api/pcc-clients", {
+              headers: { Authorization: `Bearer ${session.access_token}` },
+            });
+            const refreshJson = await refreshRes.json();
+            if (refreshRes.ok && Array.isArray(refreshJson.clients)) {
+              setClients(refreshJson.clients);
+            }
+          } catch (err) {
+            setPlaidLinkState({ loading: false, notice: err.message || "Failed to connect account." });
+          }
+        },
+        onExit: (err) => {
+          setPlaidLinkState({ loading: false, notice: err ? `Link exited: ${err.display_message || err.error_code}` : "" });
+        },
+      });
+      handler.open();
+      setPlaidLinkState({ loading: false, notice: "" });
+    } catch (err) {
+      setPlaidLinkState({ loading: false, notice: err.message || "Failed to open bank connection." });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div>
+        <h1 style={{ fontFamily: D.display, fontSize: 24, fontWeight: 700, color: D.text, margin: "0 0 24px" }}>Advisor Finance View</h1>
+        <div style={{ background: D.surface, borderRadius: 12, padding: 24, border: `1px solid ${D.border}`, color: D.textDim }}>
+          Loading persisted client finance data...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <h1 style={{ fontFamily: D.display, fontSize: 24, fontWeight: 700, color: D.text, margin: "0 0 24px" }}>Advisor Finance View</h1>
+        <div style={{ background: D.surface, borderRadius: 12, padding: 24, border: `1px solid ${D.border}` }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: D.danger, marginBottom: 8 }}>Finance data failed to load</div>
+          <div style={{ fontSize: 14, color: D.textDim }}>{error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h1 style={{ fontFamily: D.display, fontSize: 24, fontWeight: 700, color: D.text, margin: 0 }}>Advisor Finance View</h1>
+        <div style={{ fontSize: 12, color: D.textFaint }}>
+          Secure route: persisted client finance data only
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 24 }}>
+        <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 6 }}>Clients</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: D.text }}>{clients.length}</div>
+        </div>
+        <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 6 }}>Tracked Net Worth</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: D.text }}>{fmtMoney(totalNetWorth)}</div>
+        </div>
+        <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 6 }}>Accounts</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: D.text }}>{totalAccounts}</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: staleClients.length ? D.warning : D.primary, marginTop: 4 }}>
+            {staleClients.length ? `${staleClients.length} client connection alerts` : "No stale client alerts"}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: D.text, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 16 }}>
+              Client Pipeline
+            </div>
+            {clients.length === 0 ? (
+              <div style={{ fontSize: 14, color: D.textDim, lineHeight: 1.6 }}>
+                No persisted clients yet. Create the first client record below. The advisor path no longer falls back to seeded demo finance data.
+              </div>
+            ) : clients.map((client) => {
+              const hasAlert = client.plaid_items?.some((item) => item.health && item.health !== "healthy");
+              return (
+                <button
+                  key={client.id}
+                  onClick={() => setSelectedClientId(client.id)}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "12px 14px",
+                    borderRadius: 10,
+                    border: selectedClientId === client.id ? `1px solid ${D.primary}` : `1px solid ${D.borderLight}`,
+                    background: selectedClientId === client.id ? D.primaryGhost : D.surfaceAlt,
+                    cursor: "pointer",
+                    marginBottom: 10,
+                    fontFamily: D.font,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: D.text }}>{client.full_name}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: hasAlert ? D.warning : D.primary }}>
+                      {hasAlert ? "Alert" : client.status}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: D.textDim, marginBottom: 4 }}>{client.email}</div>
+                  <div style={{ fontSize: 12, color: D.textFaint }}>
+                    {client.accounts?.length || 0} accounts · {fmtMoney(client.net_worth || 0)}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: D.text, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 16 }}>
+              Add Client
+            </div>
+            <form onSubmit={handleInviteClient}>
+              <input value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Client full name" style={{ ...inputStyle, marginBottom: 10 }} />
+              <input value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="client@email.com" type="email" style={{ ...inputStyle, marginBottom: 12 }} />
+              <button type="submit" disabled={inviteState.loading} style={{ ...primaryBtn, width: "100%", padding: "12px 0", opacity: inviteState.loading ? 0.7 : 1 }}>
+                {inviteState.loading ? "Creating..." : "Create Client Invite"}
+              </button>
+            </form>
+            {inviteState.notice && (
+              <div style={{ fontSize: 12, color: D.textDim, marginTop: 10, lineHeight: 1.6 }}>{inviteState.notice}</div>
+            )}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {!selectedClient ? (
+            <div style={{ background: D.surface, borderRadius: 12, padding: 24, border: `1px solid ${D.border}`, color: D.textDim }}>
+              Select a client to view persisted balances and transactions.
+            </div>
+          ) : (
+            <>
+              <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 20, marginBottom: 18 }}>
+                  <div>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: D.text }}>{selectedClient.full_name}</div>
+                    <div style={{ fontSize: 13, color: D.textDim }}>{selectedClient.email}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase" }}>Tracked Net Worth</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: D.text }}>{fmtMoney(selectedClient.net_worth || 0)}</div>
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                  <div style={{ background: D.surfaceAlt, borderRadius: 10, padding: 14 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 4 }}>Status</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: D.text }}>{selectedClient.status}</div>
+                  </div>
+                  <div style={{ background: D.surfaceAlt, borderRadius: 10, padding: 14 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 4 }}>Last Sync</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: D.text }}>
+                      {selectedClient.last_synced_at ? new Date(selectedClient.last_synced_at).toLocaleString() : "Not synced yet"}
+                    </div>
+                  </div>
+                  <div style={{ background: D.surfaceAlt, borderRadius: 10, padding: 14 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 4 }}>Latest Sync Run</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: D.text }}>
+                      {selectedClient.latest_sync_run?.status || "No runs yet"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+                  <button
+                    onClick={() => handleSyncClient(selectedClient.id)}
+                    disabled={syncState.loading}
+                    style={{
+                      ...primaryBtn, padding: "10px 20px", fontSize: 13,
+                      opacity: syncState.loading ? 0.7 : 1,
+                    }}
+                  >
+                    {syncState.loading ? "Syncing..." : "Sync Now"}
+                  </button>
+                  <button
+                    onClick={() => handleConnectBank(selectedClient.id)}
+                    disabled={plaidLinkState.loading}
+                    style={{
+                      padding: "10px 20px", fontSize: 13, fontWeight: 600, borderRadius: 8, cursor: "pointer",
+                      border: `1px solid ${D.border}`, background: D.surface, color: D.text, fontFamily: D.font,
+                      opacity: plaidLinkState.loading ? 0.7 : 1,
+                    }}
+                  >
+                    {plaidLinkState.loading ? "Connecting..." : "+ Connect Bank"}
+                  </button>
+                </div>
+                {syncState.notice && (
+                  <div style={{ fontSize: 12, color: D.textDim, marginTop: 10, lineHeight: 1.6 }}>{syncState.notice}</div>
+                )}
+                {plaidLinkState.notice && (
+                  <div style={{ fontSize: 12, color: D.textDim, marginTop: 6, lineHeight: 1.6 }}>{plaidLinkState.notice}</div>
+                )}
+              </div>
+
+              <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+                <h3 style={{ fontSize: 12, fontWeight: 700, color: D.text, textTransform: "uppercase", letterSpacing: 0.5, margin: "0 0 16px" }}>Accounts</h3>
+                {selectedClient.accounts?.length ? (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 12 }}>
+                    {selectedClient.accounts.map((account, index) => (
+                      <div key={`${account.name}-${index}`} style={{ background: D.surfaceAlt, borderRadius: 10, padding: 14, border: `1px solid ${D.borderLight}` }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: D.text }}>{account.name}</div>
+                        <div style={{ fontSize: 12, color: D.textDim, marginBottom: 8 }}>
+                          {[account.institution_name, account.type, account.subtype].filter(Boolean).join(" · ")}
+                        </div>
+                        <div style={{ fontSize: 20, fontWeight: 700, color: D.text }}>{fmtMoney(account.current_balance || 0)}</div>
+                        <div style={{ fontSize: 11, color: D.textFaint, marginTop: 6 }}>
+                          {account.mask ? `•••• ${account.mask}` : "Mask unavailable"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 14, color: D.textDim }}>No persisted accounts yet for this client.</div>
+                )}
+              </div>
+
+              <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+                <h3 style={{ fontSize: 12, fontWeight: 700, color: D.text, textTransform: "uppercase", letterSpacing: 0.5, margin: "0 0 16px" }}>Recent Transactions</h3>
+                {selectedClient.transactions?.length ? selectedClient.transactions.map((transaction, index) => (
+                  <div key={`${transaction.plaid_transaction_id || transaction.description}-${index}`} style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "12px 0", borderBottom: index === selectedClient.transactions.length - 1 ? "none" : `1px solid ${D.borderLight}` }}>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: D.text }}>{transaction.merchant_name || transaction.description || "Transaction"}</div>
+                      <div style={{ fontSize: 12, color: D.textDim }}>{fmtDate(transaction.posted_date)}</div>
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: Number(transaction.amount) < 0 ? D.primary : D.danger }}>
+                      {fmtMoney(transaction.amount || 0)}
+                    </div>
+                  </div>
+                )) : (
+                  <div style={{ fontSize: 14, color: D.textDim }}>No persisted transactions yet for this client.</div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FinancesTab({ data, setData, demoMode }) {
+  if (!demoMode) return <AdvisorFinancesTab />;
+  return <DemoFinancesTab data={data} setData={setData} />;
+}
+
+function DemoFinancesTab({ data, setData }) {
   const [showAdd, setShowAdd] = useState(false);
   const [txDesc, setTxDesc] = useState("");
   const [txAmount, setTxAmount] = useState("");
   const [txCategory, setTxCategory] = useState("other");
   const [txType, setTxType] = useState("expense");
+  const [plaidLoading, setPlaidLoading] = useState(false);
+  const [plaidNotice, setPlaidNotice] = useState("");
+  const [auditEvents, setAuditEvents] = useState([]);
+  const [linkedInstitutions, setLinkedInstitutions] = useState([]);
+  const { session } = usePccAuth();
 
   const netWorth = data.accounts.reduce((s, a) => s + a.balance, 0);
   const prevMonth = data.netWorthHistory[data.netWorthHistory.length - 2]?.value || 0;
@@ -586,6 +1036,122 @@ function FinancesTab({ data, setData }) {
   monthTx.filter(t => t.amount < 0).forEach(t => { spendByCategory[t.category] = (spendByCategory[t.category] || 0) + Math.abs(t.amount); });
   const sortedCats = Object.entries(spendByCategory).sort((a, b) => b[1] - a[1]);
   const maxCatSpend = sortedCats[0]?.[1] || 1;
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadAuditEvents() {
+      if (!session?.access_token) return;
+      try {
+        const res = await fetch("/api/pcc-audit-events", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!cancelled) {
+          setAuditEvents(Array.isArray(json.events) ? json.events.slice(0, 6) : []);
+        }
+      } catch {}
+    }
+    loadAuditEvents();
+    return () => { cancelled = true; };
+  }, [session?.access_token]);
+
+  const loadPlaidScript = async () => {
+    if (window.Plaid) return window.Plaid;
+    await new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-plaid-link="true"]');
+      if (existing) {
+        existing.addEventListener("load", () => resolve(), { once: true });
+        existing.addEventListener("error", () => reject(new Error("Plaid Link failed to load")), { once: true });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://cdn.plaid.com/link/v2/stable/link-initialize.js";
+      script.async = true;
+      script.dataset.plaidLink = "true";
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Plaid Link failed to load"));
+      document.body.appendChild(script);
+    });
+    return window.Plaid;
+  };
+
+  const handlePlaidConnect = async () => {
+    if (!session?.access_token) {
+      setPlaidNotice("Sign in to your secure workspace before connecting an institution.");
+      return;
+    }
+
+    setPlaidLoading(true);
+    setPlaidNotice("");
+
+    try {
+      const tokenRes = await fetch("/api/pcc-plaid-link-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({}),
+      });
+
+      const tokenJson = await tokenRes.json();
+      if (!tokenRes.ok || !tokenJson.link_token) {
+        throw new Error(tokenJson.error || "Failed to create a Plaid link token");
+      }
+
+      const Plaid = await loadPlaidScript();
+      const handler = Plaid.create({
+        token: tokenJson.link_token,
+        onSuccess: async (publicToken, metadata) => {
+          try {
+            const exchangeRes = await fetch("/api/pcc-plaid-exchange", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({
+                public_token: publicToken,
+                institution_id: metadata.institution?.institution_id || null,
+                institution_name: metadata.institution?.name || null,
+                accounts: metadata.accounts || [],
+                available_products: metadata.link_session_id ? ["transactions", "assets"] : [],
+              }),
+            });
+
+            const exchangeJson = await exchangeRes.json();
+            if (!exchangeRes.ok) {
+              throw new Error(exchangeJson.error || "Failed to exchange Plaid token");
+            }
+
+            setLinkedInstitutions((prev) => {
+              const next = [...prev];
+              if (metadata.institution?.name && !next.includes(metadata.institution.name)) {
+                next.push(metadata.institution.name);
+              }
+              return next;
+            });
+            setPlaidNotice(`Connected ${metadata.institution?.name || "institution"} securely.`);
+          } catch (error) {
+            setPlaidNotice(error.message || "Failed to complete Plaid connection.");
+          } finally {
+            setPlaidLoading(false);
+          }
+        },
+        onExit: (err) => {
+          if (err?.error_message) setPlaidNotice(err.error_message);
+          setPlaidLoading(false);
+        },
+      });
+
+      handler.open();
+    } catch (error) {
+      setPlaidNotice(error.message || "Plaid connection failed to start.");
+      setPlaidLoading(false);
+    }
+  };
 
   const addTransaction = () => {
     if (!txDesc.trim() || !txAmount) return;
@@ -619,6 +1185,57 @@ function FinancesTab({ data, setData }) {
           <div style={{ fontSize: 28, fontWeight: 700, color: D.danger }}>{fmtMoney(monthSpend)}</div>
         </div>
       </div>
+
+      {session?.access_token && (
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16, marginBottom: 24 }}>
+          <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 6 }}>Secure Connections</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: D.text }}>Plaid Link</div>
+              </div>
+              <button onClick={handlePlaidConnect} disabled={plaidLoading} style={{
+                padding: "10px 14px", borderRadius: 8, border: "none", cursor: plaidLoading ? "wait" : "pointer",
+                background: D.primary, color: "#fff", fontFamily: D.font, fontSize: 13, fontWeight: 700, opacity: plaidLoading ? 0.7 : 1,
+              }}>
+                {plaidLoading ? "Connecting..." : "Connect Bank"}
+              </button>
+            </div>
+            <p style={{ fontSize: 13, color: D.textDim, lineHeight: 1.6, margin: "0 0 12px" }}>
+              Account linking uses short-lived Link tokens, server-side token exchange, encrypted storage, and audited connection events.
+            </p>
+            {plaidNotice && (
+              <div style={{ fontSize: 13, color: D.primaryDark, background: D.primaryLight, borderRadius: 8, padding: "10px 12px", marginBottom: 12 }}>
+                {plaidNotice}
+              </div>
+            )}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {linkedInstitutions.length > 0 ? linkedInstitutions.map((name) => (
+                <span key={name} style={{ fontSize: 12, fontWeight: 600, color: D.primaryDark, background: D.primaryLight, borderRadius: 999, padding: "6px 10px" }}>
+                  {name}
+                </span>
+              )) : (
+                <span style={{ fontSize: 12, color: D.textFaint }}>No institutions linked in this session.</span>
+              )}
+            </div>
+          </div>
+
+          <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}` }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: D.textFaint, textTransform: "uppercase", marginBottom: 6 }}>Security Activity</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: D.text, marginBottom: 12 }}>Recent audit events</div>
+            {auditEvents.length === 0 ? (
+              <p style={{ fontSize: 13, color: D.textFaint, margin: 0 }}>Audit history will appear here for tenant owners after events are written to Supabase.</p>
+            ) : auditEvents.map((event, index) => (
+              <div key={`${event.created_at}-${index}`} style={{ padding: "10px 0", borderBottom: index === auditEvents.length - 1 ? "none" : `1px solid ${D.borderLight}` }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: D.text }}>{event.action}</div>
+                <div style={{ fontSize: 12, color: D.textDim }}>
+                  {new Date(event.created_at).toLocaleString()} {event.status ? `· ${event.status}` : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Net Worth Chart */}
       <div style={{ background: D.surface, borderRadius: 12, padding: 20, border: `1px solid ${D.border}`, marginBottom: 24 }}>
@@ -918,24 +1535,40 @@ function GoalsTab({ data, setData }) {
 // ═══════════════════════════════════════════
 // Main Dashboard
 // ═══════════════════════════════════════════
-export default function PCCDashboard() {
-  const [tab, setTab] = useState("overview");
-  const [data, setData] = usePersistedState("pcc_data", getInitialData());
+export default function PCCDashboard({ demoMode = false }) {
+  const [tab, setTab] = useState(demoMode ? "overview" : "finances");
+  const [data, setData] = usePersistedState(
+    demoMode ? "pcc_data" : "pcc_secure_workspace",
+    demoMode ? getInitialData() : getSecureWorkspaceData()
+  );
   const [showSignup, setShowSignup] = useState(false);
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupDone, setSignupDone] = useState(() => {
     try { return !!localStorage.getItem("pcc_signup"); } catch { return false; }
   });
+  const { user, signOut } = usePccAuth();
+  const displayName = !demoMode && (user?.user_metadata?.full_name || user?.email || "Secure User");
+  const accountLabel = !demoMode ? (user?.user_metadata?.tenant_name || "Secure Workspace") : "Demo Account";
+  const initial = (displayName || "P").slice(0, 1).toUpperCase();
 
-  const tabs = [
-    { key: "overview", label: "Overview", icon: "\u{1F4CA}" },
-    { key: "tasks", label: "Tasks", icon: "\u2705" },
-    { key: "habits", label: "Habits", icon: "\u{1F501}" },
-    { key: "finances", label: "Finances", icon: "\u{1F4B0}" },
-    { key: "workouts", label: "Workouts", icon: "\u{1F3CB}\u{FE0F}" },
-    { key: "goals", label: "Goals", icon: "\u{1F3AF}" },
-  ];
+  const tabs = demoMode
+    ? [
+      { key: "overview", label: "Overview", icon: "\u{1F4CA}" },
+      { key: "tasks", label: "Tasks", icon: "\u2705" },
+      { key: "habits", label: "Habits", icon: "\u{1F501}" },
+      { key: "finances", label: "Finances", icon: "\u{1F4B0}" },
+      { key: "workouts", label: "Workouts", icon: "\u{1F3CB}\u{FE0F}" },
+      { key: "goals", label: "Goals", icon: "\u{1F3AF}" },
+    ]
+    : [
+      { key: "overview", label: "Overview", icon: "\u{1F4CA}" },
+      { key: "finances", label: "Advisor View", icon: "\u{1F4B0}" },
+      { key: "tasks", label: "Tasks", icon: "\u2705" },
+      { key: "habits", label: "Habits", icon: "\u{1F501}" },
+      { key: "workouts", label: "Workouts", icon: "\u{1F3CB}\u{FE0F}" },
+      { key: "goals", label: "Goals", icon: "\u{1F3AF}" },
+    ];
 
   const resetData = () => { localStorage.removeItem("pcc_data"); setData(getInitialData()); };
 
@@ -997,10 +1630,10 @@ export default function PCCDashboard() {
       <aside style={{ width: 260, background: D.sidebar, padding: "24px 0", display: "flex", flexDirection: "column", position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 100 }}>
         <div style={{ padding: "0 24px 24px", borderBottom: "1px solid #2A2A2E" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #10B981, #065F46)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff" }}>D</div>
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #10B981, #065F46)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#fff" }}>{initial}</div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: "#F5F0EB" }}>Diego V.</div>
-              <div style={{ fontSize: 12, color: "#6B6560" }}>Demo Account</div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: "#F5F0EB" }}>{displayName || "Diego V."}</div>
+              <div style={{ fontSize: 12, color: "#6B6560" }}>{accountLabel}</div>
             </div>
           </div>
         </div>
@@ -1018,6 +1651,7 @@ export default function PCCDashboard() {
             background: "linear-gradient(135deg, #10B981, #065F46)", color: "#fff",
             fontFamily: D.font, fontSize: 14, fontWeight: 700,
             boxShadow: "0 2px 8px rgba(16,185,129,0.3)",
+            display: demoMode ? "block" : "none",
           }}>
             {signupDone ? "\u2713 Signed Up" : "Get Your Own Dashboard"}
           </button>
@@ -1026,9 +1660,16 @@ export default function PCCDashboard() {
           <Link to="/pcc" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#6B6560", textDecoration: "none", fontFamily: D.font, marginBottom: 12 }}>
             <img src="/vv-logo.png" alt="" style={{ width: 16, height: 16, borderRadius: 3, opacity: 0.6 }} /> Back to Landing
           </Link>
-          <button onClick={resetData} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B6560", background: "none", border: "none", cursor: "pointer", fontFamily: D.font, padding: 0 }}>
-            {"\u{1F501}"} Reset Demo Data
-          </button>
+          {demoMode && (
+            <button onClick={resetData} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6B6560", background: "none", border: "none", cursor: "pointer", fontFamily: D.font, padding: 0 }}>
+              {"\u{1F501}"} Reset Demo Data
+            </button>
+          )}
+          {!demoMode && (
+            <button onClick={signOut} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#A39E98", background: "none", border: "none", cursor: "pointer", fontFamily: D.font, padding: 0, marginTop: 12 }}>
+              {"\u{1F512}"} Sign Out
+            </button>
+          )}
         </div>
       </aside>
 
@@ -1036,7 +1677,7 @@ export default function PCCDashboard() {
       <main style={{ marginLeft: 260, flex: 1, background: D.bg, padding: 32, minHeight: "100vh" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           {/* Demo Banner */}
-          {!signupDone && (
+          {demoMode && !signupDone && (
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
               background: D.primaryGhost, border: `1px solid rgba(16,185,129,0.2)`,
@@ -1057,10 +1698,27 @@ export default function PCCDashboard() {
               </button>
             </div>
           )}
+          {!demoMode && (
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              background: "#ECFDF5", border: "1px solid rgba(16,185,129,0.18)",
+              borderRadius: 10, padding: "12px 20px", marginBottom: 24,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 16 }}>{"\u{1F512}"}</span>
+                <span style={{ fontSize: 14, color: D.text, fontWeight: 500 }}>
+                  Authenticated workspace session active.
+                </span>
+              </div>
+              <span style={{ fontSize: 12, color: D.primaryDark, fontWeight: 600 }}>
+                {accountLabel}
+              </span>
+            </div>
+          )}
           {tab === "overview" && <OverviewTab data={data} setData={setData} />}
           {tab === "tasks" && <TasksTab data={data} setData={setData} />}
           {tab === "habits" && <HabitsTab data={data} setData={setData} />}
-          {tab === "finances" && <FinancesTab data={data} setData={setData} />}
+          {tab === "finances" && <FinancesTab data={data} setData={setData} demoMode={demoMode} />}
           {tab === "workouts" && <WorkoutsTab data={data} setData={setData} />}
           {tab === "goals" && <GoalsTab data={data} setData={setData} />}
         </div>

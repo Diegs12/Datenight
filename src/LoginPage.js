@@ -1,5 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { usePccAuth } from "./auth/PccAuthContext";
+import { identify } from "./analytics";
 
 const themes = {
   vela: {
@@ -18,7 +20,7 @@ const themes = {
     bg: "#0A0A0B", surface: "#141416", border: "#2A2A2E",
     primary: "#10B981", primaryGradient: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
     text: "#F5F0EB", textDim: "#A39E98", textFaint: "#6B6560",
-    name: "Personal Command Center", backLink: "/pcc", demoLink: "/pcc/app",
+    name: "Personal Command Center", backLink: "/pcc", demoLink: "/pcc/demo",
     icon: (
       <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
         <rect x="10" y="10" width="8" height="8" rx="2" fill="#10B981" />
@@ -44,25 +46,76 @@ const themes = {
 
 export default function LoginPage({ product = "vela" }) {
   const T = themes[product] || themes.vela;
-  const navigate = useNavigate(); // eslint-disable-line no-unused-vars
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pccAuth = usePccAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [tenantName, setTenantName] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState("login");
+
+  const nextPath = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("next") || T.demoLink;
+  }, [location.search, T.demoLink]);
+
+  useEffect(() => {
+    if (product !== "pcc" || !pccAuth?.session) return;
+    navigate(nextPath, { replace: true });
+  }, [navigate, nextPath, pccAuth?.session, product]);
+
+  useEffect(() => {
+    if (product !== "pcc") return;
+    const params = new URLSearchParams(location.search);
+    if (params.get("reason") === "config") {
+      setNotice("Configure Supabase before using the secure PCC workspace. The demo is still available.");
+    }
+  }, [location.search, product]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setNotice("");
     if (!email || !email.includes("@")) { setError("Enter a valid email."); return; }
     if (!password || password.length < 8) { setError("Password must be at least 8 characters."); return; }
 
     setLoading(true);
-    // TODO: Wire to Supabase auth when ready
-    // For now, show a message that the account system is coming
-    setTimeout(() => {
+    if (product !== "pcc") {
       setLoading(false);
       setError("Account login is coming soon. Try the demo in the meantime!");
-    }, 800);
+      return;
+    }
+
+    if (!pccAuth?.configured) {
+      setLoading(false);
+      setError("PCC authentication is not configured yet. Add the Supabase environment variables first.");
+      return;
+    }
+
+    try {
+      if (mode === "signup") {
+        const data = await pccAuth.signUp({ email, password, fullName, tenantName });
+        identify(email, { product: "pcc", tenant_name: tenantName || "", full_name: fullName || "" });
+        if (data.session) {
+          navigate(nextPath, { replace: true });
+        } else {
+          setNotice("Account created. Complete email verification, then log in.");
+          setMode("login");
+        }
+      } else {
+        await pccAuth.signIn({ email, password });
+        identify(email, { product: "pcc" });
+        navigate(nextPath, { replace: true });
+      }
+    } catch (err) {
+      setError(err.message || "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,7 +136,9 @@ export default function LoginPage({ product = "vela" }) {
             {T.icon}
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 4px" }}>{T.name}</h1>
-          <p style={{ fontSize: 14, color: T.textDim, margin: 0 }}>Log in to your account</p>
+          <p style={{ fontSize: 14, color: T.textDim, margin: 0 }}>
+            {product === "pcc" && mode === "signup" ? "Create your secure workspace" : "Log in to your account"}
+          </p>
         </div>
 
         {/* Login form */}
@@ -91,6 +146,58 @@ export default function LoginPage({ product = "vela" }) {
           background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
           padding: 32,
         }}>
+          {product === "pcc" && (
+            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+              <button type="button" onClick={() => { setMode("login"); setError(""); setNotice(""); }} style={{
+                flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`,
+                background: mode === "login" ? `${T.primary}20` : T.bg, color: mode === "login" ? T.primary : T.textDim,
+                cursor: "pointer", fontWeight: 600, fontFamily: "inherit",
+              }}>
+                Log In
+              </button>
+              <button type="button" onClick={() => { setMode("signup"); setError(""); setNotice(""); }} style={{
+                flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`,
+                background: mode === "signup" ? `${T.primary}20` : T.bg, color: mode === "signup" ? T.primary : T.textDim,
+                cursor: "pointer", fontWeight: 600, fontFamily: "inherit",
+              }}>
+                Create Account
+              </button>
+            </div>
+          )}
+
+          {product === "pcc" && mode === "signup" && (
+            <>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: T.textDim, display: "block", marginBottom: 8 }}>
+                  Full Name
+                </label>
+                <input
+                  type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Your name" autoComplete="name"
+                  style={{
+                    width: "100%", boxSizing: "border-box", padding: "12px 16px",
+                    borderRadius: 8, border: `1px solid ${T.border}`, background: T.bg,
+                    color: T.text, fontSize: 15, outline: "none", fontFamily: "inherit",
+                  }}
+                />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: T.textDim, display: "block", marginBottom: 8 }}>
+                  Workspace Name
+                </label>
+                <input
+                  type="text" value={tenantName} onChange={(e) => setTenantName(e.target.value)}
+                  placeholder="Your firm or household" autoComplete="organization"
+                  style={{
+                    width: "100%", boxSizing: "border-box", padding: "12px 16px",
+                    borderRadius: 8, border: `1px solid ${T.border}`, background: T.bg,
+                    color: T.text, fontSize: 15, outline: "none", fontFamily: "inherit",
+                  }}
+                />
+              </div>
+            </>
+          )}
+
           <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 13, fontWeight: 600, color: T.textDim, display: "block", marginBottom: 8 }}>
               Email
@@ -122,6 +229,15 @@ export default function LoginPage({ product = "vela" }) {
             />
           </div>
 
+          {notice && (
+            <div style={{
+              fontSize: 14, padding: "12px 16px", borderRadius: 8, marginBottom: 20,
+              background: `${T.primary}15`, color: T.primary, border: `1px solid ${T.primary}30`,
+            }}>
+              {notice}
+            </div>
+          )}
+
           {error && (
             <div style={{
               fontSize: 14, padding: "12px 16px", borderRadius: 8, marginBottom: 20,
@@ -140,7 +256,7 @@ export default function LoginPage({ product = "vela" }) {
             transition: "opacity 0.2s",
             fontFamily: "inherit",
           }}>
-            {loading ? "Logging in..." : "Log In"}
+            {loading ? (mode === "signup" ? "Creating account..." : "Logging in...") : (mode === "signup" ? "Create Account" : "Log In")}
           </button>
         </form>
 
@@ -152,7 +268,7 @@ export default function LoginPage({ product = "vela" }) {
           <Link to={T.demoLink} style={{
             fontSize: 14, color: T.primary, textDecoration: "none", fontWeight: 500,
           }}>
-            Try the demo instead
+            {product === "pcc" ? "Open the demo" : "Try the demo instead"}
           </Link>
           <Link to={T.backLink} style={{
             fontSize: 14, color: T.textFaint, textDecoration: "none",

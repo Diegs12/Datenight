@@ -615,7 +615,7 @@ export default function PCCLanding() {
         body: JSON.stringify({ email: email.trim(), source: "pcc" }),
       });
     } catch {}
-    setTimeout(() => { navigate("/pcc/app"); }, 400);
+    setTimeout(() => { navigate("/pcc/demo"); }, 400);
   };
 
   return (
@@ -665,7 +665,7 @@ export default function PCCLanding() {
           }}>
             Log In
           </Link>
-          <Link to="/pcc/app" style={{
+          <Link to="/pcc/demo" style={{
             fontFamily: T.font, fontSize: 14, fontWeight: 600,
             padding: "8px 20px", borderRadius: 6, textDecoration: "none",
             background: T.primary, color: "#fff",
@@ -701,7 +701,7 @@ export default function PCCLanding() {
         </p>
 
         <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 12 }}>
-          <Link to="/pcc/app" style={{
+          <Link to="/pcc/demo" style={{
             fontFamily: T.font, fontSize: 16, fontWeight: 700, cursor: "pointer",
             padding: "14px 36px", borderRadius: 8, border: "none",
             background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
@@ -780,8 +780,8 @@ export default function PCCLanding() {
           {[
             {
               step: "1", title: "Create Your Account",
-              desc: "Pick a username and password. No email verification, no friction. You're in within 30 seconds.",
-              details: ["Username + password", "No email required", "Instant access"],
+              desc: "Create an account and set up your workspace. Production financial features will ship behind a hardened authentication flow.",
+              details: ["Account-based access", "Production auth hardening", "Guided setup"],
             },
             {
               step: "2", title: "Configure Your System",
@@ -947,7 +947,7 @@ export default function PCCLanding() {
             },
             {
               icon: "\u{1F6E1}\u{FE0F}", title: "Secure & Protected",
-              desc: "Passwords are securely hashed. Rate limiting protects your account. Your sensitive data is always encrypted.",
+              desc: "Security hardening is in progress for production, including authenticated access, rate limiting, and encryption controls for sensitive data.",
             },
             {
               icon: "\u{1F4E6}", title: "Your Data, Your Control",
@@ -1084,7 +1084,7 @@ export default function PCCLanding() {
             ))}
           </div>
 
-          <Link to="/pcc/app" style={{
+          <Link to="/pcc/demo" style={{
             width: "100%", fontFamily: T.font, fontSize: 16, fontWeight: 700,
             cursor: "pointer", padding: "14px 0", borderRadius: 8, border: "none",
             background: "linear-gradient(180deg, #6EE7B7 0%, #10B981 40%, #065F46 100%)",
@@ -1138,7 +1138,7 @@ export default function PCCLanding() {
           />
           <FaqItem
             question="Can I connect my bank accounts?"
-            answer="Bank account linking through Plaid is coming soon. For now, you can manually track your accounts, balances, and transactions to see your full financial picture."
+            answer="Plaid-based bank account linking is planned, but it will only be enabled after the production security architecture, monitoring, and operational controls are complete. For now, you can manually track accounts, balances, and transactions."
           />
         </div>
       </section>
