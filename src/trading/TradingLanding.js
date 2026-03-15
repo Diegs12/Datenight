@@ -9,10 +9,25 @@ const IconBrain = () => (
     <path d="M12 2v6M8.5 7h7M8 12h8"/>
   </svg>
 );
-const IconChart = () => (
+const IconCloud = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 20L9 14L13 18L21 8"/>
-    <path d="M17 8H21V12"/>
+    <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/>
+  </svg>
+);
+const IconWallet = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12V7H5a2 2 0 010-4h14v4"/>
+    <path d="M3 5v14a2 2 0 002 2h16v-5"/>
+    <path d="M18 12a2 2 0 100 4h4v-4h-4z"/>
+  </svg>
+);
+const IconNetwork = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="6" height="6" rx="1"/>
+    <rect x="16" y="2" width="6" height="6" rx="1"/>
+    <rect x="9" y="16" width="6" height="6" rx="1"/>
+    <path d="M5 8v3a3 3 0 003 3h8a3 3 0 003-3V8"/>
+    <path d="M12 14v2"/>
   </svg>
 );
 const IconShield = () => (
@@ -21,149 +36,164 @@ const IconShield = () => (
     <path d="M9 12L11 14L15 10"/>
   </svg>
 );
-const IconClock = () => (
+const IconYield = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <path d="M12 6V12L16 14"/>
+    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
   </svg>
 );
-const IconLoop = () => (
+const IconChat = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 2V8H15"/>
-    <path d="M3 22V16H9"/>
-    <path d="M21 8L16.5 3.5A9 9 0 003 12"/>
-    <path d="M3 16L7.5 20.5A9 9 0 0021 12"/>
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
   </svg>
 );
-const IconTarget = () => (
+const IconRocket = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <circle cx="12" cy="12" r="6"/>
-    <circle cx="12" cy="12" r="2"/>
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/>
+    <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0"/>
+    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3"/>
+  </svg>
+);
+const IconCheck = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 6L9 17L4 12" />
   </svg>
 );
 
 const FEATURES = [
   {
     icon: <IconBrain />,
-    title: "Dual AI Engine",
-    desc: "Claude handles trade decisions. Grok scans X/Twitter for real-time market sentiment. Two AI systems working together for broader market coverage.",
+    title: "AI-Powered Decisions",
+    desc: "Claude AI analyzes market conditions, sentiment, and technical indicators every 2 minutes.",
   },
   {
-    icon: <IconChart />,
-    title: "Real Technical Analysis",
-    desc: "RSI, MACD, Bollinger Bands,computed mathematically, not guessed by an LLM. Your bot runs actual indicators on real price data.",
+    icon: <IconCloud />,
+    title: "24/7 Cloud Operation",
+    desc: "Your bot runs in the cloud, never sleeps, never misses an opportunity.",
   },
   {
-    icon: <IconLoop />,
-    title: "Self-Improving AI",
-    desc: "After every trade, the AI reviews what it did right and wrong. It analyzes its own history and attempts to refine its approach over time.",
+    icon: <IconWallet />,
+    title: "Daily Profit Payouts",
+    desc: "Every morning, realized profits are automatically distributed to your personal wallet.",
   },
   {
-    icon: <IconClock />,
-    title: "Multi-Timeframe Analysis",
-    desc: "Analyzes 5-minute, 1-hour, 4-hour, and daily charts simultaneously. Catches both scalping opportunities and macro trends.",
+    icon: <IconNetwork />,
+    title: "Base Network Native",
+    desc: "Trades on Coinbase's Base L2 network. Low fees, fast settlement.",
   },
   {
     icon: <IconShield />,
-    title: "Hard Stop-Losses",
-    desc: "Every position has a hard stop-loss to help limit losses. Plus a failsafe mode that pauses trading in extreme conditions. Stop-losses may not execute at exact prices during high volatility.",
+    title: "Adaptive Risk Management",
+    desc: "Choose Conservative, Moderate, or Aggressive. Protection calibrated to your preference.",
   },
   {
-    icon: <IconTarget />,
-    title: "Risk-Matched Trading",
-    desc: "Take our risk quiz and your bot is calibrated to your comfort level. Conservative, moderate, or aggressive,you decide how it trades.",
+    icon: <IconYield />,
+    title: "Aave Yield Integration",
+    desc: "Idle USDC earns 2-5% APY in Aave V3 automatically while waiting for trades.",
   },
 ];
 
 const STEPS = [
-  { num: "01", title: "Watch It Live", desc: "The bot runs 24/7 on paper funds. Check the live dashboard anytime to see what it's doing right now." },
-  { num: "02", title: "See Every Decision", desc: "Every trade comes with the AI's full reasoning, technical indicators, and sentiment analysis. Nothing is hidden." },
-  { num: "03", title: "Want Your Own?", desc: "If you like what you see, reach out. I can set you up with your own instance of the bot, configured to your risk profile." },
+  { num: "01", title: "Create Your Accounts", desc: "Set up Coinbase CDP, Anthropic, and Railway accounts. We guide you through each one." },
+  { num: "02", title: "Configure Your Bot", desc: "Choose your risk profile, set trading capital, and configure daily profit payouts." },
+  { num: "03", title: "Deploy & Earn", desc: "Your bot goes live in the cloud and begins trading autonomously. Watch it work." },
+];
+
+const PREREQUISITES = [
+  { name: "Coinbase", desc: "API key + auto-created wallet" },
+  { name: "Anthropic", desc: "Your bot's brain" },
+  { name: "Railway", desc: "Keeps your bot running 24/7" },
+];
+
+const UNDER_THE_HOOD = [
+  {
+    title: "Real-Time Market Data",
+    desc: "Price feeds, trading volume, and liquidity from CoinGecko, DexScreener, and Binance every cycle.",
+  },
+  {
+    title: "Technical Analysis",
+    desc: "RSI, MACD, Bollinger Bands, moving averages, and volume analysis across 18 tokens. Signals scored for confluence.",
+  },
+  {
+    title: "Macro Intelligence",
+    desc: "Fed interest rates, inflation data, treasury yields, dollar strength, oil, gold, and the S&P 500. Pulled directly from the Federal Reserve.",
+  },
+  {
+    title: "DeFi Capital Flows",
+    desc: "Total value locked, DEX volumes, protocol momentum, and stablecoin supply trends via DefiLlama.",
+  },
+  {
+    title: "News & Sentiment",
+    desc: "Real-time crypto news sentiment scoring. Fear & Greed Index. Bullish and bearish headline detection.",
+  },
+  {
+    title: "Derivatives & Smart Money",
+    desc: "Binance funding rates, open interest, and long/short ratios. Detects when smart money diverges from retail.",
+  },
+  {
+    title: "AI Decision Engine",
+    desc: "All signals feed into Claude AI with full market context. Not rules. Judgment. Every decision includes reasoning and confidence.",
+  },
+  {
+    title: "Self-Learning & Auto-Updates",
+    desc: "The bot tunes its own thresholds based on what is working. Cron jobs audit for new technology and market shifts every 6 hours. This is not a static tool.",
+  },
+];
+
+const UPGRADE_ITEMS = [
+  "New DeFi data source integrated",
+  "Risk model v3.2 deployed",
+  "Smarter entry timing logic",
+  "Gas optimization update",
+  "New token added to watchlist",
+  "Payout algorithm refined",
+  "Pushed to all deployed bots",
+];
+
+const SECURITY_POINTS = [
+  "Coinbase CDP custody",
+  "Non-custodial architecture",
+  "No withdrawal permissions",
+  "Real-time dashboard access",
+  "Transparent 2% fee structure",
+  "Full control to pause or stop anytime",
+];
+
+const PRICING_FEATURES = [
+  "AI-powered autonomous trading",
+  "24/7 cloud operation",
+  "Daily profit payouts",
+  "Real-time dashboard",
+  "Aave yield integration",
+  "Risk profile customization",
 ];
 
 const FAQS = [
   {
-    q: "Is this a live trading platform?",
-    a: "No. This is my personal trading bot running on paper funds. You're watching it trade in real time, but no real money is involved. If you're interested in having your own instance, reach out and we can talk.",
+    q: "How much capital do I need to start?",
+    a: "There is no strict minimum, but we recommend starting with at least $500 in USDC to give the bot enough room to trade effectively across multiple positions.",
   },
   {
-    q: "What exchanges does the bot trade on?",
-    a: "The bot trades on the Coinbase Base L2 network using simulated paper funds.",
+    q: "What accounts do I need?",
+    a: "You need three accounts: Coinbase (for the trading wallet and API key), Anthropic (for Claude AI, which powers the decision engine), and Railway (to host your bot 24/7 in the cloud). All are free to create and we walk you through every step.",
   },
   {
-    q: "How does the dual AI system work?",
-    a: "Claude (by Anthropic) is the decision engine. It analyzes technicals, reviews past trades, and decides when to buy or sell. Grok (by xAI) monitors X/Twitter in real-time for market sentiment and breaking news. Together they cover signals that neither could alone.",
+    q: "How does the 2% fee work?",
+    a: "Each morning, realized profits from the previous day are calculated. 2% of those profits are sent as a fee. If your bot did not profit that day, you pay nothing. There are no monthly subscriptions, no hidden charges.",
   },
   {
-    q: "What does the self-review loop do?",
-    a: "After each trade closes, the AI reviews its reasoning, the outcome, and market conditions. It identifies patterns in its own decisions, then attempts to refine its future approach based on what it finds.",
+    q: "Can the bot lose money?",
+    a: "Yes. Trading crypto involves risk and the bot can lose money. The risk management system uses stop-losses and position sizing to limit downside, but no system can guarantee profits. Only trade with capital you can afford to lose.",
   },
   {
-    q: "Can I get my own bot?",
-    a: "Potentially. If you're interested, fill out the interest form and I'll reach out. You'd get your own instance of the bot configured to your risk profile. I am not liable for the bot's performance once it's in your hands.",
+    q: "What is the Base network?",
+    a: "Base is a Layer 2 blockchain built by Coinbase. It offers low transaction fees and fast settlement times compared to Ethereum mainnet, making it ideal for frequent trading.",
   },
   {
-    q: "Does it cost anything to watch?",
-    a: "No. The live dashboard is free to view. You can watch the bot trade, see its reasoning, and review historical performance anytime.",
-  },
-  {
-    q: "Is this financial advice?",
-    a: "No. This is a personal technology project. Nothing on this page or dashboard constitutes financial advice, a recommendation to trade, or a solicitation of any kind. All results shown are from paper trading with simulated funds.",
+    q: "Can I stop the bot at any time?",
+    a: "Yes. You have full control. You can pause or stop your bot at any time through your dashboard. Your funds stay in your wallet at all times.",
   },
 ];
-
-// ─── ANIMATED TERMINAL ───
-function TerminalAnimation() { // eslint-disable-line no-unused-vars
-  const lines = [
-    { color: TT.textDim, text: "$ vallota-bot --start" },
-    { color: TT.textFaint, text: "" },
-    { color: TT.green, text: "[AI] Scanning ETH/USD across 4 timeframes..." },
-    { color: TT.textDim, text: "[TA] RSI(14): 32.4 | MACD: bullish crossover" },
-    { color: TT.textDim, text: "[TA] BB: price near lower band (oversold)" },
-    { color: TT.primary, text: "[GROK] X sentiment: 72% bullish (847 posts/hr)" },
-    { color: TT.textFaint, text: "" },
-    { color: TT.green, text: "[CLAUDE] Decision: BUY 0.15 ETH @ $3,241.50" },
-    { color: TT.textDim, text: "[RISK] Stop-loss set: $3,144.26 (-3.0%)" },
-    { color: TT.textDim, text: "[RISK] Take-profit: $3,403.58 (+5.0%)" },
-    { color: TT.green, text: "[EXEC] Order filled ✓" },
-  ];
-
-  return (
-    <div style={{
-      background: "#060a10",
-      border: `1px solid ${TT.border}`,
-      borderRadius: 12,
-      padding: "20px 24px",
-      fontFamily: TT.mono,
-      fontSize: 13,
-      lineHeight: 1.8,
-      overflow: "hidden",
-      maxWidth: 520,
-    }}>
-      <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
-        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
-        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
-        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
-      </div>
-      {lines.map((l, i) => (
-        <div key={i} style={{ color: l.color, opacity: l.text ? 1 : 0.3 }}>
-          {l.text || "\u00A0"}
-        </div>
-      ))}
-      <span style={{
-        display: "inline-block",
-        width: 8,
-        height: 16,
-        background: TT.primary,
-        animation: "blink 1s step-end infinite",
-        verticalAlign: "middle",
-        marginTop: 4,
-      }} />
-      <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}`}</style>
-    </div>
-  );
-}
 
 // ─── TRADING DASHBOARD MOCKUP ───
 const MOCKUP_THEMES = {
@@ -262,11 +292,10 @@ function TradingDashboardMockup() {
 
   const renderOverview = () => (
     <>
-      <div style={{ fontSize: 10, color: M.faint, textAlign: "center", marginBottom: 8, fontFamily: M.font, letterSpacing: 0.5, textTransform: "uppercase" }}>Simulated example data for illustration only</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 14 }}>
         <div style={cs}><div style={sl}>PORTFOLIO VALUE</div><div style={sv}>$12,847</div><div style={{ fontSize: 12, color: M.green, fontWeight: 600, marginTop: 4 }}>+28.47%</div></div>
         <div style={cs}><div style={sl}>TOTAL P&L</div><div style={sv}>$2,847</div><div style={{ fontSize: 12, color: M.dim, marginTop: 4 }}>47 trades</div></div>
-        <div style={cs}><div style={sl}>TODAY'S PAYOUTS</div><div style={sv}>$64.20</div><div style={{ fontSize: 12, color: M.green, marginTop: 4 }}>2 recipients</div></div>
+        <div style={cs}><div style={sl}>TODAY'S PAYOUTS</div><div style={sv}>$64.20</div><div style={{ fontSize: 12, color: M.green, marginTop: 4 }}>Deposited</div></div>
         <div style={cs}><div style={sl}>MAX DRAWDOWN</div><div style={{ ...sv, color: M.red }}>-4.21%</div><div style={{ fontSize: 12, color: M.red, marginTop: 4 }}>Within limits</div></div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -342,24 +371,6 @@ function TradingDashboardMockup() {
         <div style={cs}><div style={sl}>TOTAL PAID OUT</div><div style={sv}>$2,418.60</div></div>
         <div style={cs}><div style={sl}>PAYOUT COUNT</div><div style={sv}>42</div></div>
         <div style={cs}><div style={sl}>REINVEST RATE</div><div style={sv}>70%</div></div>
-      </div>
-      <div style={{ ...cs, marginBottom: 14 }}>
-        <div style={{ ...sl, color: M.purple }}>RECIPIENTS</div>
-        {[
-          { name: "Henry", wallet: "0x1a2B...9f4E", amount: "$32.10", split: "15% split" },
-          { name: "Harrison", wallet: "0x3c4D...2b1A", amount: "$32.10", split: "15% split" },
-        ].map((r, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderTop: i > 0 ? `1px solid ${M.border}` : "none" }}>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: M.text }}>{r.name}</div>
-              <div style={{ fontSize: 12, color: M.faint, fontFamily: "'JetBrains Mono', monospace" }}>{r.wallet}</div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: M.green }}>{r.amount}</div>
-              <div style={{ fontSize: 11, color: M.dim }}>{r.split}</div>
-            </div>
-          </div>
-        ))}
       </div>
       <div style={cs}>
         <div style={{ ...sl, color: M.purple }}>AAVE YIELD</div>
@@ -517,58 +528,27 @@ function TradingDashboardMockup() {
   );
 }
 
-// ─── STATS BAR ───
-function StatsBar() {
-  const stats = [
-    { label: "Timeframes", value: "4" },
-    { label: "Indicators", value: "3+" },
-    { label: "AI Models", value: "2" },
-    { label: "Mode", value: "Demo" },
-  ];
-  return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      gap: 0,
-      borderTop: `1px solid ${TT.border}`,
-      borderBottom: `1px solid ${TT.border}`,
-      background: TT.surface,
-    }}>
-      {stats.map((s, i) => (
-        <div key={i} style={{
-          flex: 1,
-          padding: "28px 20px",
-          textAlign: "center",
-          borderRight: i < stats.length - 1 ? `1px solid ${TT.border}` : "none",
-        }}>
-          <div style={{
-            fontFamily: TT.mono,
-            fontSize: "clamp(24px, 4vw, 32px)",
-            fontWeight: 700,
-            color: TT.primary,
-            marginBottom: 6,
-          }}>
-            {s.value}
-          </div>
-          <div style={{
-            fontFamily: TT.font,
-            fontSize: 13,
-            color: TT.textDim,
-            letterSpacing: 0.5,
-            textTransform: "uppercase",
-          }}>
-            {s.label}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
+// ─── MAIN LANDING PAGE ───
 export default function TradingLanding() {
   const [openFaq, setOpenFaq] = useState(null);
-  const [interestSent, setInterestSent] = useState(false);
-  const hasSession = (() => { try { return !!localStorage.getItem("vt_session"); } catch { return false; } })(); // eslint-disable-line no-unused-vars
+
+  // Shared section heading styles
+  const sectionLabel = {
+    fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
+    color: TT.primary, letterSpacing: 2,
+    marginBottom: 16, textTransform: "uppercase",
+  };
+  const sectionTitle = {
+    fontFamily: TT.font,
+    fontSize: "clamp(28px, 4vw, 40px)",
+    fontWeight: 800,
+    margin: "0 0 16px",
+    color: TT.text,
+  };
+  const sectionDesc = {
+    fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
+  };
+  const sectionWrap = { maxWidth: 1100, margin: "0 auto" };
 
   return (
     <div style={{ background: TT.bg, color: TT.text, fontFamily: TT.font, minHeight: "100vh" }}>
@@ -583,21 +563,22 @@ export default function TradingLanding() {
         justifyContent: "space-between",
       }}>
         <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ color: TT.textDim, fontSize: 14 }}>&larr;</span>
-          <span style={{ fontFamily: TT.mono, fontSize: 16, fontWeight: 700, color: TT.textDim, letterSpacing: 0.5 }}>
-            Vallota Ventures
+          <span style={{ fontFamily: TT.mono, fontSize: 16, fontWeight: 700, color: TT.text, letterSpacing: 0.5 }}>
+            Vallota Trading Command
           </span>
         </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
           <button onClick={() => { const el = document.getElementById("how-it-works"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>How It Works</button>
+          <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
+          <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Pricing</button>
           <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
-          <Link to="/trading/dashboard" style={{
+          <Link to="/trading/dashboard" style={{ fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, textDecoration: "none" }}>Dashboard</Link>
+          <Link to="/trading/signup" style={{
             fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
             padding: "8px 20px", borderRadius: 6,
             background: TT.primary, color: "#fff",
           }}>
-            Live Dashboard
+            Deploy Your Bot
           </Link>
         </div>
       </nav>
@@ -609,18 +590,6 @@ export default function TradingLanding() {
         margin: "0 auto",
         textAlign: "center",
       }}>
-        <div style={{
-          display: "inline-flex", alignItems: "center", gap: 8,
-          marginBottom: 24,
-          padding: "6px 14px", borderRadius: 20,
-          background: TT.greenDim, border: `1px solid rgba(0,255,136,0.15)`,
-          fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
-          color: TT.green,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: TT.green }} />
-          LIVE BOT
-        </div>
-
         <h1 style={{
           fontFamily: TT.font,
           fontSize: "clamp(36px, 5.5vw, 56px)",
@@ -629,14 +598,14 @@ export default function TradingLanding() {
           margin: "0 0 24px",
           color: TT.text,
         }}>
-          I Built Two AIs.{" "}
+          Intelligent Money{" "}
           <br />
           <span style={{
             background: "linear-gradient(135deg, #00d4ff, #00ff88)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}>
-            Then I Let Them Trade.
+            Working for You
           </span>
         </h1>
 
@@ -645,49 +614,107 @@ export default function TradingLanding() {
           fontSize: 18,
           color: TT.textDim,
           lineHeight: 1.7,
-          margin: "0 auto 36px",
+          margin: "0 auto 12px",
           maxWidth: 560,
         }}>
-          One AI reads the charts. The other reads the room. Together they
-          spot potential opportunities across charts and social sentiment, and refine their approach after every trade.
+          Your money loses value every day it sits idle. Put it to work with an
+          AI trading bot that earns while you sleep.
+        </p>
+
+        <p style={{
+          fontFamily: TT.font, fontSize: 14, color: TT.textFaint,
+          margin: "0 auto 36px",
+        }}>
+          Free to set up &middot; 2% of realized profits
         </p>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
-          <Link to="/trading/dashboard" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
-            See Live Results
+          <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
+            Deploy Your Bot
           </Link>
-          <a href="#interested" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 32px" }) }}>
-            I'm Interested
-          </a>
         </div>
-
-        <TradingDashboardMockup />
       </section>
 
-      {/* ─── STATS BAR ─── */}
-      <StatsBar />
+      {/* ─── COMMAND CENTER (Dashboard Mockup) ─── */}
+      <section style={{ padding: "0 24px 80px", ...sectionWrap }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={sectionTitle}>Your Command Center</h2>
+          <p style={sectionDesc}>
+            Every bot owner gets a personalized dashboard. Real-time portfolio tracking, trade history with AI reasoning, and automated payout details.
+          </p>
+        </div>
+        <TradingDashboardMockup />
+        <div style={{ textAlign: "center", marginTop: 20 }}>
+          <p style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint }}>
+            7 themes included. Tap to switch. This is your real dashboard.
+          </p>
+          <Link to="/trading/dashboard" style={{ textDecoration: "none", ...btnOutline({ fontSize: 14, padding: "10px 24px", marginTop: 12, display: "inline-block" }) }}>
+            Try the Live Demo
+          </Link>
+        </div>
+      </section>
+
+      {/* ─── PREREQUISITES ─── */}
+      <section style={{
+        padding: "80px 24px",
+        background: TT.surface,
+        borderTop: `1px solid ${TT.border}`,
+        borderBottom: `1px solid ${TT.border}`,
+      }}>
+        <div style={sectionWrap}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <h2 style={sectionTitle}>What you'll need to get started</h2>
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 24,
+            marginBottom: 32,
+          }}>
+            {PREREQUISITES.map((p, i) => (
+              <div key={i} style={{
+                ...card({ background: TT.bg }),
+                textAlign: "center",
+                padding: "36px 28px",
+              }}>
+                <div style={{
+                  width: 56, height: 56, borderRadius: "50%",
+                  background: TT.primaryDim,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 16px",
+                  fontFamily: TT.mono, fontSize: 20, fontWeight: 700, color: TT.primary,
+                }}>
+                  {i + 1}
+                </div>
+                <h3 style={{ fontFamily: TT.font, fontSize: 20, fontWeight: 700, color: TT.text, margin: "0 0 8px" }}>
+                  {p.name}
+                </h3>
+                <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0 }}>
+                  {p.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{
+            fontFamily: TT.font, fontSize: 14, color: TT.textDim,
+            lineHeight: 1.7, maxWidth: 640, margin: "0 auto", textAlign: "center",
+          }}>
+            All free to create. We walk you through every step. Each service gives you an "API key" -
+            think of it like a hotel key card for your bot. It unlocks access to that service, and only your
+            bot can use it. You'll just copy and paste them during setup.
+          </p>
+        </div>
+      </section>
 
       {/* ─── HOW IT WORKS ─── */}
       <section id="how-it-works" style={{
         padding: "100px 24px",
-        maxWidth: 1100,
-        margin: "0 auto",
+        ...sectionWrap,
       }}>
         <div style={{ textAlign: "center", marginBottom: 60 }}>
-          <h2 style={{
-            fontFamily: TT.font,
-            fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 800,
-            margin: "0 0 16px",
-            color: TT.text,
-          }}>
-            How It Works
-          </h2>
-          <p style={{
-            fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 560, marginLeft: "auto", marginRight: "auto",
-          }}>
-            The bot runs 24/7. You can watch everything it does in real time.
-          </p>
+          <h2 style={sectionTitle}>Three Steps to Financial Autonomy</h2>
         </div>
 
         <div style={{
@@ -739,68 +766,63 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── FEATURES ─── */}
-      <section id="features" style={{
+      {/* ─── UPGRADE FLOW ─── */}
+      <section style={{
         padding: "80px 24px 100px",
         background: TT.surface,
         borderTop: `1px solid ${TT.border}`,
         borderBottom: `1px solid ${TT.border}`,
       }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
-            <div style={{
-              fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
-              color: TT.primary, letterSpacing: 2,
-              marginBottom: 16, textTransform: "uppercase",
-            }}>
-              UNDER THE HOOD
-            </div>
-            <h2 style={{
-              fontFamily: TT.font,
-              fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 800,
-              margin: "0 0 16px",
-              color: TT.text,
-            }}>
-              What Powers the Bot
-            </h2>
-            <p style={{
-              fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
-            }}>
-              Two AI systems working alongside real computed technical analysis.
+        <div style={sectionWrap}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <h2 style={sectionTitle}>Every Upgrade. Every Bot. Automatically.</h2>
+            <p style={sectionDesc}>
+              When we improve the system, your bot gets the same upgrade. No action required. No extra cost. You stay on the cutting edge because we never stop pushing.
             </p>
           </div>
 
           <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: 20,
+            ...card({ padding: "32px 36px" }),
+            maxWidth: 560,
+            margin: "0 auto 40px",
           }}>
-            {FEATURES.map((f, i) => (
+            {UPGRADE_ITEMS.map((item, i) => (
               <div key={i} style={{
-                ...card({ background: TT.bg }),
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "10px 0",
+                borderBottom: i < UPGRADE_ITEMS.length - 1 ? `1px solid ${TT.border}` : "none",
               }}>
                 <div style={{
-                  width: 52, height: 52, borderRadius: 10,
-                  background: TT.primaryDim,
-                  display: "flex", alignItems: "center", justifyContent: "center",
+                  width: 6, height: 6, borderRadius: "50%",
+                  background: i === UPGRADE_ITEMS.length - 1 ? TT.green : TT.primary,
+                }} />
+                <span style={{
+                  fontFamily: TT.font, fontSize: 14,
+                  color: i === UPGRADE_ITEMS.length - 1 ? TT.green : TT.textDim,
+                  fontWeight: i === UPGRADE_ITEMS.length - 1 ? 600 : 400,
                 }}>
-                  {f.icon}
-                </div>
-                <h3 style={{
-                  fontFamily: TT.font, fontSize: 18, fontWeight: 700,
-                  color: TT.text, margin: 0,
-                }}>
-                  {f.title}
+                  {item}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 24,
+          }}>
+            {[
+              { title: "Zero Downtime", desc: "Automatic. Same day." },
+              { title: "Zero Action Required", desc: "Your bot receives every upgrade without you lifting a finger." },
+              { title: "Same System, Every Bot", desc: "Everyone runs the latest version. No tiers. No feature gates." },
+            ].map((item, i) => (
+              <div key={i} style={{ ...card({ background: TT.bg }), textAlign: "center" }}>
+                <h3 style={{ fontFamily: TT.font, fontSize: 18, fontWeight: 700, color: TT.text, margin: "0 0 8px" }}>
+                  {item.title}
                 </h3>
-                <p style={{
-                  fontFamily: TT.font, fontSize: 14, color: TT.textDim,
-                  lineHeight: 1.7, margin: 0,
-                }}>
-                  {f.desc}
+                <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
+                  {item.desc}
                 </p>
               </div>
             ))}
@@ -808,152 +830,342 @@ export default function TradingLanding() {
         </div>
       </section>
 
-      {/* ─── RISK QUIZ CTA ─── */}
-      <section style={{
+      {/* ─── FEATURES ─── */}
+      <section id="features" style={{
         padding: "100px 24px",
-        maxWidth: 800,
-        margin: "0 auto",
-        textAlign: "center",
+        ...sectionWrap,
       }}>
+        <div style={{ textAlign: "center", marginBottom: 60 }}>
+          <h2 style={sectionTitle}>Built for Autonomous Performance</h2>
+        </div>
+
         <div style={{
-          ...card({ padding: "48px 40px", border: `1px solid ${TT.borderLight}` }),
-          background: `linear-gradient(135deg, ${TT.surface} 0%, ${TT.surfaceAlt} 100%)`,
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: 20,
         }}>
-          <div style={{
-            fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
-            color: TT.green, letterSpacing: 2,
-            marginBottom: 20, textTransform: "uppercase",
-          }}>
-            FIND YOUR STRATEGY
-          </div>
-          <h2 style={{
-            fontFamily: TT.font,
-            fontSize: "clamp(24px, 4vw, 36px)",
-            fontWeight: 800,
-            margin: "0 0 16px",
-            color: TT.text,
-          }}>
-            What Kind of Trader Are You?
-          </h2>
-          <p style={{
-            fontFamily: TT.font, fontSize: 16, color: TT.textDim,
-            lineHeight: 1.7, margin: "0 0 32px", maxWidth: 520, marginLeft: "auto", marginRight: "auto",
-          }}>
-            Answer 6 quick questions. See how the bot would be calibrated to match your risk tolerance,
-            timeline, and experience level.
-          </p>
-          <Link to="/trading/quiz" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 40px" }) }}>
-            Take the Quiz &rarr;
-          </Link>
+          {FEATURES.map((f, i) => (
+            <div key={i} style={{
+              ...card(),
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}>
+              <div style={{
+                width: 52, height: 52, borderRadius: 10,
+                background: TT.primaryDim,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {f.icon}
+              </div>
+              <h3 style={{
+                fontFamily: TT.font, fontSize: 18, fontWeight: 700,
+                color: TT.text, margin: 0,
+              }}>
+                {f.title}
+              </h3>
+              <p style={{
+                fontFamily: TT.font, fontSize: 14, color: TT.textDim,
+                lineHeight: 1.7, margin: 0,
+              }}>
+                {f.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ─── INTEREST FORM ─── */}
-      <section id="interested" style={{
+      {/* ─── ASK YOUR BOT ─── */}
+      <section style={{
         padding: "80px 24px 100px",
         background: TT.surface,
         borderTop: `1px solid ${TT.border}`,
         borderBottom: `1px solid ${TT.border}`,
       }}>
-        <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{
-            fontFamily: TT.font,
-            fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 800,
-            margin: "0 0 16px",
-            color: TT.text,
-          }}>
-            Want Your Own Bot?
-          </h2>
-          <p style={{
-            fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 48px",
-          }}>
-            I built this for myself, but if you want your own instance, let me know and I'll reach out.
-          </p>
+        <div style={sectionWrap}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={sectionLabel}>CONVERSATIONAL AI</div>
+            <h2 style={sectionTitle}>Ask Your Bot Anything</h2>
+            <p style={sectionDesc}>
+              Your bot doesn't just trade. It explains. Ask about strategy, reasoning, positions, or market outlook. Get answers grounded in real data.
+            </p>
+          </div>
 
           <div style={{
-            ...card({ padding: "48px 40px", border: `1px solid ${TT.borderLight}` }),
-            textAlign: "center",
+            ...card({ padding: "32px", maxWidth: 640, margin: "0 auto 40px" }),
           }}>
             <div style={{
-              fontFamily: TT.mono, fontSize: 13, fontWeight: 600,
-              color: TT.primary, letterSpacing: 1.5,
-              marginBottom: 24, textTransform: "uppercase",
+              display: "flex", alignItems: "center", gap: 12,
+              padding: "14px 18px",
+              borderRadius: 10,
+              border: `1px solid ${TT.border}`,
+              background: TT.bg,
             }}>
-              WHAT YOU'D GET
+              <IconChat />
+              <span style={{ fontFamily: TT.font, fontSize: 15, color: TT.textFaint }}>
+                Ask your bot anything...
+              </span>
+            </div>
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 24,
+          }}>
+            {[
+              { title: "Real-Time Context", desc: "Answers based on your live portfolio and market data." },
+              { title: "Plain English", desc: "No jargon. Clear explanations of every decision." },
+              { title: "Always Available", desc: "Ask anything, anytime. Your bot is always running." },
+            ].map((item, i) => (
+              <div key={i} style={{ textAlign: "center" }}>
+                <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 8px" }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── UNDER THE HOOD ─── */}
+      <section style={{
+        padding: "100px 24px",
+        ...sectionWrap,
+      }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={sectionLabel}>UNDER THE HOOD</div>
+          <h2 style={sectionTitle}>What Powers Your Bot</h2>
+          <p style={{ ...sectionDesc, marginBottom: 48 }}>
+            This is not "tell an AI to trade for you." This is a multi-layered intelligence system pulling from 9+ live data sources every cycle.
+          </p>
+        </div>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 20,
+        }}>
+          {UNDER_THE_HOOD.map((item, i) => (
+            <div key={i} style={{
+              ...card(),
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}>
+              <div style={{
+                fontFamily: TT.mono, fontSize: 11, fontWeight: 600,
+                color: TT.primary, letterSpacing: 1, textTransform: "uppercase",
+              }}>
+                {String(i + 1).padStart(2, "0")}
+              </div>
+              <h3 style={{
+                fontFamily: TT.font, fontSize: 17, fontWeight: 700,
+                color: TT.text, margin: 0,
+              }}>
+                {item.title}
+              </h3>
+              <p style={{
+                fontFamily: TT.font, fontSize: 14, color: TT.textDim,
+                lineHeight: 1.7, margin: 0,
+              }}>
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p style={{
+          fontFamily: TT.font, fontSize: 14, color: TT.textFaint,
+          textAlign: "center", marginTop: 40, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
+          lineHeight: 1.7,
+        }}>
+          Could you build this yourself? Maybe. But staying on the cutting edge requires constant research, auditing, and engineering. That is what the 2% covers.
+        </p>
+      </section>
+
+      {/* ─── ORIGIN STORY ─── */}
+      <section style={{
+        padding: "100px 24px",
+        background: TT.surface,
+        borderTop: `1px solid ${TT.border}`,
+        borderBottom: `1px solid ${TT.border}`,
+      }}>
+        <div style={sectionWrap}>
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
+            <div style={sectionLabel}>OUR STORY</div>
+            <h2 style={sectionTitle}>Born from Necessity</h2>
+            <p style={sectionDesc}>The economy demanded a better way. We built it.</p>
+          </div>
+
+          <div style={{ maxWidth: 700, margin: "0 auto" }}>
+            {[
+              {
+                label: "THE PROBLEM",
+                title: "The dollar is being devalued. Savings are losing purchasing power every day.",
+                desc: "Inflation. Constant money printing. The slow erosion of value sitting in a bank account. The economy made one thing clear: keeping money idle is no longer a neutral decision. It is an active loss.",
+              },
+              {
+                label: "THE REALIZATION",
+                title: "Markets move daily. But most people cannot trade them.",
+                desc: "There is daily volatility worth capturing. Real opportunity in every 24-hour cycle. But being an active trader requires constant attention, emotional discipline, and time most people do not have. The market rewards those who show up. It punishes those who cannot.",
+              },
+              {
+                label: "THE BREAKTHROUGH",
+                title: "Then the right pieces came together at the right moment.",
+                desc: "On February 11, 2026, Coinbase launched agent wallets. Programmable, non-custodial, institutional-grade. AI intelligence reached the point where it could analyze markets and execute with judgment, not just rules. The technology to build a truly autonomous trading agent didn't exist before that. Now it does.",
+              },
+              {
+                label: "THE VISION",
+                title: "Your bot works. You live. Your wealth has a chance to grow.",
+                desc: "Imagine a system designed to capture daily market opportunities and deposit gains directly to your wallet. While no returns are guaranteed, the architecture is built to let your capital work around the clock so you don't have to.",
+              },
+            ].map((block, i) => (
+              <div key={i} style={{ marginBottom: i < 3 ? 48 : 0 }}>
+                <div style={{
+                  fontFamily: TT.mono, fontSize: 11, fontWeight: 700,
+                  color: TT.primary, letterSpacing: 2, marginBottom: 12,
+                }}>
+                  {block.label}
+                </div>
+                <h3 style={{
+                  fontFamily: TT.font, fontSize: 22, fontWeight: 700,
+                  color: TT.text, margin: "0 0 12px", lineHeight: 1.3,
+                }}>
+                  {block.title}
+                </h3>
+                <p style={{
+                  fontFamily: TT.font, fontSize: 15, color: TT.textDim,
+                  lineHeight: 1.8, margin: 0,
+                }}>
+                  {block.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            maxWidth: 600, margin: "60px auto 0",
+            borderLeft: `3px solid ${TT.primary}`,
+            paddingLeft: 24,
+          }}>
+            <p style={{
+              fontFamily: TT.font, fontSize: 17, color: TT.text,
+              lineHeight: 1.7, margin: "0 0 12px", fontStyle: "italic",
+            }}>
+              "If one day your bot can help generate the daily income you need while your wealth has room to grow... that is the way."
+            </p>
+            <p style={{
+              fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0,
+            }}>
+              - Diego Vallota, Founder
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── TRUST & SECURITY ─── */}
+      <section style={{
+        padding: "100px 24px",
+        ...sectionWrap,
+      }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={sectionLabel}>SECURITY</div>
+          <h2 style={sectionTitle}>Your Funds, Your Control</h2>
+        </div>
+
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 40 }}>
+            {[
+              "Your trading wallet is created through Coinbase Developer Platform. Only you hold the API keys.",
+              "The bot can execute trades but cannot withdraw to external addresses. Your funds stay in your wallet at all times.",
+              "A flat 2% of daily realized profits. No hidden fees, no markup, no monthly subscription.",
+            ].map((text, i) => (
+              <div key={i} style={{
+                display: "flex", alignItems: "flex-start", gap: 14,
+                fontFamily: TT.font, fontSize: 15, color: TT.textDim, lineHeight: 1.7,
+              }}>
+                <div style={{ marginTop: 4, flexShrink: 0 }}><IconCheck /></div>
+                {text}
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 16,
+          }}>
+            {SECURITY_POINTS.map((point, i) => (
+              <div key={i} style={{
+                ...card({ padding: "16px 20px", textAlign: "center" }),
+              }}>
+                <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim }}>
+                  {point}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PRICING ─── */}
+      <section id="pricing" style={{
+        padding: "80px 24px 100px",
+        background: TT.surface,
+        borderTop: `1px solid ${TT.border}`,
+        borderBottom: `1px solid ${TT.border}`,
+      }}>
+        <div style={sectionWrap}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <h2 style={sectionTitle}>Simple, Transparent Pricing</h2>
+          </div>
+
+          <div style={{
+            ...card({ padding: "48px 40px" }),
+            maxWidth: 520,
+            margin: "0 auto",
+            textAlign: "center",
+            border: `1px solid ${TT.borderLight}`,
+          }}>
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ display: "flex", justifyContent: "center", gap: 40, marginBottom: 32 }}>
+                <div>
+                  <div style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, marginBottom: 8 }}>Setup Cost</div>
+                  <div style={{ fontFamily: TT.font, fontSize: 36, fontWeight: 800, color: TT.text }}>$0</div>
+                </div>
+                <div>
+                  <div style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, marginBottom: 8 }}>Profit Fee</div>
+                  <div style={{ fontFamily: TT.font, fontSize: 36, fontWeight: 800, color: TT.text }}>2%</div>
+                  <div style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint }}>of daily realized profits</div>
+                </div>
+              </div>
+              <p style={{
+                fontFamily: TT.font, fontSize: 16, color: TT.green, fontWeight: 600, margin: "0 0 32px",
+              }}>
+                You only pay when you make money
+              </p>
             </div>
 
-            <div style={{ textAlign: "left" }}>
-              {[
-                "Your own instance of the bot, running 24/7",
-                "Configured to your risk profile",
-                "Live dashboard with full transparency",
-                "All the AI systems: Claude, Grok, computed TA",
-                "Paper trading to start, live trading when you're ready",
-              ].map((item, i) => (
+            <div style={{ textAlign: "left", marginBottom: 32 }}>
+              {PRICING_FEATURES.map((feature, i) => (
                 <div key={i} style={{
                   display: "flex", alignItems: "center", gap: 12,
-                  padding: "10px 0",
+                  padding: "8px 0",
                   fontFamily: TT.font, fontSize: 15, color: TT.textDim,
                 }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17L4 12" />
-                  </svg>
-                  {item}
+                  <IconCheck />
+                  {feature}
                 </div>
               ))}
             </div>
 
-            <form onSubmit={async (e) => {
-              e.preventDefault();
-              const form = e.target;
-              const emailVal = form.email.value;
-              if (!emailVal || !emailVal.includes("@")) return;
-              try {
-                await fetch("/api/capture-lead", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email: emailVal, source: "trading-interest" }),
-                });
-                form.reset();
-                setInterestSent(true);
-              } catch {}
-            }} style={{ marginTop: 32, display: "flex", gap: 10 }}>
-              {interestSent ? (
-                <div style={{
-                  width: "100%", padding: "16px 28px", borderRadius: 8,
-                  background: TT.greenDim, border: `1px solid rgba(0,255,136,0.2)`,
-                  fontFamily: TT.font, fontSize: 15, fontWeight: 600, color: TT.green,
-                  textAlign: "center",
-                }}>
-                  Got it! I'll be in touch.
-                </div>
-              ) : (
-                <>
-                  <input
-                    name="email" type="email" placeholder="Your email"
-                    required
-                    style={{
-                      flex: 1, padding: "14px 16px", borderRadius: 8,
-                      border: `1px solid ${TT.border}`, background: TT.bg,
-                      color: TT.text, fontSize: 15, fontFamily: TT.font,
-                      outline: "none",
-                    }}
-                  />
-                  <button type="submit" style={btnPrimary({ fontSize: 15, padding: "14px 28px", whiteSpace: "nowrap" })}>
-                    I'm Interested
-                  </button>
-                </>
-              )}
-            </form>
-
-            <p style={{
-              fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
-              marginTop: 16, lineHeight: 1.6,
-            }}>
-              By submitting, you're expressing interest only. This is not a purchase, subscription,
-              or agreement. I am not liable for the bot's trading performance.
-            </p>
+            <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 40px", width: "100%", display: "block", textAlign: "center", boxSizing: "border-box" }) }}>
+              Start Free
+            </Link>
           </div>
         </div>
       </section>
@@ -965,12 +1177,9 @@ export default function TradingLanding() {
         margin: "0 auto",
       }}>
         <h2 style={{
-          fontFamily: TT.font,
-          fontSize: "clamp(28px, 4vw, 40px)",
-          fontWeight: 800,
-          margin: "0 0 48px",
-          color: TT.text,
+          ...sectionTitle,
           textAlign: "center",
+          marginBottom: 48,
         }}>
           Frequently Asked Questions
         </h2>
@@ -1039,28 +1248,17 @@ export default function TradingLanding() {
         textAlign: "center",
       }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
-          <h2 style={{
-            fontFamily: TT.font,
-            fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 800,
-            margin: "0 0 16px",
-            color: TT.text,
-          }}>
-            See the Bot in Action
+          <h2 style={sectionTitle}>
+            Ready to Put Your Money to Work?
           </h2>
           <p style={{
             fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 36px",
           }}>
-            Watch real trades, real reasoning, real results. All paper funds, full transparency.
+            Deploy your autonomous trading bot in 5 minutes.
           </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link to="/trading/dashboard" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
-              Live Dashboard
-            </Link>
-            <a href="#interested" style={{ textDecoration: "none", ...btnOutline({ fontSize: 16, padding: "16px 36px" }) }}>
-              I'm Interested
-            </a>
-          </div>
+          <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
+            Deploy Your Bot
+          </Link>
         </div>
       </section>
 
@@ -1077,7 +1275,7 @@ export default function TradingLanding() {
         gap: 12,
       }}>
         <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint }}>
-          &copy; 2026 Vallota Ventures
+          &copy; 2026 Vallota Trading Command
         </span>
         <div style={{ display: "flex", gap: 20 }}>
           <Link to="/" style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint, textDecoration: "none" }}>
@@ -1099,10 +1297,10 @@ export default function TradingLanding() {
           fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
           lineHeight: 1.6, margin: 0, textAlign: "center",
         }}>
-          This is a personal technology project. The bot operates with paper (simulated) funds only. No real money
-          is traded. Past performance is not indicative of future results. Nothing on this page constitutes financial
-          advice, a recommendation to trade, or an offer to manage assets. If you purchase access to your own instance
-          of the bot, you assume full responsibility for its performance and any trading decisions made.
+          Trading crypto involves risk. The bot can lose money and past performance is not indicative of future results.
+          Nothing on this page constitutes financial advice, a recommendation to trade, or an offer to manage assets.
+          You maintain full control of your funds at all times. The 2% fee applies only to realized daily profits.
+          By deploying a bot, you accept full responsibility for its performance and any trading decisions made.
         </p>
       </div>
     </div>
