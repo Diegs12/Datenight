@@ -195,15 +195,7 @@ function getInitialData() {
 }
 
 function getSecureWorkspaceData() {
-  return {
-    tasks: [],
-    habits: [],
-    accounts: [],
-    transactions: [],
-    workouts: [],
-    goals: [],
-    netWorthHistory: [],
-  };
+  return getInitialData();
 }
 
 // ═══════════════════════════════════════════
@@ -417,7 +409,7 @@ function TasksTab({ data, setData }) {
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: D.textDim, display: "block", marginBottom: 4 }}>Domain</label>
             <select value={newDomain} onChange={e => setNewDomain(e.target.value)} style={{ ...inputStyle, width: "auto" }}>
-              {Object.keys(domainColors).map(d => <option key={d} value={d}>{d}</option>)}
+              {Object.keys(domainColors).map(d => <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>)}
             </select>
           </div>
           <div>
@@ -1009,8 +1001,7 @@ function AdvisorFinancesTab() {
 }
 
 function FinancesTab({ data, setData, demoMode }) {
-  if (!demoMode) return <AdvisorFinancesTab />;
-  return <DemoFinancesTab data={data} setData={setData} />;
+  return <DemoFinancesTab data={data} setData={setData} demoMode={demoMode} />;
 }
 
 function DemoFinancesTab({ data, setData }) {
