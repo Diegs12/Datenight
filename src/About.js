@@ -195,19 +195,25 @@ export default function About() {
               <p style={{
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px",
               }}>
-                I'm Diego, a UNC Chapel Hill economics grad, Revenue and Growth Analyst
-                at a sports marketing agency in Cincinnati, and the founder of Vallota Ventures.
-                My day job sits at the intersection of marketing, finance, and operations. My
-                nights and weekends go into building AI-powered tools that solve the problems
-                I see businesses struggling with every day.
+                I'm Diego, a UNC Chapel Hill economics and cognitive science grad, Revenue
+                and Growth Analyst at a sports marketing agency in Cincinnati, and the founder
+                of Vallota Ventures. My day job sits at the intersection of marketing, finance,
+                and operations. My nights and weekends go into training for the Chicago and NYC
+                marathons this fall (donate{" "}
+                <a href="mailto:diego@vallotaventures.com" style={{ color: T.gold, textDecoration: "underline" }}>here</a>{" "}
+                if you're looking to support a good cause and grab a tax writeoff. Shameless
+                plugs are always allowed on personal websites, right?).
               </p>
               <p style={{
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: 0,
               }}>
-                I don't build for the sake of building. Every project on this site started
-                with a real problem, something I watched a business waste time or money on,
-                and turned into a working product. I'm actively looking for companies that
-                want to stop talking about AI and start using it.
+                At work, I'm implementing new AI tools on a weekly basis: automating estimate
+                creation, streamlining our script writing and storyboarding process, and building
+                out databases to manage the contractors we work with. I like breaking down complex
+                problems into manageable parts and tackling them in a sequence where each step
+                makes the next one easier. Every project on this site started the same way: a real
+                problem I watched someone waste time or money on, turned into something that
+                actually works.
               </p>
             </div>
           </div>
