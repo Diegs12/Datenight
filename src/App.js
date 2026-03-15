@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Portfolio from "./Portfolio";
 import About from "./About";
+import Thesis from "./Thesis";
 import PCCLanding from "./PCCLanding";
 import PCCDashboard from "./PCCDashboard";
 import TradingApp from "./trading/TradingApp";
@@ -2540,6 +2541,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Portfolio />} />
           <Route path="/about" element={<About />} />
+          <Route path="/thesis" element={<Thesis />} />
           <Route path="/pcc" element={<PCCLanding />} />
           <Route path="/pcc/demo" element={<PCCDashboard demoMode />} />
           <Route path="/pcc/app" element={<PccProtectedRoute><PCCDashboard /></PccProtectedRoute>} />

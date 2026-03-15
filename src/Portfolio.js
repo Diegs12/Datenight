@@ -9,152 +9,8 @@ const T = {
 
 const SIDEBAR_W = 240;
 
-const frameworkSteps = [
-  {
-    num: "01",
-    title: "Find Where You're Slow or Expensive",
-    body: "Every business has bottlenecks. Lead follow-up that takes hours. Content production that takes a week. Proposal generation that needs a senior person. Those are the targets.",
-  },
-  {
-    num: "02",
-    title: "Find Every Decision in the Process",
-    body: "Inside each bottleneck, map out every individual decision being made. Who decides what to say to this lead? Who decides which content to produce? Who decides the pricing? Each decision is a separate question.",
-  },
-  {
-    num: "03",
-    title: "Ask: Can We Train a Machine to Make This Decision?",
-    body: "For each decision, ask: can an AI agent do this in seconds for pennies? Most businesses are shocked at how many workflows pass this test.",
-  },
-  {
-    num: "04",
-    title: "Keep Your Prices, Pocket the Savings",
-    body: "The cost of delivery dropped. The value to the client stayed the same. That gap is pure margin. Do not lower your prices just because your costs went down.",
-  },
-];
-
-const audiences = [
-  {
-    label: "Service Agencies",
-    accent: T.gold,
-    text: "You sell time. AI lets you fulfill 10x more clients without hiring 10x more people. Your team becomes the quality layer, not the production layer.",
-  },
-  {
-    label: "Local Businesses",
-    accent: "#10B981",
-    text: "Plumbers, HVAC, dentists. You are leaking leads because you cannot follow up fast enough. AI handles speed-to-lead in seconds, not hours. These are the companies with the biggest returns: great at what they do in person, but the backend drags them down.",
-  },
-  {
-    label: "Content Creators",
-    accent: "#00D4FF",
-    text: "AI collapses the time from idea to published. Research, drafts, editing, distribution. What took a week takes a day. What took a day takes an hour.",
-  },
-  {
-    label: "SaaS with Proprietary Data",
-    accent: "#3dd98a",
-    text: "If you have unique data that OpenAI does not have, AI trained on that data creates a moat nobody else can replicate. Your data is the advantage. AI is how you activate it.",
-  },
-];
-
 export default function Portfolio() {
-  const [hoveredCard, setHoveredCard] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const apps = [
-    {
-      id: "vela",
-      title: "Vela",
-      tagline: "Date Night, Figured Out",
-      description:
-        "Take a 2-minute quiz about your partner. Vela scores 154+ date ideas to their personality, plans every detail, and sends a beautiful invite. All for free.",
-      tags: ["React", "Vercel", "PWA"],
-      status: "Live",
-      link: "/vela",
-      dashboardLink: null,
-      hasSession: false,
-      external: false,
-      gradient: "linear-gradient(135deg, #141414 0%, #1C1810 50%, #141414 100%)",
-      accent: "#D68853",
-      glow: "rgba(214,136,83,0.35)",
-      icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <path d="M24 8C24 8 16 18 16 26C16 30.4 19.6 34 24 34C28.4 34 32 30.4 32 26C32 18 24 8 24 8Z" fill="rgba(255,255,255,0.9)" />
-          <path d="M24 16C24 16 20 22 20 26C20 28.2 21.8 30 24 30C26.2 30 28 28.2 28 26C28 22 24 16 24 16Z" fill="#D68853" fillOpacity="0.7" />
-        </svg>
-      ),
-    },
-    {
-      id: "pcc",
-      title: "Personal Command Center",
-      tagline: "PCC",
-      description:
-        "Full-stack personal dashboard for tracking finances, tasks, habits, workouts, and goals. AI-integrated API so any LLM can create tasks, log habits, and update progress.",
-      tags: ["React", "Express", "Prisma", "AI API"],
-      status: "Live",
-      link: "/pcc",
-      dashboardLink: null,
-      hasSession: false,
-      external: false,
-      gradient: "linear-gradient(135deg, #0F172A 0%, #1E3A5F 50%, #0F172A 100%)",
-      accent: "#10B981",
-      glow: "rgba(16,185,129,0.35)",
-      icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect x="12" y="12" width="9" height="9" rx="2" fill="rgba(255,255,255,0.9)" />
-          <rect x="24" y="12" width="9" height="9" rx="2" fill="rgba(255,255,255,0.5)" />
-          <rect x="12" y="24" width="9" height="9" rx="2" fill="rgba(255,255,255,0.5)" />
-          <rect x="24" y="24" width="9" height="9" rx="2" fill="#10B981" fillOpacity="0.7" />
-        </svg>
-      ),
-    },
-    {
-      id: "trading",
-      title: "Vallota Trading",
-      tagline: "AI-Powered Crypto Trading",
-      description:
-        "Dual-AI trading bot powered by Claude + Grok. Computed technical analysis, self-improving AI, and multi-timeframe signals, all on Coinbase Base L2.",
-      tags: ["Node.js", "Claude AI", "Grok", "Crypto"],
-      status: "Live",
-      link: "/trading",
-      dashboardLink: "/trading/dashboard",
-      hasSession: false,
-      external: false,
-      gradient: "linear-gradient(135deg, #0A0E17 0%, #162033 50%, #0A0E17 100%)",
-      accent: "#00D4FF",
-      glow: "rgba(0,212,255,0.35)",
-      icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <path d="M12 32L19 24L25 28L36 16" stroke="rgba(255,255,255,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M30 16H36V22" stroke="#00D4FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="12" cy="32" r="2.5" fill="rgba(255,255,255,0.5)" />
-          <circle cx="19" cy="24" r="2.5" fill="rgba(255,255,255,0.5)" />
-          <circle cx="25" cy="28" r="2.5" fill="rgba(255,255,255,0.5)" />
-          <circle cx="36" cy="16" r="2.5" fill="#00D4FF" />
-        </svg>
-      ),
-    },
-    {
-      id: "uncharted",
-      title: "UNCHARTED",
-      tagline: "Sea-Doo Experiential App",
-      description:
-        "A concept app I built for Sea-Doo's experiential events: gamified scavenger hunts, crew boards, and live photo feeds that solved the data collection problem. Pitched it, got it funded.",
-      tags: ["React 18", "Concept", "Experiential"],
-      status: "Funded",
-      link: "/uncharted",
-      dashboardLink: null,
-      hasSession: false,
-      external: false,
-      gradient: "linear-gradient(135deg, #0a0a0a 0%, #0f1a12 50%, #0a0a0a 100%)",
-      accent: "#3dd98a",
-      glow: "rgba(61,217,138,0.35)",
-      icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <path d="M24 10L28 18L37 19.5L30.5 25.8L32 35L24 30.5L16 35L17.5 25.8L11 19.5L20 18L24 10Z" fill="rgba(255,255,255,0.9)" />
-          <path d="M24 16L26.5 21L32 21.8L28 25.6L29 31L24 28.2L19 31L20 25.6L16 21.8L21.5 21L24 16Z" fill="#3dd98a" fillOpacity="0.6" />
-        </svg>
-      ),
-    },
-  ];
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -164,44 +20,45 @@ export default function Portfolio() {
 
   const navLinks = (
     <>
-      <button onClick={() => scrollTo("thesis")} style={{
+      <button onClick={() => scrollTo("problem")} style={{
         background: "none", border: "none", cursor: "pointer", textAlign: "left",
         fontFamily: T.font, fontSize: 14, fontWeight: 500,
         color: T.textDim, padding: "8px 0", width: "100%",
       }}>
-        Thesis
+        The Problem
       </button>
-      <button onClick={() => scrollTo("framework")} style={{
+      <button onClick={() => scrollTo("how")} style={{
         background: "none", border: "none", cursor: "pointer", textAlign: "left",
         fontFamily: T.font, fontSize: 14, fontWeight: 500,
         color: T.textDim, padding: "8px 0", width: "100%",
       }}>
-        Framework
+        How It Works
       </button>
-      <button onClick={() => scrollTo("who")} style={{
+      <button onClick={() => scrollTo("offer")} style={{
         background: "none", border: "none", cursor: "pointer", textAlign: "left",
         fontFamily: T.font, fontSize: 14, fontWeight: 500,
         color: T.textDim, padding: "8px 0", width: "100%",
       }}>
-        Who It's For
+        The Offer
       </button>
-      <button onClick={() => scrollTo("projects")} style={{
+      <button onClick={() => scrollTo("cta")} style={{
         background: "none", border: "none", cursor: "pointer", textAlign: "left",
         fontFamily: T.font, fontSize: 14, fontWeight: 500,
         color: T.textDim, padding: "8px 0", width: "100%",
       }}>
-        Projects
+        Get Started
       </button>
-      <button onClick={() => scrollTo("contact")} style={{
-        background: "none", border: "none", cursor: "pointer", textAlign: "left",
-        fontFamily: T.font, fontSize: 14, fontWeight: 500,
-        color: T.textDim, padding: "8px 0", width: "100%",
+      <div style={{ height: 1, background: T.border, margin: "8px 0" }} />
+      <Link to="/thesis" onClick={() => setMobileMenuOpen(false)} style={{
+        fontFamily: T.font, fontSize: 13, fontWeight: 500,
+        color: T.textFaint, padding: "6px 0", width: "100%",
+        textDecoration: "none", display: "block",
       }}>
-        Work With Me
-      </button>
+        Read the Thesis
+      </Link>
       <Link to="/about" onClick={() => setMobileMenuOpen(false)} style={{
-        fontFamily: T.font, fontSize: 14, fontWeight: 500,
-        color: T.textDim, padding: "8px 0", width: "100%",
+        fontFamily: T.font, fontSize: 13, fontWeight: 500,
+        color: T.textFaint, padding: "6px 0", width: "100%",
         textDecoration: "none", display: "block",
       }}>
         About
@@ -362,40 +219,40 @@ export default function Portfolio() {
               fontFamily: T.font, fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
               color: T.gold, textTransform: "uppercase",
             }}>
-              AI Automation
+              AI for Home Services
             </div>
 
             <h1 style={{
               fontFamily: T.display, fontSize: "clamp(36px, 5vw, 56px)",
               fontWeight: 700, lineHeight: 1.1, margin: "0 0 24px", color: T.navy,
             }}>
-              Your business doesn't need more people. It needs better{" "}
-              <span style={{ color: T.gold }}>workflows</span>.
+              Never miss another after-hours job in{" "}
+              <span style={{ color: T.gold }}>Cincinnati</span>.
             </h1>
 
             <p style={{
-              fontFamily: T.font, fontSize: 17, color: T.textDim, lineHeight: 1.85,
+              fontFamily: T.font, fontSize: 18, color: T.textDim, lineHeight: 1.85,
               margin: "0 0 40px", maxWidth: 560,
             }}>
-              Businesses hire by role. A marketing person, a sales person, an account manager. But when you break down what each of them actually does, it is just a series of workflows and decisions. In the age of AI, it is no longer acceptable to not know every workflow your employees are running. Every decision can be automated. Every operation can be upgraded. AI is going to take a long time to take over, but are you going to let your competitors get first movers advantage?
+              AI receptionist that answers, qualifies, and books calls for your home service business while you're off the clock. No voicemail. No new hires.
             </p>
 
             <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-              <button onClick={() => scrollTo("thesis")} style={{
+              <button onClick={() => scrollTo("cta")} style={{
                 fontFamily: T.font, fontSize: 15, fontWeight: 700, cursor: "pointer",
                 padding: "14px 32px", borderRadius: 8, border: "none",
                 background: T.navy,
                 color: "#FAF7F2",
                 boxShadow: "0 4px 12px rgba(27,42,74,0.2)",
               }}>
-                Read the Thesis
+                Get Your Missed-Calls Audit
               </button>
-              <button onClick={() => scrollTo("contact")} style={{
+              <button onClick={() => scrollTo("how")} style={{
                 background: "none", border: "none", cursor: "pointer",
                 fontFamily: T.font, fontSize: 14, fontWeight: 500,
                 color: T.textDim, textDecoration: "underline", padding: 0,
               }}>
-                Or skip to how we work together
+                See how it works
               </button>
             </div>
           </div>
@@ -406,58 +263,69 @@ export default function Portfolio() {
           <div style={{ height: 1, background: T.border }} />
         </div>
 
-        {/* ─── THESIS ─── */}
-        <section id="thesis" style={{
+        {/* ─── PAIN MATH ─── */}
+        <section id="problem" style={{
           padding: "80px 48px", maxWidth: 960,
         }}>
-          <div style={{ maxWidth: 680 }}>
-            <h2 style={{
-              fontFamily: T.display, fontSize: "clamp(24px, 4vw, 32px)",
-              fontWeight: 700, lineHeight: 1.15, margin: "0 0 28px", color: T.navy,
-            }}>
-              Businesses Still Hire by Role
-            </h2>
-            <p style={{
-              fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.85,
-              margin: "0 0 48px",
-            }}>
-              Businesses hire a marketing person, a sales person, an account manager. When you break down what each of them actually does, it is just a series of workflows and decisions that have to be made. Nobody asks whether every one of those workflows actually requires a human.
-            </p>
+          <h2 style={{
+            fontFamily: T.display, fontSize: "clamp(28px, 4vw, 40px)",
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 48px", color: T.navy,
+          }}>
+            You're Losing Jobs While You Sleep
+          </h2>
 
-            <h2 style={{
-              fontFamily: T.display, fontSize: "clamp(24px, 4vw, 32px)",
-              fontWeight: 700, lineHeight: 1.15, margin: "0 0 28px", color: T.navy,
-            }}>
-              The New Model: Map the Workflows
-            </h2>
-            <p style={{
-              fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.85,
-              margin: "0 0 40px",
-            }}>
-              The companies who are going to win are the ones who can decompose every role into individual workflows and ask: is this a decision that a person needs to make, or can I train a machine to make it?
-            </p>
-
-            {/* Pull-quote card */}
-            <div style={{
-              background: T.surface, borderRadius: 12, border: `1px solid ${T.border}`,
-              borderLeft: `4px solid ${T.gold}`,
-              padding: "28px 32px", marginBottom: 32,
-            }}>
-              <p style={{
-                fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.85,
-                margin: 0, fontStyle: "italic",
+          <div className="vv-pain-grid" style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 24,
+            marginBottom: 40,
+          }}>
+            {[
+              { number: "87", label: "after-hours calls last month" },
+              { number: "31", label: "went to voicemail" },
+              { number: "0", label: "of those people left a message" },
+            ].map((stat) => (
+              <div key={stat.label} style={{
+                background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
+                padding: "32px 24px", textAlign: "center",
               }}>
-                When a business hires someone, they put in one and try to get back more than one. That is the entire game. AI changes the math. Instead of getting 2 to 3x the output from a new hire, AI lets you get 10x the output for the same input, or less. Yes, it takes real work to train these models and increase their capacity. But it also takes real work to train humans. The difference is the ceiling. A trained person gives you 2 to 3x. A trained AI gives you 10x.
-              </p>
-            </div>
+                <span style={{
+                  fontFamily: T.display, fontSize: 48, fontWeight: 700,
+                  color: T.gold, display: "block", marginBottom: 8,
+                }}>
+                  {stat.number}
+                </span>
+                <span style={{
+                  fontFamily: T.font, fontSize: 14, color: T.textDim,
+                  lineHeight: 1.5,
+                }}>
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
 
-            {/* Operational insight */}
+          <div style={{
+            background: T.surface, borderRadius: 12, border: `1px solid ${T.border}`,
+            borderLeft: `4px solid ${T.gold}`,
+            padding: "24px 28px",
+          }}>
             <p style={{
               fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.85,
               margin: 0,
             }}>
-              The biggest returns are going to the companies that are already great at what they do in person. They operate face to face, they serve clients directly, they do the work. But they supercharge the backend of their workflows so they can be even more efficient, help more people, and eliminate the operational drag that used to slow them down.
+              If even 3 of those were $1,500 jobs, that's <span style={{ color: T.navy, fontWeight: 700 }}>$4,500 gone</span>. Not because you did bad work. Because nobody picked up the phone.
             </p>
+          </div>
+
+          <div style={{ marginTop: 40, textAlign: "center" }}>
+            <button onClick={() => scrollTo("cta")} style={{
+              fontFamily: T.font, fontSize: 14, fontWeight: 600, cursor: "pointer",
+              padding: "12px 28px", borderRadius: 8, border: `1px solid ${T.border}`,
+              background: T.surface, color: T.navy,
+            }}>
+              Find out how many calls you're missing
+            </button>
           </div>
         </section>
 
@@ -466,45 +334,72 @@ export default function Portfolio() {
           <div style={{ height: 1, background: T.border }} />
         </div>
 
-        {/* ─── FRAMEWORK ─── */}
-        <section id="framework" style={{
+        {/* ─── HOW IT WORKS ─── */}
+        <section id="how" style={{
           padding: "80px 48px", maxWidth: 960,
         }}>
           <h2 style={{
             fontFamily: T.display, fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 700, lineHeight: 1.15, margin: "0 0 48px", color: T.navy,
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 16px", color: T.navy,
           }}>
-            Four Steps to Capture the Margin
+            How It Works
           </h2>
-
-          <div className="vv-framework-grid" style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 24,
+          <p style={{
+            fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.7,
+            margin: "0 0 48px", maxWidth: 540,
           }}>
-            {frameworkSteps.map((step) => (
+            Four steps. We handle most of it. You just keep doing what you do.
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            {[
+              {
+                num: "01",
+                title: "Map your calls in one short session",
+                body: "We sit down for 30 minutes and go through the types of calls you get, what questions people ask, your pricing ranges, and your booking rules. That's it.",
+              },
+              {
+                num: "02",
+                title: "We build and train your AI receptionist",
+                body: "We create your custom AI agent with your scripts, FAQs, service areas, and scheduling logic. It sounds natural, handles objections, and knows when to escalate to you.",
+              },
+              {
+                num: "03",
+                title: "We plug it into your phone and calendar",
+                body: "After hours, calls forward to your AI receptionist. It qualifies the lead, books the job if it fits your rules, and logs everything into your system.",
+              },
+              {
+                num: "04",
+                title: "You review call summaries every morning",
+                body: "You wake up to a clean list of every call: who called, what they needed, whether they booked, and what was said. We tune the system weekly based on real results.",
+              },
+            ].map((step) => (
               <div key={step.num} style={{
                 background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
-                padding: "32px 28px",
+                padding: "28px 32px",
+                display: "flex", gap: 24, alignItems: "flex-start",
               }}>
                 <span style={{
-                  fontFamily: T.display, fontSize: 32, fontWeight: 700,
-                  color: T.gold, display: "block", marginBottom: 12,
+                  fontFamily: T.display, fontSize: 28, fontWeight: 700,
+                  color: T.gold, flexShrink: 0, lineHeight: 1,
+                  marginTop: 2,
                 }}>
                   {step.num}
                 </span>
-                <h3 style={{
-                  fontFamily: T.font, fontSize: 17, fontWeight: 700,
-                  color: T.navy, margin: "0 0 12px", lineHeight: 1.4,
-                }}>
-                  {step.title}
-                </h3>
-                <p style={{
-                  fontFamily: T.font, fontSize: 14, color: T.textDim,
-                  lineHeight: 1.75, margin: 0,
-                }}>
-                  {step.body}
-                </p>
+                <div>
+                  <h3 style={{
+                    fontFamily: T.font, fontSize: 17, fontWeight: 700,
+                    color: T.navy, margin: "0 0 8px", lineHeight: 1.4,
+                  }}>
+                    {step.title}
+                  </h3>
+                  <p style={{
+                    fontFamily: T.font, fontSize: 14, color: T.textDim,
+                    lineHeight: 1.75, margin: 0,
+                  }}>
+                    {step.body}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -515,49 +410,173 @@ export default function Portfolio() {
           <div style={{ height: 1, background: T.border }} />
         </div>
 
-        {/* ─── WHO IT'S FOR ─── */}
-        <section id="who" style={{
+        {/* ─── THE OFFER ─── */}
+        <section id="offer" style={{
           padding: "80px 48px", maxWidth: 960,
         }}>
           <h2 style={{
             fontFamily: T.display, fontSize: "clamp(28px, 4vw, 40px)",
             fontWeight: 700, lineHeight: 1.15, margin: "0 0 48px", color: T.navy,
           }}>
-            Who This Works For
+            The Offer
           </h2>
 
-          <div className="vv-who-grid" style={{
+          <div style={{
+            background: T.surface, borderRadius: 20, border: `2px solid ${T.gold}`,
+            padding: "48px 40px",
+            boxShadow: "0 8px 32px rgba(184,150,62,0.08)",
+          }}>
+            <h3 style={{
+              fontFamily: T.display, fontSize: "clamp(22px, 3vw, 30px)",
+              fontWeight: 700, lineHeight: 1.2, margin: "0 0 32px", color: T.navy,
+            }}>
+              After-Hours AI Receptionist for Contractors
+            </h3>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 32 }}>
+              {[
+                "We answer every call after 6 pm",
+                "We qualify and book jobs based on your rules",
+                "We log every call into your system with a summary",
+                "Weekly tuning calls to improve accuracy",
+              ].map((item) => (
+                <div key={item} style={{
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke={T.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    style={{ flexShrink: 0, marginTop: 2 }}>
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span style={{
+                    fontFamily: T.font, fontSize: 16, color: T.navy, fontWeight: 500,
+                  }}>
+                    {item}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{
+              background: T.bg, borderRadius: 12, padding: "20px 24px",
+              border: `1px solid ${T.border}`, marginBottom: 32,
+            }}>
+              <p style={{
+                fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8,
+                margin: 0,
+              }}>
+                <span style={{ fontWeight: 700, color: T.navy }}>30-day money-back guarantee:</span> if you're not happy with the results after 30 days, you don't pay a dime.
+              </p>
+            </div>
+
+            <p style={{
+              fontFamily: T.font, fontSize: 14, color: T.textFaint, lineHeight: 1.7,
+              margin: "0 0 28px",
+            }}>
+              Flat monthly fee, usually covered by 1 to 2 extra jobs per month.
+            </p>
+
+            <button onClick={() => scrollTo("cta")} style={{
+              fontFamily: T.font, fontSize: 15, fontWeight: 700, cursor: "pointer",
+              padding: "14px 32px", borderRadius: 8, border: "none",
+              background: T.navy,
+              color: "#FAF7F2",
+              boxShadow: "0 4px 12px rgba(27,42,74,0.2)",
+            }}>
+              Get Your Missed-Calls Audit
+            </button>
+          </div>
+        </section>
+
+        {/* ─── DIVIDER ─── */}
+        <div style={{ padding: "0 48px" }}>
+          <div style={{ height: 1, background: T.border }} />
+        </div>
+
+        {/* ─── PROOF ─── */}
+        <section style={{
+          padding: "80px 48px", maxWidth: 960,
+        }}>
+          <h2 style={{
+            fontFamily: T.display, fontSize: "clamp(28px, 4vw, 40px)",
+            fontWeight: 700, lineHeight: 1.15, margin: "0 0 16px", color: T.navy,
+          }}>
+            This Is Live Right Now
+          </h2>
+          <p style={{
+            fontFamily: T.font, fontSize: 16, color: T.textDim, lineHeight: 1.7,
+            margin: "0 0 40px", maxWidth: 540,
+          }}>
+            I built a working AI lead qualifier that picks up calls, asks the right questions, and routes qualified leads. This is not a slide deck. It is running.
+          </p>
+
+          <div className="vv-proof-grid" style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: 24,
+            marginBottom: 40,
           }}>
-            {audiences.map((a) => (
-              <div key={a.label} style={{
-                background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
-                padding: "28px 24px",
+            <div style={{
+              background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
+              padding: "28px 24px",
+            }}>
+              <div style={{
+                display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
               }}>
                 <div style={{
-                  display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
+                  width: 10, height: 10, borderRadius: "50%",
+                  background: "#10B981",
+                  boxShadow: "0 0 8px rgba(16,185,129,0.5)",
+                }} />
+                <span style={{
+                  fontFamily: T.font, fontSize: 16, fontWeight: 700, color: T.navy,
                 }}>
-                  <div style={{
-                    width: 10, height: 10, borderRadius: "50%",
-                    background: a.accent,
-                    boxShadow: `0 0 8px ${a.accent}66`,
-                  }} />
-                  <span style={{
-                    fontFamily: T.font, fontSize: 16, fontWeight: 700, color: T.navy,
-                  }}>
-                    {a.label}
-                  </span>
-                </div>
-                <p style={{
-                  fontFamily: T.font, fontSize: 14, color: T.textDim,
-                  lineHeight: 1.75, margin: 0,
-                }}>
-                  {a.text}
-                </p>
+                  Built, Not Outsourced
+                </span>
               </div>
-            ))}
+              <p style={{
+                fontFamily: T.font, fontSize: 14, color: T.textDim,
+                lineHeight: 1.75, margin: 0,
+              }}>
+                I build the AI systems myself. No white-label resellers, no third-party platforms you can't control. You get a custom system trained on your business.
+              </p>
+            </div>
+            <div style={{
+              background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
+              padding: "28px 24px",
+            }}>
+              <div style={{
+                display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
+              }}>
+                <div style={{
+                  width: 10, height: 10, borderRadius: "50%",
+                  background: T.gold,
+                  boxShadow: `0 0 8px rgba(184,150,62,0.5)`,
+                }} />
+                <span style={{
+                  fontFamily: T.font, fontSize: 16, fontWeight: 700, color: T.navy,
+                }}>
+                  Other Things I've Built
+                </span>
+              </div>
+              <p style={{
+                fontFamily: T.font, fontSize: 14, color: T.textDim,
+                lineHeight: 1.75, margin: "0 0 12px",
+              }}>
+                Autonomous AI trading bot running 24/7. Full-stack personal command center. AI-powered date planning app with 1,000+ users. Funded experiential marketing platform.
+              </p>
+              <Link to="/about" style={{
+                fontFamily: T.font, fontSize: 13, fontWeight: 600,
+                color: T.gold, textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: 4,
+              }}>
+                See all projects
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -566,286 +585,40 @@ export default function Portfolio() {
           <div style={{ height: 1, background: T.border }} />
         </div>
 
-        {/* ─── PROJECTS ─── */}
-        <section id="projects" style={{
+        {/* ─── CTA ─── */}
+        <section id="cta" style={{
           padding: "80px 48px", maxWidth: 960,
         }}>
-          <div style={{ marginBottom: 48 }}>
-            <h2 style={{
-              fontFamily: T.display, fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 700, lineHeight: 1.15, margin: "0 0 12px", color: T.navy,
-            }}>
-              Built, Not Theorized
-            </h2>
-            <p style={{
-              fontFamily: T.font, fontSize: 16, color: T.textDim, margin: 0, lineHeight: 1.7,
-            }}>
-              These are not mockups. Each one is live and handling real data right now. Click into any project to see the thinking and a working demo.
-            </p>
-          </div>
-
-          <div className="vv-projects-grid" style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: 28,
-          }}>
-            {apps.map((app) => {
-              const isHovered = hoveredCard === app.id;
-              const isLive = app.link !== null;
-
-              const cardContent = (
-                <div
-                  key={app.id}
-                  onMouseEnter={() => setHoveredCard(app.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  style={{
-                    borderRadius: 20,
-                    overflow: "hidden",
-                    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-                    transform: isHovered && isLive ? "translateY(-8px) scale(1.02)" : "none",
-                    boxShadow: isHovered && isLive
-                      ? `0 20px 60px ${app.glow}, 0 0 0 1px rgba(255,255,255,0.1)`
-                      : "0 4px 20px rgba(0,0,0,0.12)",
-                    cursor: isLive ? "pointer" : "default",
-                    textDecoration: "none",
-                    color: "inherit",
-                    display: "flex",
-                    flexDirection: "column",
-                    position: "relative",
-                    width: "100%",
-                  }}
-                >
-                  <div style={{
-                    background: app.gradient,
-                    padding: "36px 28px 32px",
-                    position: "relative",
-                    overflow: "hidden",
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}>
-                    {/* Ambient glow orb */}
-                    <div style={{
-                      position: "absolute",
-                      top: -40, right: -40,
-                      width: 180, height: 180,
-                      borderRadius: "50%",
-                      background: `radial-gradient(circle, ${app.glow} 0%, transparent 70%)`,
-                      transition: "opacity 0.35s ease",
-                      opacity: isHovered ? 0.8 : 0.3,
-                      pointerEvents: "none",
-                    }} />
-                    {/* Secondary glow */}
-                    <div style={{
-                      position: "absolute",
-                      bottom: -60, left: -30,
-                      width: 160, height: 160,
-                      borderRadius: "50%",
-                      background: `radial-gradient(circle, ${app.glow} 0%, transparent 70%)`,
-                      opacity: isHovered ? 0.4 : 0.1,
-                      transition: "opacity 0.35s ease",
-                      pointerEvents: "none",
-                    }} />
-
-                    {/* Top row: icon + status */}
-                    <div style={{
-                      display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-                      marginBottom: 28, position: "relative", zIndex: 1,
-                    }}>
-                      <div style={{
-                        width: 64, height: 64, borderRadius: 16,
-                        background: "rgba(255,255,255,0.08)",
-                        backdropFilter: "blur(12px)",
-                        WebkitBackdropFilter: "blur(12px)",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        transition: "all 0.35s ease",
-                        transform: isHovered ? "scale(1.08)" : "none",
-                        boxShadow: isHovered ? `0 8px 24px ${app.glow}` : "none",
-                      }}>
-                        {app.icon}
-                      </div>
-                      <span style={{
-                        fontFamily: T.font, fontSize: 11, fontWeight: 600,
-                        padding: "5px 12px", borderRadius: 20,
-                        background: "rgba(255,255,255,0.1)",
-                        backdropFilter: "blur(8px)",
-                        WebkitBackdropFilter: "blur(8px)",
-                        color: app.accent,
-                        border: `1px solid ${app.accent}33`,
-                        letterSpacing: 0.5,
-                        textTransform: "uppercase",
-                        display: "flex", alignItems: "center", gap: 6,
-                      }}>
-                        <span style={{
-                          width: 6, height: 6, borderRadius: "50%",
-                          background: app.accent,
-                          boxShadow: `0 0 8px ${app.accent}`,
-                        }} />
-                        {app.status}
-                      </span>
-                    </div>
-
-                    {/* Title + tagline */}
-                    <div style={{ position: "relative", zIndex: 1, marginBottom: 16 }}>
-                      <h3 style={{
-                        fontFamily: T.display, fontSize: 26, fontWeight: 700,
-                        color: "#FFFFFF", margin: "0 0 6px", letterSpacing: 0.3,
-                      }}>
-                        {app.title}
-                      </h3>
-                      <span style={{
-                        fontFamily: T.font, fontSize: 14, fontWeight: 500,
-                        color: app.accent, letterSpacing: 0.3,
-                      }}>
-                        {app.tagline}
-                      </span>
-                    </div>
-
-                    {/* Description */}
-                    <p style={{
-                      fontFamily: T.font, fontSize: 14,
-                      color: "rgba(255,255,255,0.6)",
-                      lineHeight: 1.7, margin: "0 0 24px",
-                      position: "relative", zIndex: 1,
-                      flex: 1,
-                    }}>
-                      {app.description}
-                    </p>
-
-                    {/* Divider */}
-                    <div style={{
-                      height: 1,
-                      background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)",
-                      marginBottom: 20,
-                      position: "relative", zIndex: 1,
-                    }} />
-
-                    {/* Tags + Launch */}
-                    <div style={{
-                      display: "flex", alignItems: "center", justifyContent: "space-between",
-                      position: "relative", zIndex: 1,
-                    }}>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        {app.tags.map((tag) => (
-                          <span key={tag} style={{
-                            fontFamily: T.font, fontSize: 11, fontWeight: 500,
-                            padding: "4px 10px", borderRadius: 8,
-                            background: "rgba(255,255,255,0.06)",
-                            color: "rgba(255,255,255,0.45)",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                          }}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      {isLive && (
-                        <span style={{
-                          fontFamily: T.font, fontSize: 13, fontWeight: 600,
-                          color: app.accent,
-                          display: "flex", alignItems: "center", gap: 6,
-                          transition: "all 0.25s ease",
-                          transform: isHovered ? "translateX(4px)" : "none",
-                        }}>
-                          {app.hasSession ? "Dashboard" : "Launch"}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                            style={{ transition: "transform 0.25s ease", transform: isHovered ? "translateX(2px)" : "none" }}>
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                          </svg>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-
-              if (isLive) {
-                return (
-                  <Link key={app.id} to={app.link} style={{ textDecoration: "none", color: "inherit", display: "flex" }}>
-                    {cardContent}
-                  </Link>
-                );
-              }
-              return cardContent;
-            })}
-          </div>
-        </section>
-
-        {/* ─── DIVIDER ─── */}
-        <div style={{ padding: "0 48px" }}>
-          <div style={{ height: 1, background: T.border }} />
-        </div>
-
-        {/* ─── WORK WITH ME + CTA ─── */}
-        <section id="contact" style={{
-          padding: "80px 48px", maxWidth: 960,
-        }}>
-          {/* Bio card */}
-          <div style={{
-            background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`,
-            padding: "40px 40px", marginBottom: 28,
-          }}>
-            <h2 style={{
-              fontFamily: T.display, fontSize: "clamp(24px, 4vw, 32px)",
-              fontWeight: 700, lineHeight: 1.15, margin: "0 0 20px", color: T.navy,
-            }}>
-              Work With Me
-            </h2>
-            <p style={{
-              fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 16px",
-            }}>
-              I am Diego Vallota. I help businesses map their workflows and figure out which ones AI can handle. I have done this for service agencies, built autonomous trading systems, created AI-powered consumer products, and consulted on operational automation.
-            </p>
-            <p style={{
-              fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px",
-            }}>
-              Three ways to work together. Consulting engagement (I audit your workflows and build the AI systems). Full-time embedded (I operate inside your company). Fractional/advisory (I guide your existing team).
-            </p>
-            <Link to="/about" style={{
-              fontFamily: T.font, fontSize: 14, fontWeight: 600,
-              color: T.gold, textDecoration: "none",
-              display: "inline-flex", alignItems: "center", gap: 6,
-            }}>
-              More about me
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-
-          {/* CTA card */}
           <div style={{
             background: T.navy, borderRadius: 16,
-            padding: "40px 40px",
+            padding: "48px 40px", textAlign: "center",
           }}>
             <h3 style={{
-              fontFamily: T.display, fontSize: "clamp(22px, 3vw, 28px)",
+              fontFamily: T.display, fontSize: "clamp(24px, 3vw, 32px)",
               fontWeight: 700, lineHeight: 1.2, margin: "0 0 16px", color: "#FAF7F2",
             }}>
-              Let Me Map Your Workflows
+              Get Your Missed-Calls Audit
             </h3>
             <p style={{
-              fontFamily: T.font, fontSize: 15, color: "rgba(250,247,242,0.7)", lineHeight: 1.8,
-              margin: "0 0 28px", maxWidth: 520,
+              fontFamily: T.font, fontSize: 16, color: "rgba(250,247,242,0.7)", lineHeight: 1.8,
+              margin: "0 auto 32px", maxWidth: 500,
             }}>
-              Send me a note about your business. I will tell you exactly which workflows AI can handle and which ones still need people. No pitch deck, no scheduling maze. Just an honest assessment.
+              I'll show you exactly how many jobs you're losing after hours and what an AI receptionist would recover. No pitch deck. Just numbers.
             </p>
             <a href="mailto:diego@vallotaventures.com" style={{
               display: "inline-block",
-              fontFamily: T.font, fontSize: 15, fontWeight: 700,
-              padding: "14px 32px", borderRadius: 8, border: "none",
+              fontFamily: T.font, fontSize: 16, fontWeight: 700,
+              padding: "16px 40px", borderRadius: 8, border: "none",
               background: T.gold, color: "#FAF7F2",
               textDecoration: "none",
-              boxShadow: "0 4px 12px rgba(184,150,62,0.3)",
+              boxShadow: "0 4px 16px rgba(184,150,62,0.35)",
             }}>
               Get in Touch
             </a>
             <div style={{
               marginTop: 24, paddingTop: 20,
               borderTop: "1px solid rgba(250,247,242,0.12)",
-              display: "flex", gap: 20, flexWrap: "wrap",
+              display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center",
             }}>
               <a href="https://substack.com/@diegovallota" target="_blank" rel="noopener noreferrer" style={{
                 fontFamily: T.font, fontSize: 13, fontWeight: 500,
@@ -905,9 +678,8 @@ export default function Portfolio() {
           .vv-mobile-header { display: flex !important; }
           .vv-main { margin-left: 0 !important; padding-top: 60px; }
           .vv-main section, .vv-main footer, .vv-main > div { padding-left: 20px !important; padding-right: 20px !important; }
-          .vv-projects-grid { grid-template-columns: 1fr !important; }
-          .vv-framework-grid { grid-template-columns: 1fr !important; }
-          .vv-who-grid { grid-template-columns: 1fr !important; }
+          .vv-pain-grid { grid-template-columns: 1fr !important; }
+          .vv-proof-grid { grid-template-columns: 1fr !important; }
         }
         @media (min-width: 769px) {
           .vv-mobile-header { display: none !important; }
