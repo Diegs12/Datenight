@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Portfolio from "./Portfolio";
+import About from "./About";
 import PCCLanding from "./PCCLanding";
 import PCCDashboard from "./PCCDashboard";
 import TradingApp from "./trading/TradingApp";
 import UnchartedLanding from "./UnchartedLanding";
 import VelaLanding from "./VelaLanding";
 import LoginPage from "./LoginPage";
+import { PccAuthProvider } from "./auth/PccAuthContext";
+import PccProtectedRoute from "./components/PccProtectedRoute";
 import { track, identify } from "./analytics";
 
 const T={bg:"#141414",surface:"#1C1C1E",surfaceAlt:"#242420",border:"#2E2A26",primary:"#D68853",accent:"#D68853",green:"#B8A080",yellow:"#D68853",text:"#F5F0EB",textDim:"#A39E98",textFaint:"#6B6560",pink:"#C49080",purple:"#9A8AAA",font:`'Inter',sans-serif`,display:`'Playfair Display',serif`};
@@ -2530,31 +2533,36 @@ export default function App() {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Portfolio />} />
-        <Route path="/pcc" element={<PCCLanding />} />
-        <Route path="/pcc/app" element={<PCCDashboard />} />
-        <Route path="/pcc/login" element={<LoginPage product="pcc" />} />
-        {/* Keep old /tracker routes as redirects */}
-        <Route path="/tracker" element={<PCCLanding />} />
-        <Route path="/tracker/app" element={<PCCDashboard />} />
-        <Route path="/tracker/login" element={<LoginPage product="pcc" />} />
-        <Route path="/trading/*" element={<TradingApp />} />
-        <Route path="/uncharted" element={<UnchartedLanding />} />
-        <Route path="/vela" element={<VelaLanding />} />
-        <Route path="/vela/app/*" element={<VelaApp />} />
-        <Route path="/vela/demo/*" element={<VelaApp />} />
-        <Route path="/vela/login" element={<LoginPage product="vela" />} />
-        <Route path="*" element={
-          <div style={{ background: "#0A0A0B", color: "#F5F0EB", fontFamily: "'Inter', sans-serif", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 24 }}>
-            <div>
-              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, fontWeight: 700, margin: "0 0 16px" }}>404</h1>
-              <p style={{ fontSize: 16, color: "#A39E98", margin: "0 0 32px" }}>This page doesn't exist.</p>
-              <a href="/" style={{ fontSize: 15, fontWeight: 600, color: "#D68853", textDecoration: "none" }}>&larr; Back to Vallota Ventures</a>
+      <PccAuthProvider>
+        <Routes>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/pcc" element={<PCCLanding />} />
+          <Route path="/pcc/demo" element={<PCCDashboard demoMode />} />
+          <Route path="/pcc/app" element={<PccProtectedRoute><PCCDashboard /></PccProtectedRoute>} />
+          <Route path="/pcc/login" element={<LoginPage product="pcc" />} />
+          {/* Keep old /tracker routes as aliases */}
+          <Route path="/tracker" element={<PCCLanding />} />
+          <Route path="/tracker/demo" element={<PCCDashboard demoMode />} />
+          <Route path="/tracker/app" element={<PccProtectedRoute><PCCDashboard /></PccProtectedRoute>} />
+          <Route path="/tracker/login" element={<LoginPage product="pcc" />} />
+          <Route path="/trading/*" element={<TradingApp />} />
+          <Route path="/uncharted" element={<UnchartedLanding />} />
+          <Route path="/vela" element={<VelaLanding />} />
+          <Route path="/vela/app/*" element={<VelaApp />} />
+          <Route path="/vela/demo/*" element={<VelaApp />} />
+          <Route path="/vela/login" element={<LoginPage product="vela" />} />
+          <Route path="*" element={
+            <div style={{ background: "#0A0A0B", color: "#F5F0EB", fontFamily: "'Inter', sans-serif", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 24 }}>
+              <div>
+                <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, fontWeight: 700, margin: "0 0 16px" }}>404</h1>
+                <p style={{ fontSize: 16, color: "#A39E98", margin: "0 0 32px" }}>This page doesn't exist.</p>
+                <a href="/" style={{ fontSize: 15, fontWeight: 600, color: "#D68853", textDecoration: "none" }}>&larr; Back to Vallota Ventures</a>
+              </div>
             </div>
-          </div>
-        } />
-      </Routes>
+          } />
+        </Routes>
+      </PccAuthProvider>
       {exitOpen && (
         <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)", padding: 24 }}>
           <div style={{ background: "#FAF7F2", borderRadius: 16, padding: "44px 36px", maxWidth: 420, width: "100%", border: "1px solid #E2DDD4", boxShadow: "0 12px 48px rgba(27,42,74,0.18)", fontFamily: "'Inter', sans-serif" }}>
