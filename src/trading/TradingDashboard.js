@@ -365,6 +365,36 @@ export default function TradingDashboard() {
           </span>
         </div>
       )}
+      {status?.errors?.length > 0 && status.errors.map((err, i) => (
+        <div key={i} style={{
+          background: TT.redDim, borderBottom: `1px solid rgba(255,71,87,0.15)`,
+          padding: "10px 24px", textAlign: "center",
+        }}>
+          <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.red }}>
+            ERROR: {err.message} {err.at ? `(${fmtTime(err.at)})` : ""}
+          </span>
+        </div>
+      ))}
+      {status?.warnings?.length > 0 && status.warnings.map((warn, i) => (
+        <div key={i} style={{
+          background: "rgba(255,217,61,0.08)", borderBottom: `1px solid rgba(255,217,61,0.15)`,
+          padding: "10px 24px", textAlign: "center",
+        }}>
+          <span style={{ fontFamily: TT.mono, fontSize: 12, color: TT.yellow }}>
+            WARNING: {warn.message}
+          </span>
+        </div>
+      ))}
+      {status?.failsafeActive && (
+        <div style={{
+          background: TT.redDim, borderBottom: `1px solid rgba(255,71,87,0.15)`,
+          padding: "12px 24px", textAlign: "center",
+        }}>
+          <span style={{ fontFamily: TT.mono, fontSize: 13, fontWeight: 700, color: TT.red }}>
+            FAILSAFE ACTIVE: Claude API is down. Bot is protecting capital. Check your Anthropic API credits.
+          </span>
+        </div>
+      )}
 
       {/* ─── TABS ─── */}
       <div style={{
