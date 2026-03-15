@@ -574,7 +574,7 @@ export default function Portfolio() {
               <p style={{
                 fontFamily: T.font, fontSize: 15, color: T.textDim, lineHeight: 1.8, margin: "0 0 20px",
               }}>
-                I'm Diego,a UNC Chapel Hill economics grad, Revenue and Growth Analyst
+                I'm Diego, a UNC Chapel Hill economics grad, Revenue and Growth Analyst
                 at a sports marketing agency in Cincinnati, and the founder of Vallota Ventures.
                 My day job sits at the intersection of marketing, finance, and operations. My
                 nights and weekends go into building AI-powered tools that solve the problems
@@ -585,8 +585,8 @@ export default function Portfolio() {
               }}>
                 I don't build for the sake of building. Every project on this site started
                 with a real problem, something I watched a business waste time or money on,
-                and turned into a working product. I'm relocating to Austin, TX and actively
-                looking for companies that want to stop talking about AI and start using it.
+                and turned into a working product. I'm actively looking for companies that
+                want to stop talking about AI and start using it.
               </p>
             </div>
           </div>
