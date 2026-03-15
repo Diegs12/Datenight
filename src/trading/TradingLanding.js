@@ -1,28 +1,73 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TT, btnPrimary, btnOutline, card } from "./theme";
 
-// ─── ICONS ───
+// ─── LANDING PAGE PALETTE (matches main Vallota Ventures branding) ───
+const L = {
+  bg: "#FAF7F2",
+  surface: "#FFFFFF",
+  surfaceAlt: "#F0EDE6",
+  border: "#E2DDD4",
+  borderLight: "#D4CFC6",
+  navy: "#1B2A4A",
+  gold: "#B8963E",
+  goldDim: "rgba(184,150,62,0.1)",
+  green: "#10B981",
+  greenDim: "rgba(16,185,129,0.1)",
+  red: "#ef4444",
+  text: "#1B2A4A",
+  textDim: "#4A5876",
+  textFaint: "#8B95A5",
+  font: "'Inter', sans-serif",
+  display: "'Playfair Display', serif",
+  mono: "'JetBrains Mono', 'Fira Code', monospace",
+};
+
+const lBtn = (x = {}) => ({
+  fontFamily: L.font, fontSize: 15, fontWeight: 700,
+  border: "none", borderRadius: 8, cursor: "pointer",
+  padding: "14px 28px", transition: "all 0.2s",
+  background: L.navy, color: "#FAF7F2",
+  boxShadow: "0 4px 12px rgba(27,42,74,0.2)",
+  letterSpacing: 0.3, textDecoration: "none",
+  ...x,
+});
+
+const lBtnOutline = (x = {}) => ({
+  fontFamily: L.font, fontSize: 15, fontWeight: 700,
+  borderRadius: 8, cursor: "pointer",
+  padding: "14px 28px", transition: "all 0.2s",
+  background: "transparent", color: L.navy,
+  border: `1px solid ${L.border}`,
+  textDecoration: "none",
+  ...x,
+});
+
+const lCard = (x = {}) => ({
+  background: L.surface, borderRadius: 12,
+  padding: 28, border: `1px solid ${L.border}`, ...x,
+});
+
+// ─── ICONS (use brand colors) ───
 const IconBrain = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2a5 5 0 015 5c0 1.1-.4 2.1-1 2.9.6.8 1 1.8 1 2.9a5 5 0 01-3.5 4.8V20a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2.4A5 5 0 015 12.8c0-1.1.4-2.1 1-2.9A5 5 0 017 7a5 5 0 015-5z"/>
     <path d="M12 2v6M8.5 7h7M8 12h8"/>
   </svg>
 );
 const IconCloud = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/>
   </svg>
 );
 const IconWallet = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12V7H5a2 2 0 010-4h14v4"/>
     <path d="M3 5v14a2 2 0 002 2h16v-5"/>
     <path d="M18 12a2 2 0 100 4h4v-4h-4z"/>
   </svg>
 );
 const IconNetwork = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="2" width="6" height="6" rx="1"/>
     <rect x="16" y="2" width="6" height="6" rx="1"/>
     <rect x="9" y="16" width="6" height="6" rx="1"/>
@@ -31,31 +76,23 @@ const IconNetwork = () => (
   </svg>
 );
 const IconShield = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2L3 7V12C3 17.5 7 22 12 22C17 22 21 17.5 21 12V7L12 2Z"/>
     <path d="M9 12L11 14L15 10"/>
   </svg>
 );
 const IconYield = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
   </svg>
 );
 const IconChat = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
   </svg>
 );
-const IconRocket = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={TT.primary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/>
-    <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>
-    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0"/>
-    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3"/>
-  </svg>
-);
 const IconCheck = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={TT.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={L.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 6L9 17L4 12" />
   </svg>
 );
@@ -195,7 +232,7 @@ const FAQS = [
   },
 ];
 
-// ─── TRADING DASHBOARD MOCKUP ───
+// ─── TRADING DASHBOARD MOCKUP (keeps its own dark theme system) ───
 const MOCKUP_THEMES = {
   gold: {
     bg: "#1a1f2e", card: "#212736", border: "#2a3344",
@@ -459,7 +496,7 @@ function TradingDashboardMockup() {
   );
 
   return (
-    <div style={{ background: M.bg, borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)", maxWidth: 960, margin: "0 auto", fontFamily: M.font, textAlign: "left", transition: "background 0.3s" }}>
+    <div style={{ background: M.bg, borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05)", maxWidth: 960, margin: "0 auto", fontFamily: M.font, textAlign: "left", transition: "background 0.3s" }}>
       {/* Browser chrome */}
       <div style={{ background: M.bg, borderBottom: `1px solid ${M.border}`, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", transition: "background 0.3s" }}>
         <div style={{ position: "absolute", left: 16, display: "flex", gap: 6 }}>
@@ -532,26 +569,25 @@ function TradingDashboardMockup() {
 export default function TradingLanding() {
   const [openFaq, setOpenFaq] = useState(null);
 
-  // Shared section heading styles
   const sectionLabel = {
-    fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
-    color: TT.primary, letterSpacing: 2,
+    fontFamily: L.mono, fontSize: 11, fontWeight: 600,
+    color: L.gold, letterSpacing: 2,
     marginBottom: 16, textTransform: "uppercase",
   };
   const sectionTitle = {
-    fontFamily: TT.font,
+    fontFamily: L.display,
     fontSize: "clamp(28px, 4vw, 40px)",
-    fontWeight: 800,
+    fontWeight: 700,
     margin: "0 0 16px",
-    color: TT.text,
+    color: L.text,
   };
   const sectionDesc = {
-    fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
+    fontFamily: L.font, fontSize: 17, color: L.textDim, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7,
   };
   const sectionWrap = { maxWidth: 1100, margin: "0 auto" };
 
   return (
-    <div style={{ background: TT.bg, color: TT.text, fontFamily: TT.font, minHeight: "100vh" }}>
+    <div style={{ background: L.bg, color: L.text, fontFamily: L.font, minHeight: "100vh" }}>
 
       {/* ─── NAV ─── */}
       <nav style={{
@@ -563,20 +599,19 @@ export default function TradingLanding() {
         justifyContent: "space-between",
       }}>
         <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontFamily: TT.mono, fontSize: 16, fontWeight: 700, color: TT.text, letterSpacing: 0.5 }}>
+          <span style={{ fontFamily: L.display, fontSize: 18, fontWeight: 700, color: L.navy, letterSpacing: 0.3 }}>
             Vallota Trading Command
           </span>
         </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <button onClick={() => { const el = document.getElementById("how-it-works"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>How It Works</button>
-          <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Features</button>
-          <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>Pricing</button>
-          <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, padding: 0 }}>FAQ</button>
-          <Link to="/trading/dashboard" style={{ fontFamily: TT.font, fontSize: 14, fontWeight: 500, color: TT.textDim, textDecoration: "none" }}>Dashboard</Link>
+          <button onClick={() => { const el = document.getElementById("how-it-works"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>How It Works</button>
+          <button onClick={() => { const el = document.getElementById("features"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>Features</button>
+          <button onClick={() => { const el = document.getElementById("pricing"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>Pricing</button>
+          <button onClick={() => { const el = document.getElementById("faq"); if (el) el.scrollIntoView({ behavior: "smooth" }); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, padding: 0 }}>FAQ</button>
+          <Link to="/trading/dashboard" style={{ fontFamily: L.font, fontSize: 14, fontWeight: 500, color: L.textDim, textDecoration: "none" }}>Dashboard</Link>
           <Link to="/trading/signup" style={{
-            fontFamily: TT.font, fontSize: 14, fontWeight: 600, textDecoration: "none",
-            padding: "8px 20px", borderRadius: 6,
-            background: TT.primary, color: "#fff",
+            ...lBtn({ fontSize: 14, padding: "8px 20px" }),
+            display: "inline-block",
           }}>
             Deploy Your Bot
           </Link>
@@ -591,28 +626,24 @@ export default function TradingLanding() {
         textAlign: "center",
       }}>
         <h1 style={{
-          fontFamily: TT.font,
+          fontFamily: L.display,
           fontSize: "clamp(36px, 5.5vw, 56px)",
-          fontWeight: 800,
+          fontWeight: 700,
           lineHeight: 1.1,
           margin: "0 0 24px",
-          color: TT.text,
+          color: L.navy,
         }}>
           Intelligent Money{" "}
           <br />
-          <span style={{
-            background: "linear-gradient(135deg, #00d4ff, #00ff88)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>
+          <span style={{ color: L.gold }}>
             Working for You
           </span>
         </h1>
 
         <p style={{
-          fontFamily: TT.font,
+          fontFamily: L.font,
           fontSize: 18,
-          color: TT.textDim,
+          color: L.textDim,
           lineHeight: 1.7,
           margin: "0 auto 12px",
           maxWidth: 560,
@@ -622,14 +653,14 @@ export default function TradingLanding() {
         </p>
 
         <p style={{
-          fontFamily: TT.font, fontSize: 14, color: TT.textFaint,
+          fontFamily: L.font, fontSize: 14, color: L.textFaint,
           margin: "0 auto 36px",
         }}>
           Free to set up &middot; 2% of realized profits
         </p>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 60 }}>
-          <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 32px" }) }}>
+          <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 32px", display: "inline-block" })}>
             Deploy Your Bot
           </Link>
         </div>
@@ -645,10 +676,10 @@ export default function TradingLanding() {
         </div>
         <TradingDashboardMockup />
         <div style={{ textAlign: "center", marginTop: 20 }}>
-          <p style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint }}>
+          <p style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>
             7 themes included. Tap to switch. This is your real dashboard.
           </p>
-          <Link to="/trading/dashboard" style={{ textDecoration: "none", ...btnOutline({ fontSize: 14, padding: "10px 24px", marginTop: 12, display: "inline-block" }) }}>
+          <Link to="/trading/dashboard" style={lBtnOutline({ fontSize: 14, padding: "10px 24px", marginTop: 12, display: "inline-block" })}>
             Try the Live Demo
           </Link>
         </div>
@@ -657,9 +688,9 @@ export default function TradingLanding() {
       {/* ─── PREREQUISITES ─── */}
       <section style={{
         padding: "80px 24px",
-        background: TT.surface,
-        borderTop: `1px solid ${TT.border}`,
-        borderBottom: `1px solid ${TT.border}`,
+        background: L.surface,
+        borderTop: `1px solid ${L.border}`,
+        borderBottom: `1px solid ${L.border}`,
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -674,23 +705,23 @@ export default function TradingLanding() {
           }}>
             {PREREQUISITES.map((p, i) => (
               <div key={i} style={{
-                ...card({ background: TT.bg }),
+                ...lCard({ background: L.bg }),
                 textAlign: "center",
                 padding: "36px 28px",
               }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: "50%",
-                  background: TT.primaryDim,
+                  background: L.goldDim,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   margin: "0 auto 16px",
-                  fontFamily: TT.mono, fontSize: 20, fontWeight: 700, color: TT.primary,
+                  fontFamily: L.display, fontSize: 22, fontWeight: 700, color: L.gold,
                 }}>
                   {i + 1}
                 </div>
-                <h3 style={{ fontFamily: TT.font, fontSize: 20, fontWeight: 700, color: TT.text, margin: "0 0 8px" }}>
+                <h3 style={{ fontFamily: L.display, fontSize: 20, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
                   {p.name}
                 </h3>
-                <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0 }}>
+                <p style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0 }}>
                   {p.desc}
                 </p>
               </div>
@@ -698,7 +729,7 @@ export default function TradingLanding() {
           </div>
 
           <p style={{
-            fontFamily: TT.font, fontSize: 14, color: TT.textDim,
+            fontFamily: L.font, fontSize: 14, color: L.textDim,
             lineHeight: 1.7, maxWidth: 640, margin: "0 auto", textAlign: "center",
           }}>
             All free to create. We walk you through every step. Each service gives you an "API key" -
@@ -724,38 +755,38 @@ export default function TradingLanding() {
         }}>
           {STEPS.map((s) => (
             <div key={s.num} style={{
-              ...card(),
+              ...lCard(),
               position: "relative",
               paddingTop: 36,
             }}>
               <div style={{
-                fontFamily: TT.mono,
+                fontFamily: L.display,
                 fontSize: 48,
-                fontWeight: 800,
-                color: TT.primaryDim,
+                fontWeight: 700,
+                color: L.goldDim,
                 position: "absolute",
                 top: -8,
                 right: 20,
                 lineHeight: 1,
-                WebkitTextStroke: `1px ${TT.primary}`,
+                opacity: 0.6,
+                WebkitTextStroke: `1px ${L.gold}`,
                 WebkitTextFillColor: "transparent",
-                opacity: 0.4,
               }}>
                 {s.num}
               </div>
               <h3 style={{
-                fontFamily: TT.font,
+                fontFamily: L.display,
                 fontSize: 20,
                 fontWeight: 700,
-                color: TT.text,
+                color: L.text,
                 margin: "0 0 12px",
               }}>
                 {s.title}
               </h3>
               <p style={{
-                fontFamily: TT.font,
+                fontFamily: L.font,
                 fontSize: 15,
-                color: TT.textDim,
+                color: L.textDim,
                 lineHeight: 1.7,
                 margin: 0,
               }}>
@@ -769,9 +800,9 @@ export default function TradingLanding() {
       {/* ─── UPGRADE FLOW ─── */}
       <section style={{
         padding: "80px 24px 100px",
-        background: TT.surface,
-        borderTop: `1px solid ${TT.border}`,
-        borderBottom: `1px solid ${TT.border}`,
+        background: L.surface,
+        borderTop: `1px solid ${L.border}`,
+        borderBottom: `1px solid ${L.border}`,
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -782,7 +813,7 @@ export default function TradingLanding() {
           </div>
 
           <div style={{
-            ...card({ padding: "32px 36px" }),
+            ...lCard({ padding: "32px 36px" }),
             maxWidth: 560,
             margin: "0 auto 40px",
           }}>
@@ -790,15 +821,15 @@ export default function TradingLanding() {
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: 12,
                 padding: "10px 0",
-                borderBottom: i < UPGRADE_ITEMS.length - 1 ? `1px solid ${TT.border}` : "none",
+                borderBottom: i < UPGRADE_ITEMS.length - 1 ? `1px solid ${L.border}` : "none",
               }}>
                 <div style={{
                   width: 6, height: 6, borderRadius: "50%",
-                  background: i === UPGRADE_ITEMS.length - 1 ? TT.green : TT.primary,
+                  background: i === UPGRADE_ITEMS.length - 1 ? L.green : L.gold,
                 }} />
                 <span style={{
-                  fontFamily: TT.font, fontSize: 14,
-                  color: i === UPGRADE_ITEMS.length - 1 ? TT.green : TT.textDim,
+                  fontFamily: L.font, fontSize: 14,
+                  color: i === UPGRADE_ITEMS.length - 1 ? L.green : L.textDim,
                   fontWeight: i === UPGRADE_ITEMS.length - 1 ? 600 : 400,
                 }}>
                   {item}
@@ -817,11 +848,11 @@ export default function TradingLanding() {
               { title: "Zero Action Required", desc: "Your bot receives every upgrade without you lifting a finger." },
               { title: "Same System, Every Bot", desc: "Everyone runs the latest version. No tiers. No feature gates." },
             ].map((item, i) => (
-              <div key={i} style={{ ...card({ background: TT.bg }), textAlign: "center" }}>
-                <h3 style={{ fontFamily: TT.font, fontSize: 18, fontWeight: 700, color: TT.text, margin: "0 0 8px" }}>
+              <div key={i} style={{ ...lCard({ background: L.bg }), textAlign: "center" }}>
+                <h3 style={{ fontFamily: L.display, fontSize: 18, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
                   {item.title}
                 </h3>
-                <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
+                <p style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0, lineHeight: 1.6 }}>
                   {item.desc}
                 </p>
               </div>
@@ -846,26 +877,26 @@ export default function TradingLanding() {
         }}>
           {FEATURES.map((f, i) => (
             <div key={i} style={{
-              ...card(),
+              ...lCard(),
               display: "flex",
               flexDirection: "column",
               gap: 16,
             }}>
               <div style={{
                 width: 52, height: 52, borderRadius: 10,
-                background: TT.primaryDim,
+                background: L.goldDim,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 {f.icon}
               </div>
               <h3 style={{
-                fontFamily: TT.font, fontSize: 18, fontWeight: 700,
-                color: TT.text, margin: 0,
+                fontFamily: L.display, fontSize: 18, fontWeight: 700,
+                color: L.text, margin: 0,
               }}>
                 {f.title}
               </h3>
               <p style={{
-                fontFamily: TT.font, fontSize: 14, color: TT.textDim,
+                fontFamily: L.font, fontSize: 14, color: L.textDim,
                 lineHeight: 1.7, margin: 0,
               }}>
                 {f.desc}
@@ -878,9 +909,9 @@ export default function TradingLanding() {
       {/* ─── ASK YOUR BOT ─── */}
       <section style={{
         padding: "80px 24px 100px",
-        background: TT.surface,
-        borderTop: `1px solid ${TT.border}`,
-        borderBottom: `1px solid ${TT.border}`,
+        background: L.surface,
+        borderTop: `1px solid ${L.border}`,
+        borderBottom: `1px solid ${L.border}`,
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -892,17 +923,17 @@ export default function TradingLanding() {
           </div>
 
           <div style={{
-            ...card({ padding: "32px", maxWidth: 640, margin: "0 auto 40px" }),
+            ...lCard({ padding: "32px", maxWidth: 640, margin: "0 auto 40px" }),
           }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 12,
               padding: "14px 18px",
               borderRadius: 10,
-              border: `1px solid ${TT.border}`,
-              background: TT.bg,
+              border: `1px solid ${L.border}`,
+              background: L.bg,
             }}>
               <IconChat />
-              <span style={{ fontFamily: TT.font, fontSize: 15, color: TT.textFaint }}>
+              <span style={{ fontFamily: L.font, fontSize: 15, color: L.textFaint }}>
                 Ask your bot anything...
               </span>
             </div>
@@ -919,10 +950,10 @@ export default function TradingLanding() {
               { title: "Always Available", desc: "Ask anything, anytime. Your bot is always running." },
             ].map((item, i) => (
               <div key={i} style={{ textAlign: "center" }}>
-                <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 8px" }}>
+                <h3 style={{ fontFamily: L.display, fontSize: 16, fontWeight: 700, color: L.text, margin: "0 0 8px" }}>
                   {item.title}
                 </h3>
-                <p style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0, lineHeight: 1.6 }}>
+                <p style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0, lineHeight: 1.6 }}>
                   {item.desc}
                 </p>
               </div>
@@ -951,25 +982,25 @@ export default function TradingLanding() {
         }}>
           {UNDER_THE_HOOD.map((item, i) => (
             <div key={i} style={{
-              ...card(),
+              ...lCard(),
               display: "flex",
               flexDirection: "column",
               gap: 12,
             }}>
               <div style={{
-                fontFamily: TT.mono, fontSize: 11, fontWeight: 600,
-                color: TT.primary, letterSpacing: 1, textTransform: "uppercase",
+                fontFamily: L.mono, fontSize: 11, fontWeight: 600,
+                color: L.gold, letterSpacing: 1, textTransform: "uppercase",
               }}>
                 {String(i + 1).padStart(2, "0")}
               </div>
               <h3 style={{
-                fontFamily: TT.font, fontSize: 17, fontWeight: 700,
-                color: TT.text, margin: 0,
+                fontFamily: L.display, fontSize: 17, fontWeight: 700,
+                color: L.text, margin: 0,
               }}>
                 {item.title}
               </h3>
               <p style={{
-                fontFamily: TT.font, fontSize: 14, color: TT.textDim,
+                fontFamily: L.font, fontSize: 14, color: L.textDim,
                 lineHeight: 1.7, margin: 0,
               }}>
                 {item.desc}
@@ -979,7 +1010,7 @@ export default function TradingLanding() {
         </div>
 
         <p style={{
-          fontFamily: TT.font, fontSize: 14, color: TT.textFaint,
+          fontFamily: L.font, fontSize: 14, color: L.textFaint,
           textAlign: "center", marginTop: 40, maxWidth: 600, marginLeft: "auto", marginRight: "auto",
           lineHeight: 1.7,
         }}>
@@ -990,9 +1021,9 @@ export default function TradingLanding() {
       {/* ─── ORIGIN STORY ─── */}
       <section style={{
         padding: "100px 24px",
-        background: TT.surface,
-        borderTop: `1px solid ${TT.border}`,
-        borderBottom: `1px solid ${TT.border}`,
+        background: L.surface,
+        borderTop: `1px solid ${L.border}`,
+        borderBottom: `1px solid ${L.border}`,
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 60 }}>
@@ -1026,19 +1057,19 @@ export default function TradingLanding() {
             ].map((block, i) => (
               <div key={i} style={{ marginBottom: i < 3 ? 48 : 0 }}>
                 <div style={{
-                  fontFamily: TT.mono, fontSize: 11, fontWeight: 700,
-                  color: TT.primary, letterSpacing: 2, marginBottom: 12,
+                  fontFamily: L.mono, fontSize: 11, fontWeight: 700,
+                  color: L.gold, letterSpacing: 2, marginBottom: 12,
                 }}>
                   {block.label}
                 </div>
                 <h3 style={{
-                  fontFamily: TT.font, fontSize: 22, fontWeight: 700,
-                  color: TT.text, margin: "0 0 12px", lineHeight: 1.3,
+                  fontFamily: L.display, fontSize: 22, fontWeight: 700,
+                  color: L.text, margin: "0 0 12px", lineHeight: 1.3,
                 }}>
                   {block.title}
                 </h3>
                 <p style={{
-                  fontFamily: TT.font, fontSize: 15, color: TT.textDim,
+                  fontFamily: L.font, fontSize: 15, color: L.textDim,
                   lineHeight: 1.8, margin: 0,
                 }}>
                   {block.desc}
@@ -1049,17 +1080,17 @@ export default function TradingLanding() {
 
           <div style={{
             maxWidth: 600, margin: "60px auto 0",
-            borderLeft: `3px solid ${TT.primary}`,
+            borderLeft: `4px solid ${L.gold}`,
             paddingLeft: 24,
           }}>
             <p style={{
-              fontFamily: TT.font, fontSize: 17, color: TT.text,
+              fontFamily: L.display, fontSize: 18, color: L.navy,
               lineHeight: 1.7, margin: "0 0 12px", fontStyle: "italic",
             }}>
               "If one day your bot can help generate the daily income you need while your wealth has room to grow... that is the way."
             </p>
             <p style={{
-              fontFamily: TT.font, fontSize: 14, color: TT.textDim, margin: 0,
+              fontFamily: L.font, fontSize: 14, color: L.textDim, margin: 0,
             }}>
               - Diego Vallota, Founder
             </p>
@@ -1086,7 +1117,7 @@ export default function TradingLanding() {
             ].map((text, i) => (
               <div key={i} style={{
                 display: "flex", alignItems: "flex-start", gap: 14,
-                fontFamily: TT.font, fontSize: 15, color: TT.textDim, lineHeight: 1.7,
+                fontFamily: L.font, fontSize: 15, color: L.textDim, lineHeight: 1.7,
               }}>
                 <div style={{ marginTop: 4, flexShrink: 0 }}><IconCheck /></div>
                 {text}
@@ -1101,9 +1132,9 @@ export default function TradingLanding() {
           }}>
             {SECURITY_POINTS.map((point, i) => (
               <div key={i} style={{
-                ...card({ padding: "16px 20px", textAlign: "center" }),
+                ...lCard({ padding: "16px 20px", textAlign: "center" }),
               }}>
-                <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textDim }}>
+                <span style={{ fontFamily: L.font, fontSize: 13, color: L.textDim }}>
                   {point}
                 </span>
               </div>
@@ -1115,9 +1146,9 @@ export default function TradingLanding() {
       {/* ─── PRICING ─── */}
       <section id="pricing" style={{
         padding: "80px 24px 100px",
-        background: TT.surface,
-        borderTop: `1px solid ${TT.border}`,
-        borderBottom: `1px solid ${TT.border}`,
+        background: L.surface,
+        borderTop: `1px solid ${L.border}`,
+        borderBottom: `1px solid ${L.border}`,
       }}>
         <div style={sectionWrap}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -1125,26 +1156,26 @@ export default function TradingLanding() {
           </div>
 
           <div style={{
-            ...card({ padding: "48px 40px" }),
+            ...lCard({ padding: "48px 40px" }),
             maxWidth: 520,
             margin: "0 auto",
             textAlign: "center",
-            border: `1px solid ${TT.borderLight}`,
+            border: `1px solid ${L.borderLight}`,
           }}>
             <div style={{ marginBottom: 32 }}>
               <div style={{ display: "flex", justifyContent: "center", gap: 40, marginBottom: 32 }}>
                 <div>
-                  <div style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, marginBottom: 8 }}>Setup Cost</div>
-                  <div style={{ fontFamily: TT.font, fontSize: 36, fontWeight: 800, color: TT.text }}>$0</div>
+                  <div style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, marginBottom: 8 }}>Setup Cost</div>
+                  <div style={{ fontFamily: L.display, fontSize: 36, fontWeight: 700, color: L.navy }}>$0</div>
                 </div>
                 <div>
-                  <div style={{ fontFamily: TT.font, fontSize: 14, color: TT.textDim, marginBottom: 8 }}>Profit Fee</div>
-                  <div style={{ fontFamily: TT.font, fontSize: 36, fontWeight: 800, color: TT.text }}>2%</div>
-                  <div style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint }}>of daily realized profits</div>
+                  <div style={{ fontFamily: L.font, fontSize: 14, color: L.textDim, marginBottom: 8 }}>Profit Fee</div>
+                  <div style={{ fontFamily: L.display, fontSize: 36, fontWeight: 700, color: L.navy }}>2%</div>
+                  <div style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>of daily realized profits</div>
                 </div>
               </div>
               <p style={{
-                fontFamily: TT.font, fontSize: 16, color: TT.green, fontWeight: 600, margin: "0 0 32px",
+                fontFamily: L.font, fontSize: 16, color: L.green, fontWeight: 600, margin: "0 0 32px",
               }}>
                 You only pay when you make money
               </p>
@@ -1155,7 +1186,7 @@ export default function TradingLanding() {
                 <div key={i} style={{
                   display: "flex", alignItems: "center", gap: 12,
                   padding: "8px 0",
-                  fontFamily: TT.font, fontSize: 15, color: TT.textDim,
+                  fontFamily: L.font, fontSize: 15, color: L.textDim,
                 }}>
                   <IconCheck />
                   {feature}
@@ -1163,7 +1194,7 @@ export default function TradingLanding() {
               ))}
             </div>
 
-            <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 40px", width: "100%", display: "block", textAlign: "center", boxSizing: "border-box" }) }}>
+            <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 40px", width: "100%", display: "block", textAlign: "center", boxSizing: "border-box" })}>
               Start Free
             </Link>
           </div>
@@ -1189,8 +1220,8 @@ export default function TradingLanding() {
             const isOpen = openFaq === i;
             return (
               <div key={i} style={{
-                background: TT.surface,
-                border: `1px solid ${TT.border}`,
+                background: L.surface,
+                border: `1px solid ${L.border}`,
                 borderRadius: 10,
                 overflow: "hidden",
                 transition: "all 0.2s",
@@ -1207,17 +1238,17 @@ export default function TradingLanding() {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: 16,
-                    fontFamily: TT.font,
+                    fontFamily: L.font,
                     fontSize: 16,
                     fontWeight: 600,
-                    color: TT.text,
+                    color: L.text,
                     textAlign: "left",
                   }}
                 >
                   {faq.q}
                   <svg
                     width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke={TT.textDim} strokeWidth="2" strokeLinecap="round"
+                    stroke={L.textDim} strokeWidth="2" strokeLinecap="round"
                     style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "none", flexShrink: 0 }}
                   >
                     <path d="M6 9L12 15L18 9" />
@@ -1226,9 +1257,9 @@ export default function TradingLanding() {
                 {isOpen && (
                   <div style={{
                     padding: "0 24px 20px",
-                    fontFamily: TT.font,
+                    fontFamily: L.font,
                     fontSize: 15,
-                    color: TT.textDim,
+                    color: L.textDim,
                     lineHeight: 1.7,
                   }}>
                     {faq.a}
@@ -1243,8 +1274,8 @@ export default function TradingLanding() {
       {/* ─── BOTTOM CTA ─── */}
       <section style={{
         padding: "80px 24px",
-        background: TT.surface,
-        borderTop: `1px solid ${TT.border}`,
+        background: L.surface,
+        borderTop: `1px solid ${L.border}`,
         textAlign: "center",
       }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
@@ -1252,11 +1283,11 @@ export default function TradingLanding() {
             Ready to Put Your Money to Work?
           </h2>
           <p style={{
-            fontFamily: TT.font, fontSize: 17, color: TT.textDim, margin: "0 0 36px",
+            fontFamily: L.font, fontSize: 17, color: L.textDim, margin: "0 0 36px",
           }}>
             Deploy your autonomous trading bot in 5 minutes.
           </p>
-          <Link to="/trading/signup" style={{ textDecoration: "none", ...btnPrimary({ fontSize: 16, padding: "16px 36px" }) }}>
+          <Link to="/trading/signup" style={lBtn({ fontSize: 16, padding: "16px 36px", display: "inline-block" })}>
             Deploy Your Bot
           </Link>
         </div>
@@ -1264,7 +1295,7 @@ export default function TradingLanding() {
 
       {/* ─── FOOTER ─── */}
       <footer style={{
-        borderTop: `1px solid ${TT.border}`,
+        borderTop: `1px solid ${L.border}`,
         padding: "32px 24px",
         maxWidth: 1100,
         margin: "0 auto",
@@ -1274,14 +1305,14 @@ export default function TradingLanding() {
         flexWrap: "wrap",
         gap: 12,
       }}>
-        <span style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint }}>
+        <span style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint }}>
           &copy; 2026 Vallota Trading Command
         </span>
         <div style={{ display: "flex", gap: 20 }}>
-          <Link to="/" style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint, textDecoration: "none" }}>
+          <Link to="/" style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint, textDecoration: "none" }}>
             Home
           </Link>
-          <a href="mailto:diego@vallotaventures.com" style={{ fontFamily: TT.font, fontSize: 13, color: TT.textFaint, textDecoration: "none" }}>
+          <a href="mailto:diego@vallotaventures.com" style={{ fontFamily: L.font, fontSize: 13, color: L.textFaint, textDecoration: "none" }}>
             Contact
           </a>
         </div>
@@ -1294,7 +1325,7 @@ export default function TradingLanding() {
         margin: "0 auto",
       }}>
         <p style={{
-          fontFamily: TT.font, fontSize: 11, color: TT.textFaint,
+          fontFamily: L.font, fontSize: 11, color: L.textFaint,
           lineHeight: 1.6, margin: 0, textAlign: "center",
         }}>
           Trading crypto involves risk. The bot can lose money and past performance is not indicative of future results.
