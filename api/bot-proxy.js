@@ -7,6 +7,7 @@ const { setCorsHeaders, handlePreflight } = require('./_cors');
 const ALLOWED_ENDPOINTS = new Set([
   'status', 'portfolio', 'trades', 'stats',
   'decision', 'reviews', 'indicators', 'research',
+  'scorecard', 'benchmark', 'live-portfolio', 'history',
 ]);
 
 module.exports = async (req, res) => {

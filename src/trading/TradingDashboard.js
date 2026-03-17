@@ -8,11 +8,13 @@ const IS_LOCAL = window.location.hostname === "localhost";
 const BOT_API = process.env.REACT_APP_BOT_API || "";
 const POLL_INTERVAL = 10000;
 
-function botFetch(endpoint) {
+function botFetch(endpoint, params) {
+  const qs = params ? "&" + new URLSearchParams(params).toString() : "";
   if (IS_LOCAL && BOT_API) {
-    return fetch(`${BOT_API}/api/${endpoint}`).then((r) => r.ok ? r.json() : null);
+    const localQs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return fetch(`${BOT_API}/api/${endpoint}${localQs}`).then((r) => r.ok ? r.json() : null);
   }
-  return fetch(`/api/bot-proxy?endpoint=${endpoint}`).then((r) => r.ok ? r.json() : null);
+  return fetch(`/api/bot-proxy?endpoint=${endpoint}${qs}`).then((r) => r.ok ? r.json() : null);
 }
 
 function fmt(n, decimals = 2) {
@@ -159,6 +161,13 @@ export default function TradingDashboard() {
   const [indicators, setIndicators] = useState(null);
   const [research, setResearch] = useState(null);
 
+  // Performance tab state
+  const [scorecard, setScorecard] = useState(null);
+  const [benchmark, setBenchmark] = useState(null);
+  const [historyData, setHistoryData] = useState([]);
+  const [perfRange, setPerfRange] = useState("1W");
+  const [chartHover, setChartHover] = useState(null);
+
   useEffect(() => {
     return onThemeChange((name) => setThemeName(name));
   }, []);
@@ -176,11 +185,11 @@ export default function TradingDashboard() {
 
   const fetchAll = useCallback(async () => {
     try {
-      const endpoints = ["status", "portfolio", "trades", "stats", "decision", "reviews", "indicators", "research"];
+      const endpoints = ["status", "portfolio", "trades", "stats", "decision", "reviews", "indicators", "research", "scorecard", "benchmark"];
       const results = await Promise.allSettled(
         endpoints.map((ep) => botFetch(ep))
       );
-      const [s, p, t, st, d, rev, ind, res] = results.map((r) => r.status === "fulfilled" ? r.value : null);
+      const [s, p, t, st, d, rev, ind, res, sc, bm] = results.map((r) => r.status === "fulfilled" ? r.value : null);
 
       if (s) { setStatus(s); setConnected(true); }
       if (p) setPortfolio(p);
@@ -190,6 +199,8 @@ export default function TradingDashboard() {
       if (rev) setReviews(Array.isArray(rev) ? rev : []);
       if (ind) setIndicators(ind);
       if (res) setResearch(res);
+      if (sc) setScorecard(sc);
+      if (bm) setBenchmark(bm);
 
       // If no endpoints responded, mark disconnected
       if (!s && !p) setConnected(false);
@@ -206,11 +217,23 @@ export default function TradingDashboard() {
     return () => clearInterval(interval);
   }, [fetchAll]);
 
+  // Fetch history data when performance range changes
+  const perfRangeHours = { "1D": 24, "1W": 168, "1M": 720, "3M": 2160, "ALL": 8760 };
+  useEffect(() => {
+    const hours = perfRangeHours[perfRange] || 168;
+    botFetch("history", { hours }).then((data) => {
+      if (data && Array.isArray(data)) setHistoryData(data);
+      else if (data?.points && Array.isArray(data.points)) setHistoryData(data.points);
+      else setHistoryData([]);
+    }).catch(() => setHistoryData([]));
+  }, [perfRange, connected]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const botRunning = status?.status === "running";
   const profileColors = { conservative: "#00d4ff", moderate: "#ffd93d", aggressive: "#00ff88" };
 
   const tabs = [
     { id: "overview", label: "Overview" },
+    { id: "performance", label: "Performance" },
     { id: "trades", label: "Trades" },
     { id: "ai", label: "AI Log" },
     { id: "indicators", label: "Indicators" },
@@ -582,6 +605,363 @@ export default function TradingDashboard() {
             </div>
           </>
         )}
+
+        {!loading && activeTab === "performance" && (() => {
+          // ─── CHART HELPERS ───
+          const points = historyData.map((pt) => ({
+            t: new Date(pt.timestamp || pt.time || pt.date),
+            v: pt.totalValue ?? pt.value ?? pt.portfolio_value ?? 0,
+            btc: pt.btcBuyHold ?? pt.btc_value ?? null,
+          })).sort((a, b) => a.t - b.t);
+
+          const hasData = points.length > 1;
+          const vals = points.map((p) => p.v);
+          const btcVals = points.map((p) => p.btc).filter((v) => v != null);
+          const hasBtc = btcVals.length > 1;
+
+          const allVals = [...vals, ...(hasBtc ? btcVals : [])];
+          const minV = Math.min(...allVals);
+          const maxV = Math.max(...allVals);
+          const rangeV = maxV - minV || 1;
+          const isPositive = hasData ? vals[vals.length - 1] >= vals[0] : true;
+
+          const W = 800, H = 300, PAD = { top: 20, right: 60, bottom: 30, left: 70 };
+          const chartW = W - PAD.left - PAD.right;
+          const chartH = H - PAD.top - PAD.bottom;
+
+          const toX = (i) => PAD.left + (i / (points.length - 1)) * chartW;
+          const toY = (v) => PAD.top + chartH - ((v - minV) / rangeV) * chartH;
+
+          const buildPath = (accessor) => {
+            const pts = points.map((p, i) => ({ x: toX(i), y: toY(accessor(p)) }));
+            return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+          };
+
+          const linePath = hasData ? buildPath((p) => p.v) : "";
+          const btcPath = hasData && hasBtc ? buildPath((p) => p.btc ?? p.v) : "";
+          const areaPath = hasData
+            ? `${linePath} L${toX(points.length - 1).toFixed(1)},${(PAD.top + chartH).toFixed(1)} L${PAD.left.toFixed(1)},${(PAD.top + chartH).toFixed(1)} Z`
+            : "";
+
+          // Y-axis labels (5 ticks)
+          const yTicks = Array.from({ length: 5 }, (_, i) => {
+            const v = minV + (rangeV * i) / 4;
+            return { v, y: toY(v) };
+          });
+
+          // X-axis labels (up to 6)
+          const xCount = Math.min(6, points.length);
+          const xTicks = hasData ? Array.from({ length: xCount }, (_, i) => {
+            const idx = Math.round((i / (xCount - 1)) * (points.length - 1));
+            const pt = points[idx];
+            const label = perfRange === "1D"
+              ? pt.t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+              : pt.t.toLocaleDateString([], { month: "short", day: "numeric" });
+            return { x: toX(idx), label };
+          }) : [];
+
+          // Hover index from mouse
+          const handleChartMouse = (e) => {
+            const svg = e.currentTarget;
+            const rect = svg.getBoundingClientRect();
+            const mouseX = ((e.clientX - rect.left) / rect.width) * W;
+            if (mouseX < PAD.left || mouseX > W - PAD.right) { setChartHover(null); return; }
+            const ratio = (mouseX - PAD.left) / chartW;
+            const idx = Math.round(ratio * (points.length - 1));
+            if (idx >= 0 && idx < points.length) setChartHover(idx);
+          };
+
+          // Scorecard values
+          const sc = scorecard || {};
+          const paperReturn = sc.paperReturnGross ?? sc.paper_return_gross ?? sc.pnlPercent ?? (portfolio?.pnlPercent);
+          const paperReturnNet = sc.paperReturnNet ?? sc.paper_return_net ?? null;
+          const liveValue = sc.livePortfolioValue ?? sc.live_portfolio_value ?? portfolio?.totalValue ?? null;
+          const btcReturn = sc.btcBuyHoldReturn ?? sc.btc_return ?? benchmark?.btc?.returnPct ?? null;
+          const alphaVsBtc = (paperReturn != null && btcReturn != null) ? (paperReturn - btcReturn) : (sc.alpha ?? sc.alphaVsBtc ?? null);
+          const totalCost = sc.totalApiCost ?? sc.total_api_cost ?? sc.apiCosts?.total ?? null;
+          const monthlyCost = sc.monthlyRunRate ?? sc.monthly_run_rate ?? sc.apiCosts?.monthlyRate ?? null;
+
+          // Benchmark bars
+          const bm = benchmark || {};
+          const benchmarks = [
+            { label: "Bot", value: paperReturn },
+            { label: "BTC", value: bm.btc?.returnPct ?? btcReturn },
+            { label: "ETH", value: bm.eth?.returnPct ?? sc.ethReturn ?? null },
+            { label: "Basket", value: bm.basket?.returnPct ?? sc.basketReturn ?? null },
+          ].filter((b) => b.value != null);
+          const bmMax = Math.max(...benchmarks.map((b) => Math.abs(b.value)), 1);
+
+          // Cost breakdown
+          const costs = sc.apiCosts || sc.costs || {};
+          const costRows = [
+            { label: "Claude Analysis (Haiku)", value: costs.claude_analysis ?? costs.haiku ?? costs.claudeAnalysis },
+            { label: "Opus Strategist", value: costs.opus_strategist ?? costs.opus ?? costs.opusStrategist },
+            { label: "Grok Research", value: costs.grok_research ?? costs.grok ?? costs.grokResearch },
+          ].filter((r) => r.value != null);
+
+          return (
+            <>
+              {/* ─── PORTFOLIO VALUE CHART ─── */}
+              <div style={{ ...card(), marginBottom: 28 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                  <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: 0 }}>
+                    Portfolio Value
+                  </h3>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {["1D", "1W", "1M", "3M", "ALL"].map((r) => (
+                      <button key={r} onClick={() => setPerfRange(r)} style={{
+                        padding: "6px 12px", borderRadius: 6, border: "none", cursor: "pointer",
+                        fontFamily: TT.mono, fontSize: 12, fontWeight: 600,
+                        background: perfRange === r ? TT.primary : TT.surfaceAlt,
+                        color: perfRange === r ? TT.bg : TT.textDim,
+                        transition: "all 0.15s",
+                      }}>
+                        {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {!hasData ? (
+                  <div style={{ padding: "60px 0", textAlign: "center", fontFamily: TT.mono, fontSize: 14, color: TT.textFaint }}>
+                    {connected ? "Collecting data points..." : "Connect to bot to see chart."}
+                  </div>
+                ) : (
+                  <div style={{ position: "relative" }}>
+                    <svg
+                      viewBox={`0 0 ${W} ${H}`}
+                      style={{ width: "100%", height: "auto", display: "block" }}
+                      onMouseMove={handleChartMouse}
+                      onMouseLeave={() => setChartHover(null)}
+                    >
+                      {/* Horizontal gridlines */}
+                      {yTicks.map((tick, i) => (
+                        <line key={i} x1={PAD.left} x2={W - PAD.right} y1={tick.y} y2={tick.y}
+                          stroke={TT.border} strokeWidth="0.5" strokeDasharray="4 4" />
+                      ))}
+
+                      {/* Area fill */}
+                      <path d={areaPath} fill={isPositive ? TT.green : TT.red} opacity="0.06" />
+
+                      {/* BTC line (if available) */}
+                      {btcPath && (
+                        <path d={btcPath} fill="none" stroke={TT.textFaint} strokeWidth="1.5" strokeDasharray="4 3" />
+                      )}
+
+                      {/* Portfolio line */}
+                      <path d={linePath} fill="none" stroke={isPositive ? TT.green : TT.red} strokeWidth="2" strokeLinejoin="round" />
+
+                      {/* Y-axis labels */}
+                      {yTicks.map((tick, i) => (
+                        <text key={i} x={PAD.left - 8} y={tick.y + 4} textAnchor="end"
+                          style={{ fontFamily: TT.mono, fontSize: 10, fill: TT.textFaint }}>
+                          ${tick.v.toFixed(0)}
+                        </text>
+                      ))}
+
+                      {/* X-axis labels */}
+                      {xTicks.map((tick, i) => (
+                        <text key={i} x={tick.x} y={H - 6} textAnchor="middle"
+                          style={{ fontFamily: TT.mono, fontSize: 10, fill: TT.textFaint }}>
+                          {tick.label}
+                        </text>
+                      ))}
+
+                      {/* Hover crosshair + dot */}
+                      {chartHover != null && points[chartHover] && (
+                        <>
+                          <line x1={toX(chartHover)} x2={toX(chartHover)} y1={PAD.top} y2={PAD.top + chartH}
+                            stroke={TT.textFaint} strokeWidth="0.5" strokeDasharray="3 3" />
+                          <circle cx={toX(chartHover)} cy={toY(points[chartHover].v)} r="4"
+                            fill={isPositive ? TT.green : TT.red} stroke={TT.bg} strokeWidth="2" />
+                          {points[chartHover].btc != null && (
+                            <circle cx={toX(chartHover)} cy={toY(points[chartHover].btc)} r="3"
+                              fill={TT.textFaint} stroke={TT.bg} strokeWidth="1.5" />
+                          )}
+                        </>
+                      )}
+                    </svg>
+
+                    {/* Tooltip */}
+                    {chartHover != null && points[chartHover] && (
+                      <div style={{
+                        position: "absolute", top: 8,
+                        left: `${((toX(chartHover) / W) * 100)}%`,
+                        transform: "translateX(-50%)",
+                        background: TT.surface, border: `1px solid ${TT.border}`, borderRadius: 8,
+                        padding: "8px 14px", pointerEvents: "none",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                        zIndex: 10,
+                      }}>
+                        <div style={{ fontFamily: TT.mono, fontSize: 14, fontWeight: 700, color: isPositive ? TT.green : TT.red }}>
+                          {fmtUsd(points[chartHover].v)}
+                        </div>
+                        {points[chartHover].btc != null && (
+                          <div style={{ fontFamily: TT.mono, fontSize: 11, color: TT.textFaint, marginTop: 2 }}>
+                            BTC B&H: {fmtUsd(points[chartHover].btc)}
+                          </div>
+                        )}
+                        <div style={{ fontFamily: TT.mono, fontSize: 10, color: TT.textDim, marginTop: 4 }}>
+                          {fmtDate(points[chartHover].t.toISOString())} {fmtTime(points[chartHover].t.toISOString())}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Legend */}
+                    <div style={{ display: "flex", gap: 20, marginTop: 12, justifyContent: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <div style={{ width: 16, height: 2, background: isPositive ? TT.green : TT.red, borderRadius: 1 }} />
+                        <span style={{ fontFamily: TT.mono, fontSize: 11, color: TT.textDim }}>Portfolio</span>
+                      </div>
+                      {hasBtc && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <div style={{ width: 16, height: 2, background: TT.textFaint, borderRadius: 1, borderTop: "1px dashed" }} />
+                          <span style={{ fontFamily: TT.mono, fontSize: 11, color: TT.textDim }}>BTC Buy & Hold</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ─── SCORECARD GRID ─── */}
+              <div style={{
+                display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: 16, marginBottom: 28,
+              }}>
+                {[
+                  {
+                    label: "Paper Return (Gross)",
+                    value: paperReturn != null ? `${paperReturn >= 0 ? "+" : ""}${fmt(paperReturn)}%` : "--",
+                    color: paperReturn >= 0 ? TT.green : TT.red,
+                  },
+                  {
+                    label: "Paper Return (Net)",
+                    value: paperReturnNet != null ? `${paperReturnNet >= 0 ? "+" : ""}${fmt(paperReturnNet)}%` : "--",
+                    color: paperReturnNet != null ? (paperReturnNet >= 0 ? TT.green : TT.red) : TT.textDim,
+                  },
+                  {
+                    label: "Live Portfolio Value",
+                    value: liveValue != null ? fmtUsd(liveValue) : "--",
+                    color: TT.text,
+                  },
+                  {
+                    label: "BTC Buy & Hold",
+                    value: btcReturn != null ? `${btcReturn >= 0 ? "+" : ""}${fmt(btcReturn)}%` : "--",
+                    color: btcReturn != null ? (btcReturn >= 0 ? TT.green : TT.red) : TT.textDim,
+                  },
+                  {
+                    label: "Alpha vs BTC",
+                    value: alphaVsBtc != null ? `${alphaVsBtc >= 0 ? "+" : ""}${fmt(alphaVsBtc)}%` : "--",
+                    color: alphaVsBtc != null ? (alphaVsBtc >= 0 ? TT.green : TT.red) : TT.textDim,
+                  },
+                  {
+                    label: "API Costs",
+                    value: totalCost != null ? fmtUsd(totalCost) : "--",
+                    sub: monthlyCost != null ? `${fmtUsd(monthlyCost)}/mo run rate` : null,
+                    color: TT.primary,
+                  },
+                ].map((s, i) => (
+                  <div key={i} style={card({ padding: 20 })}>
+                    <div style={{ fontFamily: TT.font, fontSize: 12, color: TT.textDim, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      {s.label}
+                    </div>
+                    <div style={{ fontFamily: TT.mono, fontSize: 22, fontWeight: 700, color: s.color }}>
+                      {s.value}
+                    </div>
+                    {s.sub && (
+                      <div style={{ fontFamily: TT.mono, fontSize: 12, color: TT.textDim, marginTop: 4 }}>
+                        {s.sub}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* ─── BENCHMARK COMPARISON BARS ─── */}
+              {benchmarks.length > 1 && (
+                <div style={{ ...card(), marginBottom: 28 }}>
+                  <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 20px" }}>
+                    Benchmark Comparison
+                  </h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    {benchmarks.map((b, i) => {
+                      const pct = (Math.abs(b.value) / bmMax) * 100;
+                      const barColor = i === 0 ? TT.primary : b.value >= 0 ? TT.green : TT.red;
+                      return (
+                        <div key={b.label}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                            <span style={{ fontFamily: TT.mono, fontSize: 13, fontWeight: 600, color: TT.text }}>
+                              {b.label}
+                            </span>
+                            <span style={{ fontFamily: TT.mono, fontSize: 13, fontWeight: 700, color: b.value >= 0 ? TT.green : TT.red }}>
+                              {b.value >= 0 ? "+" : ""}{fmt(b.value)}%
+                            </span>
+                          </div>
+                          <div style={{
+                            width: "100%", height: 8, borderRadius: 4,
+                            background: TT.surfaceAlt,
+                            overflow: "hidden",
+                          }}>
+                            <div style={{
+                              width: `${Math.min(pct, 100)}%`, height: "100%", borderRadius: 4,
+                              background: barColor, transition: "width 0.3s ease",
+                            }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* ─── COST BREAKDOWN ─── */}
+              {costRows.length > 0 && (
+                <div style={{ ...card(), marginBottom: 28 }}>
+                  <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 16px" }}>
+                    Cost Breakdown
+                  </h3>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr>
+                        {["Service", "Cost"].map((h) => (
+                          <th key={h} style={{
+                            textAlign: h === "Cost" ? "right" : "left",
+                            padding: "10px 12px", fontSize: 12, fontWeight: 600,
+                            color: TT.textFaint, borderBottom: `1px solid ${TT.border}`,
+                            fontFamily: TT.font, textTransform: "uppercase", letterSpacing: 0.5,
+                          }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {costRows.map((row, i) => (
+                        <tr key={i}>
+                          <td style={{ padding: "12px 12px", fontFamily: TT.font, fontSize: 14, color: TT.textDim }}>
+                            {row.label}
+                          </td>
+                          <td style={{ padding: "12px 12px", fontFamily: TT.mono, fontSize: 14, color: TT.text, textAlign: "right" }}>
+                            {fmtUsd(row.value)}
+                          </td>
+                        </tr>
+                      ))}
+                      {totalCost != null && (
+                        <tr>
+                          <td style={{ padding: "12px 12px", fontFamily: TT.font, fontSize: 14, fontWeight: 700, color: TT.text, borderTop: `1px solid ${TT.border}` }}>
+                            Total
+                          </td>
+                          <td style={{ padding: "12px 12px", fontFamily: TT.mono, fontSize: 14, fontWeight: 700, color: TT.primary, textAlign: "right", borderTop: `1px solid ${TT.border}` }}>
+                            {fmtUsd(totalCost)}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          );
+        })()}
 
         {!loading && activeTab === "trades" && (
           <div style={card()}>
