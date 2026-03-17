@@ -164,6 +164,7 @@ export default function TradingDashboard() {
   // Performance tab state
   const [scorecard, setScorecard] = useState(null);
   const [benchmark, setBenchmark] = useState(null);
+  const [livePortfolio, setLivePortfolio] = useState(null);
   const [historyData, setHistoryData] = useState([]);
   const [perfRange, setPerfRange] = useState("1W");
   const [chartHover, setChartHover] = useState(null);
@@ -185,11 +186,11 @@ export default function TradingDashboard() {
 
   const fetchAll = useCallback(async () => {
     try {
-      const endpoints = ["status", "portfolio", "trades", "stats", "decision", "reviews", "indicators", "research", "scorecard", "benchmark"];
+      const endpoints = ["status", "portfolio", "trades", "stats", "decision", "reviews", "indicators", "research", "scorecard", "benchmark", "live-portfolio"];
       const results = await Promise.allSettled(
         endpoints.map((ep) => botFetch(ep))
       );
-      const [s, p, t, st, d, rev, ind, res, sc, bm] = results.map((r) => r.status === "fulfilled" ? r.value : null);
+      const [s, p, t, st, d, rev, ind, res, sc, bm, lp] = results.map((r) => r.status === "fulfilled" ? r.value : null);
 
       if (s) { setStatus(s); setConnected(true); }
       if (p) setPortfolio(p);
@@ -201,6 +202,7 @@ export default function TradingDashboard() {
       if (res) setResearch(res);
       if (sc) setScorecard(sc);
       if (bm) setBenchmark(bm);
+      if (lp) setLivePortfolio(lp);
 
       // If no endpoints responded, mark disconnected
       if (!s && !p) setConnected(false);
@@ -525,6 +527,61 @@ export default function TradingDashboard() {
                           </td>
                         </tr>
                       ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Live Coinbase Wallet */}
+            {livePortfolio?.balances && (
+              <div style={{ ...card(), marginBottom: 28 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                  <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: 0 }}>
+                    Live Coinbase Wallet
+                  </h3>
+                  <div style={{
+                    padding: "4px 12px", borderRadius: 4,
+                    background: TT.greenDim,
+                    fontFamily: TT.mono, fontSize: 13, fontWeight: 700,
+                    color: TT.green,
+                  }}>
+                    {fmtUsd(livePortfolio.totalValueUsd)}
+                  </div>
+                </div>
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TT.font }}>
+                    <thead>
+                      <tr>
+                        {["Token", "Amount", "Est. Value"].map((h) => (
+                          <th key={h} style={{
+                            textAlign: h === "Est. Value" ? "right" : "left", padding: "10px 12px",
+                            fontSize: 12, fontWeight: 600, color: TT.textFaint,
+                            borderBottom: `1px solid ${TT.border}`,
+                            textTransform: "uppercase", letterSpacing: 0.5,
+                          }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(livePortfolio.balances)
+                        .sort(([,a], [,b]) => b - a)
+                        .map(([token, amount]) => {
+                          const price = scorecard?.live?.balances?.[token] || 0;
+                          return (
+                            <tr key={token}>
+                              <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, fontWeight: 600, color: TT.text }}>
+                                {token.toUpperCase()}
+                              </td>
+                              <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, color: TT.textDim }}>
+                                {typeof amount === "number" ? (amount < 0.01 ? amount.toExponential(4) : fmt(amount, amount > 100 ? 2 : 6)) : String(amount)}
+                              </td>
+                              <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, color: TT.textDim, textAlign: "right" }}>
+                                {token.toLowerCase() === "usd" || token.toLowerCase() === "usdc" ? fmtUsd(amount) : ""}
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
