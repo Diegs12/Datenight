@@ -496,97 +496,104 @@ export default function TradingDashboard() {
               ))}
             </div>
 
-            {/* Balances */}
-            {portfolio?.balances && (
-              <div style={{ ...card(), marginBottom: 28 }}>
-                <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: "0 0 20px" }}>
-                  Holdings
-                </h3>
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TT.font }}>
-                    <thead>
-                      <tr>
-                        {["Token", "Amount"].map((h) => (
-                          <th key={h} style={{
-                            textAlign: "left", padding: "10px 12px",
-                            fontSize: 12, fontWeight: 600, color: TT.textFaint,
-                            borderBottom: `1px solid ${TT.border}`,
-                            textTransform: "uppercase", letterSpacing: 0.5,
-                          }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(portfolio.balances).map(([token, amount]) => (
-                        <tr key={token}>
-                          <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, fontWeight: 600, color: TT.text }}>
-                            {token.toUpperCase()}
-                          </td>
-                          <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, color: TT.textDim }}>
-                            {typeof amount === "number" ? fmt(amount, token === "usdc" ? 2 : 6) : String(amount)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Live Coinbase Wallet */}
-            {livePortfolio?.balances && (
-              <div style={{ ...card(), marginBottom: 28 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                  <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: 0 }}>
-                    Live Coinbase Wallet
-                  </h3>
-                  <div style={{
-                    padding: "4px 12px", borderRadius: 4,
-                    background: TT.greenDim,
-                    fontFamily: TT.mono, fontSize: 13, fontWeight: 700,
-                    color: TT.green,
-                  }}>
-                    {fmtUsd(livePortfolio.totalValueUsd)}
+            {/* Side-by-side: Paper Holdings + Live Coinbase Wallet */}
+            <div style={{ display: "grid", gridTemplateColumns: livePortfolio?.balances ? "1fr 1fr" : "1fr", gap: 20, marginBottom: 28 }}>
+              {/* Paper Holdings */}
+              {portfolio?.balances && (
+                <div style={{ ...card(), margin: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                    <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: 0 }}>
+                      Paper Holdings
+                    </h3>
+                    <div style={{
+                      padding: "4px 10px", borderRadius: 4,
+                      background: TT.primaryDim,
+                      fontFamily: TT.mono, fontSize: 12, fontWeight: 700,
+                      color: TT.primary,
+                    }}>SIMULATED</div>
                   </div>
-                </div>
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TT.font }}>
-                    <thead>
-                      <tr>
-                        {["Token", "Amount", "Est. Value"].map((h) => (
-                          <th key={h} style={{
-                            textAlign: h === "Est. Value" ? "right" : "left", padding: "10px 12px",
-                            fontSize: 12, fontWeight: 600, color: TT.textFaint,
-                            borderBottom: `1px solid ${TT.border}`,
-                            textTransform: "uppercase", letterSpacing: 0.5,
-                          }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(livePortfolio.balances)
-                        .sort(([,a], [,b]) => b - a)
-                        .map(([token, amount]) => {
-                          const price = scorecard?.live?.balances?.[token] || 0;
-                          return (
+                  <div style={{ overflowX: "auto", maxHeight: 400, overflowY: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TT.font }}>
+                      <thead>
+                        <tr>
+                          {["Token", "Amount"].map((h) => (
+                            <th key={h} style={{
+                              textAlign: "left", padding: "8px 10px",
+                              fontSize: 11, fontWeight: 600, color: TT.textFaint,
+                              borderBottom: `1px solid ${TT.border}`,
+                              textTransform: "uppercase", letterSpacing: 0.5,
+                              position: "sticky", top: 0, background: TT.surface,
+                            }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(portfolio.balances)
+                          .sort(([,a], [,b]) => b - a)
+                          .map(([token, amount]) => (
                             <tr key={token}>
-                              <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, fontWeight: 600, color: TT.text }}>
+                              <td style={{ padding: "10px 10px", fontFamily: TT.mono, fontSize: 13, fontWeight: 600, color: TT.text }}>
                                 {token.toUpperCase()}
                               </td>
-                              <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, color: TT.textDim }}>
-                                {typeof amount === "number" ? (amount < 0.01 ? amount.toExponential(4) : fmt(amount, amount > 100 ? 2 : 6)) : String(amount)}
-                              </td>
-                              <td style={{ padding: "14px 12px", fontFamily: TT.mono, fontSize: 14, color: TT.textDim, textAlign: "right" }}>
-                                {token.toLowerCase() === "usd" || token.toLowerCase() === "usdc" ? fmtUsd(amount) : ""}
+                              <td style={{ padding: "10px 10px", fontFamily: TT.mono, fontSize: 13, color: TT.textDim }}>
+                                {typeof amount === "number" ? fmt(amount, token === "usdc" ? 2 : 6) : String(amount)}
                               </td>
                             </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* Live Coinbase Wallet */}
+              {livePortfolio?.balances && (
+                <div style={{ ...card(), margin: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                    <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: 0 }}>
+                      Coinbase Wallet
+                    </h3>
+                    <div style={{
+                      padding: "4px 10px", borderRadius: 4,
+                      background: TT.greenDim,
+                      fontFamily: TT.mono, fontSize: 12, fontWeight: 700,
+                      color: TT.green,
+                    }}>LIVE {fmtUsd(livePortfolio.totalValueUsd)}</div>
+                  </div>
+                  <div style={{ overflowX: "auto", maxHeight: 400, overflowY: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TT.font }}>
+                      <thead>
+                        <tr>
+                          {["Token", "Amount"].map((h) => (
+                            <th key={h} style={{
+                              textAlign: "left", padding: "8px 10px",
+                              fontSize: 11, fontWeight: 600, color: TT.textFaint,
+                              borderBottom: `1px solid ${TT.border}`,
+                              textTransform: "uppercase", letterSpacing: 0.5,
+                              position: "sticky", top: 0, background: TT.surface,
+                            }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(livePortfolio.balances)
+                          .sort(([,a], [,b]) => b - a)
+                          .map(([token, amount]) => (
+                            <tr key={token}>
+                              <td style={{ padding: "10px 10px", fontFamily: TT.mono, fontSize: 13, fontWeight: 600, color: TT.text }}>
+                                {token.toUpperCase()}
+                              </td>
+                              <td style={{ padding: "10px 10px", fontFamily: TT.mono, fontSize: 13, color: TT.textDim }}>
+                                {typeof amount === "number" ? (amount < 0.01 && amount > 0 ? amount.toExponential(4) : fmt(amount, amount > 100 ? 2 : 6)) : String(amount)}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Latest AI Decision */}
             {decision && (
