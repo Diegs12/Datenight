@@ -674,13 +674,20 @@ export default function TradingDashboard() {
           // ─── CHART HELPERS ───
           const points = historyData.map((pt) => ({
             t: new Date(pt.timestamp || pt.time || pt.date),
-            v: pt.totalValue ?? pt.value ?? pt.portfolio_value ?? 0,
-            btc: pt.btcBuyHold ?? pt.btc_value ?? null,
-          })).sort((a, b) => a.t - b.t);
+            v: pt.liveValue ?? pt.live_value ?? 0,
+            btc: pt.btcPrice ?? pt.btc_price ?? null,
+          })).filter((p) => p.v > 0).sort((a, b) => a.t - b.t);
+
+          // Normalize BTC to same starting value as portfolio for comparison
+          const startVal = points.length > 0 ? points[0].v : 0;
+          const startBtc = points.length > 0 ? points[0].btc : 1;
+          points.forEach((p) => {
+            if (p.btc && startBtc > 0) p.btcNorm = (p.btc / startBtc) * startVal;
+          });
 
           const hasData = points.length > 1;
           const vals = points.map((p) => p.v);
-          const btcVals = points.map((p) => p.btc).filter((v) => v != null);
+          const btcVals = points.map((p) => p.btcNorm).filter((v) => v != null);
           const hasBtc = btcVals.length > 1;
 
           const allVals = [...vals, ...(hasBtc ? btcVals : [])];
@@ -702,7 +709,7 @@ export default function TradingDashboard() {
           };
 
           const linePath = hasData ? buildPath((p) => p.v) : "";
-          const btcPath = hasData && hasBtc ? buildPath((p) => p.btc ?? p.v) : "";
+          const btcPath = hasData && hasBtc ? buildPath((p) => p.btcNorm ?? p.v) : "";
           const areaPath = hasData
             ? `${linePath} L${toX(points.length - 1).toFixed(1)},${(PAD.top + chartH).toFixed(1)} L${PAD.left.toFixed(1)},${(PAD.top + chartH).toFixed(1)} Z`
             : "";
@@ -769,7 +776,7 @@ export default function TradingDashboard() {
               <div style={{ ...card(), marginBottom: 28 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                   <h3 style={{ fontFamily: TT.font, fontSize: 16, fontWeight: 700, color: TT.text, margin: 0 }}>
-                    Portfolio Value
+                    Coinbase Wallet Value
                   </h3>
                   <div style={{ display: "flex", gap: 4 }}>
                     {["1D", "1W", "1M", "3M", "ALL"].map((r) => (
@@ -860,9 +867,9 @@ export default function TradingDashboard() {
                         <div style={{ fontFamily: TT.mono, fontSize: 14, fontWeight: 700, color: isPositive ? TT.green : TT.red }}>
                           {fmtUsd(points[chartHover].v)}
                         </div>
-                        {points[chartHover].btc != null && (
+                        {points[chartHover].btcNorm != null && (
                           <div style={{ fontFamily: TT.mono, fontSize: 11, color: TT.textFaint, marginTop: 2 }}>
-                            BTC B&H: {fmtUsd(points[chartHover].btc)}
+                            BTC B&H: {fmtUsd(points[chartHover].btcNorm)}
                           </div>
                         )}
                         <div style={{ fontFamily: TT.mono, fontSize: 10, color: TT.textDim, marginTop: 4 }}>
@@ -875,7 +882,7 @@ export default function TradingDashboard() {
                     <div style={{ display: "flex", gap: 20, marginTop: 12, justifyContent: "center" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <div style={{ width: 16, height: 2, background: isPositive ? TT.green : TT.red, borderRadius: 1 }} />
-                        <span style={{ fontFamily: TT.mono, fontSize: 11, color: TT.textDim }}>Portfolio</span>
+                        <span style={{ fontFamily: TT.mono, fontSize: 11, color: TT.textDim }}>Coinbase Wallet</span>
                       </div>
                       {hasBtc && (
                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
